@@ -1,18 +1,20 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>br.gov.caixa.discovery</groupId>
-  <artifactId>discovery</artifactId>
-  <version>0.0.1</version>
-  <packaging>pom</packaging>
-  
-  	<properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>br.gov.caixa.discovery</groupId>
+	<artifactId>discovery</artifactId>
+	<version>0.0.1</version>
+	<packaging>pom</packaging>
+
+	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 	</properties>
-	
-	
+
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -21,21 +23,21 @@
 				<version>6.0</version>
 				<scope>provided</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>br.gov.caixa.discovery</groupId>
 				<artifactId>discovery-ejb</artifactId>
 				<type>ejb</type>
 				<version>0.0.1</version>
 			</dependency>
-		
+
 			<dependency>
 				<groupId>br.gov.caixa.discovery</groupId>
 				<artifactId>discovery-ws</artifactId>
 				<type>war</type>
 				<version>0.0.1</version>
 			</dependency>
-	
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -79,5 +81,6 @@
 	<modules>
 		<module>discovery-ejb</module>
 		<module>discovery-ws</module>
+		<module>discovery-ear</module>
 	</modules>
 </project>
