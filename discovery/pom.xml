@@ -82,5 +82,6 @@
 		<module>discovery-ejb</module>
 		<module>discovery-ws</module>
 		<module>discovery-ear</module>
+		<module>discovery-core</module>
 	</modules>
 </project>
