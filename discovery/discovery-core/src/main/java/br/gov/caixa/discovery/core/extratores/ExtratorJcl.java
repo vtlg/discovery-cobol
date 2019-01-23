@@ -146,14 +146,14 @@ public class ExtratorJcl {
 
 				Atributo atributoExecTipo = new Atributo();
 				atributoExecTipo.setTipoAtributo(TipoAtributo.JCL_TIPO_EXEC);
-				atributoExecTipo.setTipo("STRING");
+				atributoExecTipo.setTipo("ARTEFATO");
 				atributoExecTipo.setValor(tipoExec);
 
 				artefatoStep.adicionarAtributo(atributoExecTipo);
 
 				Atributo atributoNomePgmProc = new Atributo();
 				atributoNomePgmProc.setTipoAtributo(TipoAtributo.JCL_NOME_PGM_PROC);
-				atributoNomePgmProc.setTipo("STRING");
+				atributoNomePgmProc.setTipo("ARTEFATO");
 				atributoNomePgmProc.setValor(nomePgmProc);
 
 				artefatoStep.adicionarAtributo(atributoNomePgmProc);
@@ -263,6 +263,7 @@ public class ExtratorJcl {
 
 		String identificador = null;
 		int posicaoLinha = 0;
+		Artefato artefatoDdname = null;
 
 		for (String texto : artefato.getCodigoFonteTratado()) {
 			posicaoLinha++;
@@ -287,6 +288,14 @@ public class ExtratorJcl {
 				String temp = m_identificador.group("identificador");
 				if (temp != null && !"".equals(temp.trim()) && !"/".equals(temp.trim())) {
 					identificador = m_identificador.group("identificador").trim();
+
+					artefatoDdname = new Artefato();
+					artefatoDdname.setNome(_tratarNomeDsn(identificador));
+					artefatoDdname.setTipoArtefato(TipoArtefato.DDNAME);
+					artefatoDdname.setPosicao(artefato.getPosicao() + posicaoLinha);
+
+					artefato.adicionarArtefatosRelacionados(artefatoDdname);
+
 				}
 			}
 
@@ -297,7 +306,7 @@ public class ExtratorJcl {
 				Artefato artefatoDsn = new Artefato();
 				// artefatoDsn.setAmbiente(this.artefato.getAmbiente());
 				// artefatoDsn.setSistema(this.artefato.getSistema());
-				artefatoDsn.setIdentificador(identificador);
+				// artefatoDsn.setIdentificador(identificador);
 				artefatoDsn.setNome(_tratarNomeDsn(nomeDsn));
 				artefatoDsn.setTipoArtefato(TipoArtefato.DSN);
 				artefatoDsn.setPosicao(artefato.getPosicao() + posicaoLinha);
@@ -305,10 +314,12 @@ public class ExtratorJcl {
 				Atributo atributoDeleteOnJcl = new Atributo();
 				atributoDeleteOnJcl.setTipoAtributo(TipoAtributo.JCL_DELETE_ON_JCL);
 				atributoDeleteOnJcl.setValor("true");
+				atributoDeleteOnJcl.setTipo("RELACIONAMENTO");
 
 				artefatoDsn.adicionarAtributo(atributoDeleteOnJcl);
 
-				artefato.adicionarArtefatosRelacionados(artefatoDsn);
+				// artefato.adicionarArtefatosRelacionados(artefatoDsn);
+				artefatoDdname.adicionarArtefatosRelacionados(artefatoDsn);
 
 			} else if ("IDCAMS".equals(strExecPgmProc) && m_dsn_delete.matches()) {
 				posicaoLinha++;
@@ -321,7 +332,7 @@ public class ExtratorJcl {
 					Artefato artefatoDsn = new Artefato();
 					// artefatoDsn.setAmbiente(this.artefato.getAmbiente());
 					// artefatoDsn.setSistema(this.artefato.getSistema());
-					artefatoDsn.setIdentificador(identificador);
+					// artefatoDsn.setIdentificador(identificador);
 					artefatoDsn.setNome(_tratarNomeDsn(nomeDsn));
 					artefatoDsn.setTipoArtefato(TipoArtefato.DSN);
 					artefatoDsn.setPosicao(artefato.getPosicao() + posicaoLinha);
@@ -329,10 +340,12 @@ public class ExtratorJcl {
 					Atributo atributoDeleteOnJcl = new Atributo();
 					atributoDeleteOnJcl.setTipoAtributo(TipoAtributo.JCL_DELETE_ON_JCL);
 					atributoDeleteOnJcl.setValor("true");
+					atributoDeleteOnJcl.setTipo("RELACIONAMENTO");
 
 					artefatoDsn.adicionarAtributo(atributoDeleteOnJcl);
 
-					artefato.adicionarArtefatosRelacionados(artefatoDsn);
+					// artefato.adicionarArtefatosRelacionados(artefatoDsn);
+					artefatoDdname.adicionarArtefatosRelacionados(artefatoDsn);
 				}
 			}
 
@@ -346,7 +359,7 @@ public class ExtratorJcl {
 				artefatoDsn.setNome(nomeDsn);
 				// artefatoDsn.setAmbiente(this.artefato.getAmbiente());
 				// artefatoDsn.setSistema(this.artefato.getSistema());
-				artefatoDsn.setIdentificador(identificador);
+				// artefatoDsn.setIdentificador(identificador);
 				artefatoDsn.setTipoArtefato(TipoArtefato.DSN);
 				// dsn.setIdentificador(identificadorDsn);
 				artefatoDsn.setPosicao(artefato.getPosicao() + posicaoLinha);
@@ -354,22 +367,26 @@ public class ExtratorJcl {
 				Atributo atributoDispStatus = new Atributo();
 				atributoDispStatus.setTipoAtributo(TipoAtributo.JCL_DISP_STATUS);
 				atributoDispStatus.setValor("SHR");
+				atributoDispStatus.setTipo("RELACIONAMENTO");
 
 				artefatoDsn.adicionarAtributo(atributoDispStatus);
 
 				Atributo atributoNormalDisposition = new Atributo();
 				atributoNormalDisposition.setTipoAtributo(TipoAtributo.JCL_DISP_NORMAL_DISPOSITION);
 				atributoNormalDisposition.setValor("KEEP");
+				atributoNormalDisposition.setTipo("RELACIONAMENTO");
 
 				artefatoDsn.adicionarAtributo(atributoNormalDisposition);
 
 				Atributo atributoAbnormalDisposition = new Atributo();
 				atributoAbnormalDisposition.setTipoAtributo(TipoAtributo.JCL_DISP_ABNORMAL_DISPOSITION);
 				atributoAbnormalDisposition.setValor("KEEP");
+				atributoAbnormalDisposition.setTipo("RELACIONAMENTO");
 
 				artefatoDsn.adicionarAtributo(atributoAbnormalDisposition);
 
-				artefato.adicionarArtefatosRelacionados(artefatoDsn);
+				// artefato.adicionarArtefatosRelacionados(artefatoDsn);
+				artefatoDdname.adicionarArtefatosRelacionados(artefatoDsn);
 
 			}
 
@@ -384,7 +401,7 @@ public class ExtratorJcl {
 					Artefato artefatoDsn = new Artefato();
 					// artefatoDsn.setAmbiente(this.artefato.getAmbiente());
 					// artefatoDsn.setSistema(this.artefato.getSistema());
-					artefatoDsn.setIdentificador(identificador);
+					// artefatoDsn.setIdentificador(identificador);
 					artefatoDsn.setNome(_tratarNomeDsn(nomeDsn));
 					artefatoDsn.setTipoArtefato(TipoArtefato.DSN);
 					artefatoDsn.setPosicao(artefato.getPosicao() + posicaoLinha);
@@ -392,22 +409,26 @@ public class ExtratorJcl {
 					Atributo atributoDispStatus = new Atributo();
 					atributoDispStatus.setTipoAtributo(TipoAtributo.JCL_DISP_STATUS);
 					atributoDispStatus.setValor("SHR");
+					atributoDispStatus.setTipo("RELACIONAMENTO");
 
 					artefatoDsn.adicionarAtributo(atributoDispStatus);
 
 					Atributo atributoNormalDisposition = new Atributo();
 					atributoNormalDisposition.setTipoAtributo(TipoAtributo.JCL_DISP_NORMAL_DISPOSITION);
 					atributoNormalDisposition.setValor("KEEP");
+					atributoNormalDisposition.setTipo("RELACIONAMENTO");
 
 					artefatoDsn.adicionarAtributo(atributoNormalDisposition);
 
 					Atributo atributoAbnormalDisposition = new Atributo();
 					atributoAbnormalDisposition.setTipoAtributo(TipoAtributo.JCL_DISP_ABNORMAL_DISPOSITION);
 					atributoAbnormalDisposition.setValor("KEEP");
+					atributoAbnormalDisposition.setTipo("RELACIONAMENTO");
 
 					artefatoDsn.adicionarAtributo(atributoAbnormalDisposition);
 
-					artefato.adicionarArtefatosRelacionados(artefatoDsn);
+					// artefato.adicionarArtefatosRelacionados(artefatoDsn);
+					artefatoDdname.adicionarArtefatosRelacionados(artefatoDsn);
 				}
 
 			} else if (m_dsn.matches()) {
@@ -449,7 +470,7 @@ public class ExtratorJcl {
 				Artefato artefatoDsn = new Artefato();
 				// artefatoDsn.setAmbiente(this.artefato.getAmbiente());
 				// artefatoDsn.setSistema(this.artefato.getSistema());
-				artefatoDsn.setIdentificador(identificador);
+				// artefatoDsn.setIdentificador(identificador);
 				artefatoDsn.setNome(_tratarNomeDsn(nomeDsn));
 				artefatoDsn.setTipoArtefato(TipoArtefato.DSN);
 				artefatoDsn.setPosicao(artefato.getPosicao() + posicaoLinha);
@@ -457,22 +478,26 @@ public class ExtratorJcl {
 				Atributo atributoDispStatus = new Atributo();
 				atributoDispStatus.setTipoAtributo(TipoAtributo.JCL_DISP_STATUS);
 				atributoDispStatus.setValor(dispStatus);
+				atributoDispStatus.setTipo("RELACIONAMENTO");
 
 				artefatoDsn.adicionarAtributo(atributoDispStatus);
 
 				Atributo atributoNormalDisposition = new Atributo();
 				atributoNormalDisposition.setTipoAtributo(TipoAtributo.JCL_DISP_NORMAL_DISPOSITION);
 				atributoNormalDisposition.setValor(dispNormalDisposition);
+				atributoNormalDisposition.setTipo("RELACIONAMENTO");
 
 				artefatoDsn.adicionarAtributo(atributoNormalDisposition);
 
 				Atributo atributoAbnormalDisposition = new Atributo();
 				atributoAbnormalDisposition.setTipoAtributo(TipoAtributo.JCL_DISP_ABNORMAL_DISPOSITION);
 				atributoAbnormalDisposition.setValor(dispAbormalDisposition);
+				atributoAbnormalDisposition.setTipo("RELACIONAMENTO");
 
 				artefatoDsn.adicionarAtributo(atributoAbnormalDisposition);
 
-				artefato.adicionarArtefatosRelacionados(artefatoDsn);
+				// artefato.adicionarArtefatosRelacionados(artefatoDsn);
+				artefatoDdname.adicionarArtefatosRelacionados(artefatoDsn);
 
 			}
 		}
@@ -619,6 +644,7 @@ public class ExtratorJcl {
 				// ").trim());
 				Atributo atributoDeclaracaoCompleta = new Atributo();
 				// atributoDeclaracaoCompleta.setTipo("STRING");
+				atributoDeclaracaoCompleta.setTipo("ARTEFATO");
 				atributoDeclaracaoCompleta.setTipoAtributo(TipoAtributo.DECLARACAO_COMPLETA);
 				atributoDeclaracaoCompleta.setValor(sb.toString().replaceAll("[\\s]{2,}", " ").trim());
 
@@ -790,12 +816,9 @@ public class ExtratorJcl {
 			if (entry.getTipoArtefato() != null && !TipoArtefato.DESCONHECIDO.equals(entry.getTipoArtefato())) {
 				continue;
 			}
-
 			TipoArtefato tipoArtefato = ArtefatoHandler.identificarTipoArtefato(entry.getNome());
 			entry.setTipoArtefato(tipoArtefato);
-
 		}
-
 		return artefato;
 	}
 

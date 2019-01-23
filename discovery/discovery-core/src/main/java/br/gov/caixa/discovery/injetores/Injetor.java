@@ -53,11 +53,16 @@ public class Injetor {
 	private static ArtefatoPersistence atualizarTabelaRelacionamento(ArtefatoPersistence artefato) {
 
 		RelacionamentoDao relacionamentoDao = new RelacionamentoDao(em);
+		AtributoDao atributoDao = new AtributoDao(em);
 
 		for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
 
 			if (artefato.isTransientAtualizarRelacionamentos()) {
 				relacionamentoDao.incluir(relacionamento);
+				for (AtributoPersistence atributo : relacionamento.getTransientListaAtributos()) {
+					atributo.setCoExterno(relacionamento.getCoRelacionamento());
+					atributoDao.incluir(atributo);
+				}
 			}
 
 			if (relacionamento.getArtefatoPai() != null) {
@@ -66,7 +71,6 @@ public class Injetor {
 		}
 
 		return artefato;
-
 	}
 
 	private static ArtefatoPersistence atualizarTabelaArtefato(ArtefatoPersistence artefato) {
@@ -95,7 +99,6 @@ public class Injetor {
 				artefatoPesquisa = entry;
 			}
 
-			
 			if ((artefato.getDeHash() == null || "".equals(artefato.getDeHash().trim()))
 					&& (artefatoPesquisa.getDeHash() != null && !"".equals(artefatoPesquisa.getDeHash().trim()))) {
 				// ##############################################

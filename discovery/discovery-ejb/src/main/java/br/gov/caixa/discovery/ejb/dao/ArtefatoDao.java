@@ -39,20 +39,22 @@ public class ArtefatoDao {
 		this.em = em;
 	}
 
-//	public static void main(String[] args) {
-//		Dao dao = new Dao();
-//		dao.abrirConexao();
-//		EntityManager em = dao.getEmFactory().createEntityManager();
-//		ArtefatoDao artefatoDao = new ArtefatoDao(em);
-//
-//		ArtefatoPersistence artefato = artefatoDao.pesquisarArtefato(45695L);
-//
-//		em.close();
-//		dao.fecharConexao();
-//
-//		// System.out.println(artefato.getNoNomeArtefato());
-//		// System.out.println(artefato.getListaArtefato().get(1).getArtefato().getNoNomeArtefato());
-//	}
+	public static void main(String[] args) {
+		Dao dao = new Dao();
+		dao.abrirConexao();
+		EntityManager em = dao.getEmFactory().createEntityManager();
+		ArtefatoDao artefatoDao = new ArtefatoDao(em);
+
+		ArtefatoPersistence artefato = artefatoDao.pesquisarArtefatoRelacionamento(46250L);
+
+		em.close();
+		dao.fecharConexao();
+
+		System.out.println(artefato.getNoNomeArtefato());
+		//System.out.println(artefato.getListaArtefato().get(0).getListaAtributos().toArray());
+		//System.out.println(artefato.getListaArtefato().get(1).getListaAtributos().toArray());
+		//System.out.println(artefato.getListaArtefato().get(2).getListaAtributos().toArray());
+	}
 
 	public ArtefatoPersistence pesquisarArtefato(Long coArtefato) {
 		LOGGER.log(Level.FINE, "Pesquisar artefato " + "CoArtefato (" + coArtefato + ")");
@@ -90,6 +92,9 @@ public class ArtefatoDao {
 
 		EntityGraph<ArtefatoPersistence> graph = this.em.createEntityGraph(ArtefatoPersistence.class);
 		graph.addAttributeNodes("tipoArtefato");
+
+		//Subgraph<RelacionamentoPersistence> atributosartefatoGraph = graph.addSubgraph("listaAtributos");
+
 		Subgraph<RelacionamentoPersistence> relacionamentoGraph = graph.addSubgraph("listaArtefato");
 		relacionamentoGraph.addAttributeNodes("artefato");
 		relacionamentoGraph.addAttributeNodes("artefatoPai");
@@ -97,6 +102,10 @@ public class ArtefatoDao {
 		relacionamentoGraph.addAttributeNodes("artefatoUltimo");
 		relacionamentoGraph.addAttributeNodes("artefatoAnterior");
 		relacionamentoGraph.addAttributeNodes("artefatoPosterior");
+
+		Subgraph<RelacionamentoPersistence> atributosRelacionamentoGraph = relacionamentoGraph.addSubgraph("listaAtributos");
+
+		// relacionamentoGraph.addAttributeNodes("coExterno");
 
 		Map<String, Object> hints = new HashMap<String, Object>();
 		hints.put("javax.persistence.loadgraph", graph);

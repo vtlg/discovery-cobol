@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -73,10 +74,13 @@ public class RelacionamentoPersistence {
 	@JoinColumn(name = "CO_ARTEFATO_ULTIMO", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
 	private ArtefatoPersistence artefatoUltimo;
 
-	@Transient
-	private List<AtributoPersistence> transientListaAtributos = new ArrayList<>();
+	@OneToMany(mappedBy = "coExterno", fetch = FetchType.LAZY)
+	private List<AtributoRelacionamentoPersistence> listaAtributos;
 
-	public void adicionarAtributoTransient(AtributoPersistence entry) {
+	@Transient
+	private List<AtributoRelacionamentoPersistence> transientListaAtributos = new ArrayList<>();
+
+	public void adicionarAtributoTransient(AtributoRelacionamentoPersistence entry) {
 		if (transientListaAtributos == null) {
 			transientListaAtributos = new ArrayList<>();
 		}
@@ -204,12 +208,20 @@ public class RelacionamentoPersistence {
 		this.artefatoUltimo = artefatoUltimo;
 	}
 
-	public List<AtributoPersistence> getTransientListaAtributos() {
+	public List<AtributoRelacionamentoPersistence> getTransientListaAtributos() {
 		return transientListaAtributos;
 	}
 
-	public void setTransientListaAtributos(List<AtributoPersistence> transientListaAtributos) {
+	public void setTransientListaAtributos(List<AtributoRelacionamentoPersistence> transientListaAtributos) {
 		this.transientListaAtributos = transientListaAtributos;
+	}
+
+	public List<AtributoRelacionamentoPersistence> getListaAtributos() {
+		return listaAtributos;
+	}
+
+	public void setListaAtributos(List<AtributoRelacionamentoPersistence> listaAtributos) {
+		this.listaAtributos = listaAtributos;
 	}
 
 }

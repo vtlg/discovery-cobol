@@ -1,13 +1,18 @@
 package br.gov.caixa.discovery.ejb.modelos;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 @Entity(name = "TBL_ATRIBUTO")
-public class AtributoPersistence {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "CO_TABELA")
+public abstract class AtributoPersistence {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +25,8 @@ public class AtributoPersistence {
 	@Column(name = "CO_EXTERNO")
 	private Long coExterno;
 
-	@Column(name = "CO_TABELA", length = 100)
-	private String coTabela;
+	//@Column(name = "CO_TABELA", length = 100, insertable=false, updatable=false)
+	//private String coTabela;
 
 	@Column(name = "DE_VALOR", columnDefinition = "text DEFAULT text::' '")
 	private String deValor;
@@ -48,6 +53,7 @@ public class AtributoPersistence {
 		this.coExterno = coExterno;
 	}
 
+	/*
 	public String getCoTabela() {
 		return coTabela;
 	}
@@ -55,6 +61,7 @@ public class AtributoPersistence {
 	public void setCoTabela(String coTabela) {
 		this.coTabela = coTabela;
 	}
+	*/
 
 	public String getDeValor() {
 		return deValor;

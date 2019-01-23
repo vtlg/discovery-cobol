@@ -339,6 +339,7 @@ public class ExtratorProgramaCobol {
 				atributoDeclaracaoCompleta.setTipoAtributo(TipoAtributo.DECLARACAO_COMPLETA);
 				atributoDeclaracaoCompleta.setValor(sb.toString().replaceAll("[\\s]{2,}", " ").trim());
 				// atributoDeclaracaoCompleta.setTipo("STRING");
+				atributoDeclaracaoCompleta.setTipo("ARTEFATO");
 
 				artefatoQuery.adicionarAtributo(atributoDeclaracaoCompleta);
 
@@ -964,6 +965,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_LABEL);
 				atributo.setValor(label);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -973,6 +975,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_ENDDATA);
 				atributo.setValor(enddata);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -982,6 +985,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_ERROR);
 				atributo.setValor(error);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -991,6 +995,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_QNAME);
 				atributo.setValor(qname);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1000,6 +1005,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_ITEM);
 				atributo.setValor(item);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1009,6 +1015,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_NUMITEMS);
 				atributo.setValor(numitems);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1018,6 +1025,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_INTO);
 				atributo.setValor(into);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1027,6 +1035,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_TRANSACTION_ID);
 				atributo.setValor(transId);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1035,6 +1044,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_FROM);
 				atributo.setValor(from);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("FROM", from);
 			}
@@ -1043,6 +1053,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_TERMINAL_ID);
 				atributo.setValor(termId);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TERMINAL-ID", termId);
 			}
@@ -1051,6 +1062,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.REQ_ID);
 				atributo.setValor(reqId);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("REQ-ID", reqId);
 			}
@@ -1059,6 +1071,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_LENGTH);
 				atributo.setValor(length);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("ARTEFATO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("LENGTH", length);
 			}
@@ -1067,6 +1080,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_ABSTIME);
 				atributo.setValor(abstime);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TIME", time);
 			}
@@ -1083,6 +1097,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_QUEUE);
 				atributo.setValor(queue);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("QUEUE", queue);
 			}
@@ -1091,6 +1106,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_R_TERMINAL_ID);
 				atributo.setValor(rtermId);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("R-TERMINAL-ID", rtermId);
 			}
@@ -1099,6 +1115,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_R_TRANSACTION_ID);
 				atributo.setValor(rtransId);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("R-TRANSACTION-ID", rtransId);
 			}
@@ -1107,6 +1124,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_SYSTEM_ID);
 				atributo.setValor(sysid);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("SYSTEM-ID", sysid);
 			}
@@ -1115,6 +1133,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_USER_ID);
 				atributo.setValor(userid);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("USER-ID", userid);
 			}
@@ -1123,6 +1142,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_PROGRAM);
 				atributo.setValor(program);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("PROGRAM", program);
 			}
@@ -1132,6 +1152,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_COMMAREA);
 				atributo.setValor(commarea);
 				// atributo.setTipo("STRING");
+				atributo.setTipo("RELACIONAMENTO");
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("COMMAREA", commarea);
 			}
@@ -1611,6 +1632,7 @@ public class ExtratorProgramaCobol {
 							Atributo atributoRead = new Atributo();
 							atributoRead.setTipoAtributo(TipoAtributo.COBOL_READ);
 							// atributoRead.setTipo("BOOLEAN");
+							atributoRead.setTipo("ARTEFATO");
 							atributoRead.setValor("true");
 
 							artefatoFileDescription.adicionarAtributo(atributoRead);
@@ -1621,7 +1643,7 @@ public class ExtratorProgramaCobol {
 							atributoWrite.setTipoAtributo(TipoAtributo.COBOL_WRITE);
 							// atributoWrite.setTipo("BOOLEAN");
 							atributoWrite.setValor("true");
-
+							atributoWrite.setTipo("ARTEFATO");
 							artefatoFileDescription.adicionarAtributo(atributoWrite);
 							break;
 						case "REWRITE":
@@ -1630,7 +1652,7 @@ public class ExtratorProgramaCobol {
 							atributoRewrite.setTipoAtributo(TipoAtributo.COBOL_REWRITE);
 							// atributoRewrite.setTipo("BOOLEAN");
 							atributoRewrite.setValor("true");
-
+							atributoRewrite.setTipo("ARTEFATO");
 							artefatoFileDescription.adicionarAtributo(atributoRewrite);
 
 							break;
@@ -1640,7 +1662,7 @@ public class ExtratorProgramaCobol {
 							atributoDelete.setTipoAtributo(TipoAtributo.COBOL_DELETE);
 							// atributoDelete.setTipo("BOOLEAN");
 							atributoDelete.setValor("true");
-
+							atributoDelete.setTipo("ARTEFATO");
 							artefatoFileDescription.adicionarAtributo(atributoDelete);
 
 							break;
@@ -1774,6 +1796,7 @@ public class ExtratorProgramaCobol {
 				Atributo atributoAccessMode = new Atributo();
 				atributoAccessMode.setValor(accessMode);
 				// atributoAccessMode.setTipo("STRING");
+				atributoAccessMode.setTipo("ARTEFATO");
 				atributoAccessMode.setTipoAtributo(TipoAtributo.COBOL_ACCESS_MODE);
 				artefatoFileDescription.adicionarAtributo(atributoAccessMode);
 			}
@@ -1783,6 +1806,7 @@ public class ExtratorProgramaCobol {
 				atributoDdname.setValor(ddname);
 				// atributoDdname.setTipo("STRING");
 				atributoDdname.setTipoAtributo(TipoAtributo.COBOL_DDNAME);
+				atributoDdname.setTipo("ARTEFATO");
 				artefatoFileDescription.adicionarAtributo(atributoDdname);
 			}
 
@@ -1790,6 +1814,7 @@ public class ExtratorProgramaCobol {
 				Atributo atributoOrganization = new Atributo();
 				atributoOrganization.setValor(organization);
 				// atributoOrganization.setTipo("STRING");
+				atributoOrganization.setTipo("ARTEFATO");
 				atributoOrganization.setTipoAtributo(TipoAtributo.COBOL_ORGANIZATION);
 				artefatoFileDescription.adicionarAtributo(atributoOrganization);
 			}
@@ -1798,6 +1823,7 @@ public class ExtratorProgramaCobol {
 				Atributo atributoRecordKey = new Atributo();
 				atributoRecordKey.setValor(recordKey);
 				// atributoRecordKey.setTipo("STRING");
+				atributoRecordKey.setTipo("ARTEFATO");
 				atributoRecordKey.setTipoAtributo(TipoAtributo.COBOL_RECORD_KEY);
 				artefatoFileDescription.adicionarAtributo(atributoRecordKey);
 			}
@@ -1805,6 +1831,7 @@ public class ExtratorProgramaCobol {
 				Atributo atributoAlternateRecordKey = new Atributo();
 				atributoAlternateRecordKey.setValor(alternateRecordKey);
 				// atributoAlternateRecordKey.setTipo("STRING");
+				atributoAlternateRecordKey.setTipo("ARTEFATO");
 				atributoAlternateRecordKey.setTipoAtributo(TipoAtributo.COBOL_ALTERNATE_RECORD_KEY);
 				artefatoFileDescription.adicionarAtributo(atributoAlternateRecordKey);
 			}
@@ -1815,8 +1842,9 @@ public class ExtratorProgramaCobol {
 			} else {
 				atributoOptional.setValor("FALSE");
 			}
-			// atributoOptional.setTipo("BOOLEAN");
+
 			atributoOptional.setTipoAtributo(TipoAtributo.OPTIONAL);
+			atributoOptional.setTipo("ARTEFATO");
 			artefatoFileDescription.adicionarAtributo(atributoOptional);
 
 			this.artefato.adicionarArtefatosRelacionados(artefatoFileDescription);
@@ -1953,6 +1981,7 @@ public class ExtratorProgramaCobol {
 							atributoRecordContains.setTipoAtributo(TipoAtributo.RECORD_CONTAINS);
 							atributoRecordContains.setValor(recordContains);
 							// atributoRecordContains.setTipo("STRING");
+							atributoRecordContains.setTipo("ARTEFATO");
 
 							entryFileDescription.adicionarAtributo(atributoRecordContains);
 						}
@@ -1962,7 +1991,7 @@ public class ExtratorProgramaCobol {
 							atributoBlockContains.setTipoAtributo(TipoAtributo.BLOCK_CONTAINS);
 							atributoBlockContains.setValor(blockContains);
 							// atributoBlockContains.setTipo("STRING");
-
+							atributoBlockContains.setTipo("ARTEFATO");
 							entryFileDescription.adicionarAtributo(atributoBlockContains);
 						}
 
@@ -1971,7 +2000,7 @@ public class ExtratorProgramaCobol {
 							atributoRecordingMode.setTipoAtributo(TipoAtributo.RECORDING_MODE);
 							atributoRecordingMode.setValor(recordingMode);
 							// atributoRecordingMode.setTipo("STRING");
-
+							atributoRecordingMode.setTipo("ARTEFATO");
 							entryFileDescription.adicionarAtributo(atributoRecordingMode);
 						}
 
@@ -1980,7 +2009,7 @@ public class ExtratorProgramaCobol {
 							atributoDataRecord.setTipoAtributo(TipoAtributo.DATA_RECORD);
 							atributoDataRecord.setValor(dataRecord);
 							// atributoDataRecord.setTipo("STRING");
-
+							atributoDataRecord.setTipo("ARTEFATO");
 							entryFileDescription.adicionarAtributo(atributoDataRecord);
 						}
 

@@ -6,7 +6,7 @@ public class Atributo {
 	private TipoAtributo tipoAtributo;
 	private String valor;
 	private String descricao;
-	private String tipo;
+	private String tipo = "ARTEFATO";
 
 	public Atributo() {
 		super();

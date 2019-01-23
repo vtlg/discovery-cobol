@@ -19,7 +19,8 @@ import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.core.utils.UtilsHandler;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
-import br.gov.caixa.discovery.ejb.modelos.AtributoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.AtributoArtefatoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.AtributoRelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.tipos.Tabelas;
 
@@ -207,6 +208,7 @@ public class Conversor {
 				// || TipoArtefato.DSN.equals(artefato.getTipoArtefato())
 				|| TipoArtefato.JCL_STEP.equals(artefato.getTipoArtefato())
 				|| TipoArtefato.COPYBOOK_VARIAVEL.equals(artefato.getTipoArtefato())
+				|| TipoArtefato.DDNAME.equals(artefato.getTipoArtefato())
 				|| TipoArtefato.CICS_TRANSACTION.equals(artefato.getTipoArtefato())
 				|| TipoArtefato.TABELA_CAMPO.equals(artefato.getTipoArtefato())
 				|| TipoArtefato.FILE_DESCRIPTION.equals(artefato.getTipoArtefato())) {
@@ -234,7 +236,7 @@ public class Conversor {
 		artefatoPersistence.setTsUltimaModificacao(Configuracao.TS_ATUAL);
 
 		artefatoPersistence
-				.setTransientListaAtributos(converterAtributo(artefato.getAtributos(), Tabelas.TBL_ARTEFATO));
+				.setTransientListaAtributos(converterAtributoArtefato(artefato.getAtributos(), Tabelas.TBL_ARTEFATO));
 
 		if (artefato.getDescricao() != null && !"".equals(artefato.getDescricao().trim())) {
 			artefatoPersistence.setDeDescricaoArtefato(artefato.getDescricao());
@@ -246,7 +248,7 @@ public class Conversor {
 		if (artefato.getArtefatosRelacionados() != null && artefato.getArtefatosRelacionados().size() > 0) {
 			Collections.sort(artefato.getArtefatosRelacionados(), new ArtefatoSorted());
 
-			for (int i = 0; i < artefato.getArtefatosRelacionados().size() - 1; i++) {
+			for (int i = 0; i < artefato.getArtefatosRelacionados().size(); i++) {
 				// for (Artefato entry : artefato.getArtefatosRelacionados()) {
 				Artefato entry = artefato.getArtefatosRelacionados().get(i);
 				ArtefatoPersistence artefatoAnterior = null;
@@ -261,7 +263,7 @@ public class Conversor {
 					artefatoAnterior = converterArtefato(artefato.getArtefatosRelacionados().get(i - 1),
 							artefatoPersistence, null, null);
 				}
-				if (i < artefato.getArtefatosRelacionados().size()) {
+				if (i < artefato.getArtefatosRelacionados().size() - 1) {
 					artefatoPosterior = converterArtefato(artefato.getArtefatosRelacionados().get(i + 1),
 							artefatoPersistence, null, null);
 				}
@@ -277,6 +279,9 @@ public class Conversor {
 				relacionamento.setArtefato(artefatoRelacionado);
 				relacionamento.setArtefatoAnterior(artefatoAnterior);
 				relacionamento.setArtefatoPosterior(artefatoPosterior);
+
+				relacionamento.setTransientListaAtributos(
+						converterAtributoRelacionamento(entry.getAtributos(), Tabelas.TBL_RELACIONAMENTO_ARTEFATO));
 
 				artefatoPersistence.adicionarRelacionamentoTransient(relacionamento);
 			}
@@ -313,21 +318,47 @@ public class Conversor {
 		return artefatoPersistence;
 	}
 
-	private static List<AtributoPersistence> converterAtributo(List<Atributo> lista, Tabelas tabela) {
-		List<AtributoPersistence> output = new ArrayList<>();
+	private static List<AtributoArtefatoPersistence> converterAtributoArtefato(List<Atributo> lista, Tabelas tabela) {
+		List<AtributoArtefatoPersistence> output = new ArrayList<>();
 
 		for (Atributo entry : lista) {
-			AtributoPersistence atributoPersistence = new AtributoPersistence();
 
-			atributoPersistence.setCoAtributo(entry.getTipoAtributo().get());
-			atributoPersistence.setDeValor(entry.getValor());
-			atributoPersistence.setIcEditavel(false);
-			atributoPersistence.setIcOpcional(false);
-			atributoPersistence.setCoTabela(tabela.get());
-			// atributoPersistence.setCoExterno(coExterno);
+			if ("ARTEFATO".equals(entry.getTipo()) && Tabelas.TBL_ARTEFATO.equals(tabela)) {
 
-			output.add(atributoPersistence);
+				AtributoArtefatoPersistence atributoPersistence = new AtributoArtefatoPersistence();
 
+				atributoPersistence.setCoAtributo(entry.getTipoAtributo().get());
+				atributoPersistence.setDeValor(entry.getValor());
+				atributoPersistence.setIcEditavel(false);
+				atributoPersistence.setIcOpcional(false);
+				// atributoPersistence.setCoTabela(tabela.get());
+				// atributoPersistence.setCoExterno(coExterno);
+
+				output.add(atributoPersistence);
+			}
+		}
+		return output;
+	}
+
+	private static List<AtributoRelacionamentoPersistence> converterAtributoRelacionamento(List<Atributo> lista,
+			Tabelas tabela) {
+		List<AtributoRelacionamentoPersistence> output = new ArrayList<>();
+
+		for (Atributo entry : lista) {
+
+			if ("RELACIONAMENTO".equals(entry.getTipo()) && Tabelas.TBL_RELACIONAMENTO_ARTEFATO.equals(tabela)) {
+
+				AtributoRelacionamentoPersistence atributoPersistence = new AtributoRelacionamentoPersistence();
+
+				atributoPersistence.setCoAtributo(entry.getTipoAtributo().get());
+				atributoPersistence.setDeValor(entry.getValor());
+				atributoPersistence.setIcEditavel(false);
+				atributoPersistence.setIcOpcional(false);
+				// atributoPersistence.setCoTabela(tabela.get());
+				// atributoPersistence.setCoExterno(coExterno);
+
+				output.add(atributoPersistence);
+			}
 		}
 		return output;
 	}

@@ -17,7 +17,7 @@ public interface TipoArtefatoResourceI {
 	public Response getLista();
 
 	@GET
-	@Path("{coArtefato}")
+	@Path("{coTipoArtefato}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTipoArtefato(@PathParam("coTipoArtefato") String coTipoArtefato);

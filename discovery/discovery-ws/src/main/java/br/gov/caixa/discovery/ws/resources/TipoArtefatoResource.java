@@ -3,6 +3,7 @@ package br.gov.caixa.discovery.ws.resources;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.Singleton;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -12,6 +13,7 @@ import br.gov.caixa.discovery.ejb.modelos.TipoArtefatoPersistence;
 import br.gov.caixa.discovery.ws.modelos.TipoArtefatoDomain;
 import br.gov.caixa.discovery.ws.utils.Conversores;
 
+@Singleton
 public class TipoArtefatoResource implements TipoArtefatoResourceI {
 
 	@EJB

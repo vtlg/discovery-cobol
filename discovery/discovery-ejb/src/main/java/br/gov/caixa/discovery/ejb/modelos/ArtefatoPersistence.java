@@ -3,6 +3,7 @@ package br.gov.caixa.discovery.ejb.modelos;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -96,11 +97,14 @@ public class ArtefatoPersistence {
 	@OneToMany(mappedBy = "artefatoPrimeiro", fetch = FetchType.LAZY)
 	private List<RelacionamentoPersistence> listaArtefatoUltimo;
 
+	@OneToMany(mappedBy = "coExterno", fetch = FetchType.LAZY)
+	private Set<AtributoArtefatoPersistence> listaAtributos;
+
 	@Transient
 	private boolean transientAtualizarRelacionamentos = true;
 
 	@Transient
-	private List<AtributoPersistence> transientListaAtributos = new ArrayList<>();
+	private List<AtributoArtefatoPersistence> transientListaAtributos = new ArrayList<>();
 
 	@Transient
 	private List<RelacionamentoPersistence> transientListaRelacionamentos = new ArrayList<>();
@@ -127,7 +131,7 @@ public class ArtefatoPersistence {
 		this.transientListaRelacionamentos.add(entry);
 	}
 
-	public void adicionarAtributoTransient(AtributoPersistence entry) {
+	public void adicionarAtributoTransient(AtributoArtefatoPersistence entry) {
 		if (this.transientListaAtributos == null) {
 			this.transientListaAtributos = new ArrayList<>();
 		}
@@ -295,11 +299,11 @@ public class ArtefatoPersistence {
 		this.listaArtefatoUltimo = listaArtefatoUltimo;
 	}
 
-	public List<AtributoPersistence> getTransientListaAtributos() {
+	public List<AtributoArtefatoPersistence> getTransientListaAtributos() {
 		return transientListaAtributos;
 	}
 
-	public void setTransientListaAtributos(List<AtributoPersistence> transientListaAtributos) {
+	public void setTransientListaAtributos(List<AtributoArtefatoPersistence> transientListaAtributos) {
 		this.transientListaAtributos = transientListaAtributos;
 	}
 
@@ -325,6 +329,14 @@ public class ArtefatoPersistence {
 
 	public void setDeDescricaoArtefato(String deDescricaoArtefato) {
 		this.deDescricaoArtefato = deDescricaoArtefato;
+	}
+
+	public Set<AtributoArtefatoPersistence> getListaAtributos() {
+		return listaAtributos;
+	}
+
+	public void setListaAtributos(Set<AtributoArtefatoPersistence> listaAtributos) {
+		this.listaAtributos = listaAtributos;
 	}
 
 	public boolean isTransientAtualizarRelacionamentos() {
@@ -369,7 +381,7 @@ public class ArtefatoPersistence {
 			List<RelacionamentoPersistence> listaArtefatoAnterior,
 			List<RelacionamentoPersistence> listaArtefatoPosterior,
 			List<RelacionamentoPersistence> listaArtefatoPrimeiro, List<RelacionamentoPersistence> listaArtefatoUltimo,
-			boolean transientAtualizarRelacionamentos, List<AtributoPersistence> transientListaAtributos,
+			boolean transientAtualizarRelacionamentos, List<AtributoArtefatoPersistence> transientListaAtributos,
 			List<RelacionamentoPersistence> transientListaRelacionamentos) {
 		super();
 		this.coArtefato = coArtefato;
@@ -409,10 +421,6 @@ public class ArtefatoPersistence {
 		this.noNomeArtefato = noNomeArtefato;
 		this.noNomeExibicao = noNomeExibicao;
 	}
-	
-	
-	
-	
 
 	// ****
 
