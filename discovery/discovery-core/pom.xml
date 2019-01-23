@@ -11,6 +11,14 @@
 
 
 	<dependencies>
+
+		<dependency>
+			<groupId>br.gov.caixa.discovery</groupId>
+			<artifactId>discovery-ejb</artifactId>
+			<type>ejb</type>
+		</dependency>
+
+
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>

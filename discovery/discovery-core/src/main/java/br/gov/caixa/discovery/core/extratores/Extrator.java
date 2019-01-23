@@ -16,7 +16,6 @@ import br.gov.caixa.discovery.core.modelos.Artefato;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.utils.ArtefatoHandler;
 import br.gov.caixa.discovery.core.utils.Configuracao;
-import br.gov.caixa.discovery.core.utils.UtilsHandler;
 
 public class Extrator {
 
@@ -81,6 +80,8 @@ public class Extrator {
 				listaArtefato.add(artefato);
 			}
 			if (TipoArtefato.JCL.equals(tipoArtefato)) { // ExtratorJcl
+				ExtratorJcl extrator = new ExtratorJcl(artefato, deslocamento);
+				artefato = extrator.executa();
 				listaArtefato.add(artefato);
 			}
 		}

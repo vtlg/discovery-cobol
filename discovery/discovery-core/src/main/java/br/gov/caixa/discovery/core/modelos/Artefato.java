@@ -6,6 +6,7 @@ import java.util.List;
 import br.gov.caixa.discovery.core.tipos.TipoAmbiente;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.tipos.TipoAtributo;
+import br.gov.caixa.discovery.core.utils.UtilsHandler;
 
 public class Artefato {
 	private String nome;
@@ -27,7 +28,7 @@ public class Artefato {
 	private byte[] arquivo;
 	private String caminhoArquivo;
 	private String nomeArquivo;
-	private Long posicao;
+	private int posicao;
 	private List<Artefato> artefatosRelacionados = new ArrayList<>();
 	private List<Atributo> atributos = new ArrayList<>();
 	private boolean excluir = false;
@@ -253,6 +254,55 @@ public class Artefato {
 	}
 
 	public String getHash() {
+
+		if (TipoArtefato.DSN.equals(this.getTipoArtefato())) {
+			this.hash = UtilsHandler.calcularHash(this.getNome(), UtilsHandler.SHA256, "UTF-8");
+			if (this.hash.length() < 64) {
+				this.hash = "0" + hash;
+			}
+
+		} else if (TipoArtefato.DECLARACAO_SQL.equals(this.getTipoArtefato())) {
+			this.representacaoTextual.append(this.getNome());
+			for (Atributo entry : this.getAtributos()) {
+				this.representacaoTextual.append(entry.getValor());
+			}
+
+			this.hash = UtilsHandler.calcularHash(this.representacaoTextual.toString(), UtilsHandler.SHA256, "UTF-8");
+			if (this.hash.length() < 64) {
+				this.hash = "0" + hash;
+			}
+		}
+
+		else if (TipoArtefato.UTILITARIO.equals(this.getTipoArtefato())) {
+			this.representacaoTextual.append(this.getNome());
+
+			for (Atributo entry : this.getAtributos()) {
+				this.representacaoTextual.append(entry.getValor());
+			}
+
+			this.hash = UtilsHandler.calcularHash(this.representacaoTextual.toString(), UtilsHandler.SHA256, "UTF-8");
+			if (this.hash.length() < 64) {
+				this.hash = "0" + hash;
+			}
+
+		} else if (this.representacaoTextual.toString() != null && !this.representacaoTextual.toString().isEmpty()) {
+
+			this.representacaoTextual.append(this.nome);
+			this.representacaoTextual.append(this.descricao);
+			this.representacaoTextual.append(this.identificador);
+			this.representacaoTextual.append(this.sistema);
+			this.representacaoTextual.append(this.observacao);
+			this.representacaoTextual.append(this.nomeInterno);
+			this.representacaoTextual.append(this.nomeArquivo);
+
+			this.hash = UtilsHandler.calcularHash(this.representacaoTextual.toString(), UtilsHandler.SHA256, "UTF-8");
+			if (this.hash.length() < 64) {
+				this.hash = "0" + hash;
+			}
+		} else {
+			this.hash = "";
+		}
+
 		return hash;
 	}
 
@@ -300,11 +350,11 @@ public class Artefato {
 		this.nomeArquivo = nomeArquivo;
 	}
 
-	public Long getPosicao() {
+	public int getPosicao() {
 		return posicao;
 	}
 
-	public void setPosicao(Long posicao) {
+	public void setPosicao(int posicao) {
 		this.posicao = posicao;
 	}
 

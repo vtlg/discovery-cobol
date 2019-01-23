@@ -20,7 +20,7 @@ import br.gov.caixa.discovery.core.utils.Configuracao;
 public class TEST_Copybook {
 
 	private static Extrator converter = null;
-	private static String pasta = "D:\\ti\\git\\discovery\\discovery\\discovery-core\\src\\test\\resources\\copybooks\\";
+	private static String pasta = "D:\\ti\\git\\discovery\\discovery\\discovery-core\\src\\test\\resources\\";
 	private static String arquivo = pasta + "copybook_generico.cbl";
 	private static Artefato artefato = null;
 	private static String[] argumentos = { " --ambiente PRD --sistema SIPCS " };
@@ -48,6 +48,16 @@ public class TEST_Copybook {
 	@Test
 	public void test_nome() {
 		assertTrue("COPYBOOK_GENERICO".equals(artefato.getNome()));
+	}
+
+	@Test
+	public void test_tabelas() {
+
+	}
+
+	@Test
+	public void test_copybooks() {
+
 	}
 
 	@Test

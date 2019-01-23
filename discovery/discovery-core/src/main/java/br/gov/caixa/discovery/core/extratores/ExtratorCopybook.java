@@ -23,7 +23,7 @@ public class ExtratorCopybook {
 
 	private Artefato artefato = null;
 	private int deslocamento = 0;
-	private Long posicao = 0L;
+	private int posicao = 0;
 	private TipoAmbiente ambiente = null;
 	private String sistema = null;
 
@@ -76,7 +76,7 @@ public class ExtratorCopybook {
 			this.artefato = processarCodigoCompleto(this.artefato);
 			this.artefato = relacionarVariavel(this.artefato, this.deslocamento, this.sistema, this.ambiente);
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Erro ao tentar converter arquivo " + artefato.getCaminhoArquivo(), e);
+			LOGGER.log(Level.SEVERE, "Erro ao tentar converter " + this.artefato.getCaminhoArquivo(), e);
 		}
 
 		return artefato;
@@ -231,21 +231,30 @@ public class ExtratorCopybook {
 	 * variavel hierarquia da lista variavels Hierarquia
 	 */
 
-	private void hierarquia(List<Artefato> listaEntrada) {
+	private void hierarquia(List<Artefato> listaEntrada) throws Exception {
 		// List<Artefato> listaSaida = new ArrayList<>();
 
 		for (int i = 0; i <= listaEntrada.size() - 1; i++) {
+			
 			Artefato artefatoI = listaEntrada.get(i);
+			
 			Atributo atributoI = artefatoI.buscaAtributo(TipoAtributo.COBOL_HIERARQUIA_VARIAVEL);
 			int hierarquiaI = Integer.parseInt(atributoI.getValor());
-
-			for (int k = i; k <= listaEntrada.size() - 1; k++) {
+			int guardarHierarquia = hierarquiaI;
+			boolean temSubvariavel = false;
+			for (int k = i + 1; k <= listaEntrada.size() - 1; k++) {
 				Artefato artefatoK = listaEntrada.get(k);
 				Atributo atributoK = artefatoK.buscaAtributo(TipoAtributo.COBOL_HIERARQUIA_VARIAVEL);
 				int hierarquiaK = Integer.parseInt(atributoK.getValor());
 
-				if (hierarquiaK > hierarquiaI) {
+				if (hierarquiaK > hierarquiaI && !temSubvariavel) {
+					temSubvariavel = true;
+					guardarHierarquia = hierarquiaK;
 					artefatoI.adicionarArtefatosRelacionados(artefatoK);
+				} else if (guardarHierarquia == hierarquiaK && temSubvariavel) {
+					artefatoI.adicionarArtefatosRelacionados(artefatoK);
+				} else if (!temSubvariavel || hierarquiaK <= hierarquiaI) {
+					break;
 				}
 			}
 		}

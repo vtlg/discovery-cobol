@@ -20,7 +20,7 @@ import br.gov.caixa.discovery.core.utils.Configuracao;
 public class TEST_ProgramaCobol {
 
 	private static Extrator converter = null;
-	private static String pasta = "D:\\ti\\git\\discovery\\discovery\\discovery-core\\src\\test\\resources\\programas_cobol\\";
+	private static String pasta = "D:\\ti\\git\\discovery\\discovery\\discovery-core\\src\\test\\resources\\";
 	private static String arquivo = pasta + "programa_cobol_generico.cbl";
 	private static Artefato artefato = null;
 	private static String[] argumentos = { " --ambiente PRD --sistema SIPCS " };
@@ -131,66 +131,98 @@ public class TEST_ProgramaCobol {
 		List<Artefato> listaArtefato = new ArrayList<>();
 
 		// ***
-		Artefato artefato10 = new Artefato("DECLARACAO-SQL-1", null, null, TipoArtefato.DECLARACAO_SQL,
+		Artefato artefato01 = new Artefato("DECLARACAO-SQL-1", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
-		Atributo atributo10_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA, "EXEC SQL INCLUDE SQLCA END-EXEC.", null,
+		Atributo atributo01_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA, "EXEC SQL INCLUDE SQLCA END-EXEC.", null,
 				null);
+		artefato01.adicionarAtributo(atributo01_0);
+		// ***
+		Artefato artefato02 = new Artefato("DECLARACAO-SQL-2", null, null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo02_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA, "EXEC SQL INCLUDE PCSTBH02 END-EXEC.",
+				null, null);
+		artefato02.adicionarAtributo(atributo02_0);
+		// ***
+		Artefato artefato03 = new Artefato("DECLARACAO-SQL-3", null, null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo03_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA, "EXEC SQL INCLUDE MPDT083 END-EXEC.",
+				null, null);
+		artefato03.adicionarAtributo(atributo03_0);
+		// ***
+		Artefato artefato04 = new Artefato("DECLARACAO-SQL-4", null, null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo04_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+				"EXEC SQL UPDATE MPDT083 SET NUMSEC = :DCLMPDT083.NUMSEC, INDICA = :DCLMPDT083.INDICA, PROGRAMA = :DCLMPDT083.PROGRAMA, CADENA = :DCLMPDT083.CADENA, DATOS = :DCLMPDT083.DATOS WHERE (NUMSEC = :DCLMPDT083.NUMSEC) AND (INDICA = :DCLMPDT083.INDICA) AND (PROGRAMA = :DCLMPDT083.PROGRAMA) AND (CADENA = :DCLMPDT083.CADENA) END-EXEC.",
+				null, null);
+		artefato04.adicionarAtributo(atributo04_0);
+		// ***
+		Artefato artefato05 = new Artefato("DECLARACAO-SQL-5", null, null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo05_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+				"EXEC SQL SELECT CO_ENTIDADE , CO_EMPSA_PARCEIRA , CO_PRDTO_EMPRESA , NO_PRDTO_PARCEIRA , IC_SITUACAO , CO_CODENTUMO , CO_CODOFIUMO , CO_USUARIOUMO , CO_CODTERMUMO , TS_CONTCUR INTO :PCSTBH02.CO-ENTIDADE , :PCSTBH02.CO-EMPSA-PARCEIRA , :PCSTBH02.CO-PRDTO-EMPRESA , :PCSTBH02.NO-PRDTO-PARCEIRA , :PCSTBH02.IC-SITUACAO , :PCSTBH02.CO-CODENTUMO , :PCSTBH02.CO-CODOFIUMO , :PCSTBH02.CO-USUARIOUMO , :PCSTBH02.CO-CODTERMUMO , :PCSTBH02.TS-CONTCUR FROM PCSTBH02_PRDO_PRCA WHERE CO_ENTIDADE = :CT-0104 AND CO_EMPSA_PARCEIRA = :WS-PARCEI-PAG AND CO_PRDTO_EMPRESA = :WS-PRODU-PAG END-EXEC.",
+				null, null);
+		artefato05.adicionarAtributo(atributo05_0);
+		// ***
+		Artefato artefato06 = new Artefato("DECLARACAO-SQL-6", null, null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo06_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+				"EXEC SQL SELECT CURRENT TIMESTAMP INTO :WS-FECHA-CURR FROM SYSIBM.SYSDUMMY1 END-EXEC.", null, null);
+		artefato06.adicionarAtributo(atributo06_0);
+		// ***
+		Artefato artefato07 = new Artefato("DECLARACAO-SQL-7", null, null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo07_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+				"EXEC SQL SELECT T743.CODPORIEMI INTO :DCLMPDT743.CODPORIEMI FROM PCS.MPDT743 T743 INNER JOIN PCS.MPDT007 T007 ON T743.CODENT = T007.CODENT AND T743.PRODUCTO = T007.PRODUCTO AND T743.SUBPRODU = T007.SUBPRODU AND T743.CODCOSIF = 3 INNER JOIN PCS.MPDT013 T013 ON T007.CODENT = T013.CODENT AND T007.CENTALTA = T013.CENTALTA AND T007.CUENTA = T013.CUENTA INNER JOIN PCS.MPDT414 T414 ON T013.CODENT = T414.CODENT AND T013.IDENTCLI = T414.IDENTCLI WHERE T007.CODENT = :WS-CODENT-GDA AND T007.CENTALTA = :WS-CENTALTA-GDA AND T007.CUENTA = :WS-CUENTA-GDA AND T013.CALPART = 'TI' WITH UR END-EXEC.",
+				null, null);
+		artefato07.adicionarAtributo(atributo07_0);
+		// ***
+		Artefato artefato08 = new Artefato("DECLARACAO-SQL-8", null, null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo08_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+				"EXEC SQL SELECT MAX(A.FECFAC) INTO :DCLMPDT251.FECFAC FROM PCS.MPDT251 A JOIN PCS.MPDT044 B ON A.TIPOFAC = B.TIPOFAC AND A.INDNORCOR = B.INDNORCOR WHERE A.CODENT = :DCLMPDT251.CODENT AND A.CENTALTA = :DCLMPDT251.CENTALTA AND A.CUENTA = :DCLMPDT251.CUENTA AND A.CLAMON = :DCLMPDT251.CLAMON AND B.TIPOFACSIST = 67 AND B.SIGNO = '-' AND B.INDFACINF = 'N' WITH UR END-EXEC.",
+				null, null);
+		artefato08.adicionarAtributo(atributo08_0);
+		// ***
+		Artefato artefato09 = new Artefato("DECLARACAO-SQL-9", null, null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo09_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+				"EXEC SQL SELECT T9.PAN, T178.CODBLQ, T178.TEXBLQ INTO :DCLMPDT009.PAN, :DCLMPDT178.CODBLQ :WS-CODBLQ-NULO , :DCLMPDT178.TEXBLQ :WS-TEXBLQ-NULO FROM MPDT009 T9 LEFT OUTER JOIN MPDT178 T178 ON T9.CODENT = T178.CODENT AND T9.CENTALTA = T178.CENTALTA AND T9.CUENTA = T178.CUENTA WHERE T9.CODENT = :DCLMPDT009.CODENT AND T9.CENTALTA = :DCLMPDT009.CENTALTA AND T9.CUENTA = :DCLMPDT009.CUENTA AND T9.INDULTTAR = 'S' AND T9.NUMBENCTA = 1 END-EXEC.",
+				null, null);
+		artefato09.adicionarAtributo(atributo09_0);
+		// ***
+		Artefato artefato10 = new Artefato("DECLARACAO-SQL-10", null, null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo10_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+				"EXEC SQL DECLARE CUR_402_013 CURSOR FOR SELECT B.CODENT, B.CENTALTA, B.CUENTA, B.NUMBENCTA, B.CALPART, B.FECBAJA FROM MPDT402 A JOIN MPDT013 B ON A.CODENT = B.CODENT AND A.IDENTCLI = B.IDENTCLI AND A.CENTALTA = B.CENTALTA AND A.CUENTA = B.CUENTA WHERE A.CODENT = :DCLMPDT402.CODENT AND A.IDENTCLI = :DCLMPDT402.IDENTCLI AND A.TIPCONT = :DCLMPDT402.TIPCONT AND B.FECBAJA = :CT-FECINI ORDER BY B.CODENT,B.CENTALTA,B.CUENTA,B.NUMBENCTA FETCH FIRST 16 ROWS ONLY OPTIMIZE FOR 1 ROW END-EXEC.",
+				null, null);
 		artefato10.adicionarAtributo(atributo10_0);
 		// ***
-		Artefato artefato11 = new Artefato("DECLARACAO-SQL-2", null, null, TipoArtefato.DECLARACAO_SQL,
+		Artefato artefato11 = new Artefato("DECLARACAO-SQL-11", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
-		Atributo atributo11_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA, "EXEC SQL INCLUDE PCSTBH02 END-EXEC.",
+		Atributo atributo11_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+				"EXEC SQL DELETE FROM PCSTBH02_PRDO_PRCA WHERE CO_ENTIDADE = :CT-0104 AND CO_EMPSA_PARCEIRA = :WS-PARCEI-PAG AND CO_PRDTO_EMPRESA = :WS-PRODU-PAG END-EXEC.",
 				null, null);
 		artefato11.adicionarAtributo(atributo11_0);
 		// ***
-		Artefato artefato12 = new Artefato("DECLARACAO-SQL-3", null, null, TipoArtefato.DECLARACAO_SQL,
+		Artefato artefato12 = new Artefato("DECLARACAO-SQL-12", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
-		Atributo atributo12_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA, "EXEC SQL INCLUDE MPDT083 END-EXEC.",
-				null, null);
-		artefato12.adicionarAtributo(atributo12_0);
-		// ***
-		Artefato artefato13 = new Artefato("DECLARACAO-SQL-4", null, null, TipoArtefato.DECLARACAO_SQL,
-				TipoAmbiente.PRD, "SIPCS", null, null);
-		Atributo atributo13_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
-				"EXEC SQL UPDATE MPDT083 SET NUMSEC = :DCLMPDT083.NUMSEC, INDICA = :DCLMPDT083.INDICA, PROGRAMA = :DCLMPDT083.PROGRAMA, CADENA = :DCLMPDT083.CADENA, DATOS = :DCLMPDT083.DATOS WHERE (NUMSEC = :DCLMPDT083.NUMSEC) AND (INDICA = :DCLMPDT083.INDICA) AND (PROGRAMA = :DCLMPDT083.PROGRAMA) AND (CADENA = :DCLMPDT083.CADENA) END-EXEC.",
-				null, null);
-		artefato13.adicionarAtributo(atributo13_0);
-		// ***
-		Artefato artefato14 = new Artefato("DECLARACAO-SQL-5", null, null, TipoArtefato.DECLARACAO_SQL,
-				TipoAmbiente.PRD, "SIPCS", null, null);
-		Atributo atributo14_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
-				"EXEC SQL SELECT CO_ENTIDADE , CO_EMPSA_PARCEIRA , CO_PRDTO_EMPRESA , NO_PRDTO_PARCEIRA , IC_SITUACAO , CO_CODENTUMO , CO_CODOFIUMO , CO_USUARIOUMO , CO_CODTERMUMO , TS_CONTCUR INTO :PCSTBH02.CO-ENTIDADE , :PCSTBH02.CO-EMPSA-PARCEIRA , :PCSTBH02.CO-PRDTO-EMPRESA , :PCSTBH02.NO-PRDTO-PARCEIRA , :PCSTBH02.IC-SITUACAO , :PCSTBH02.CO-CODENTUMO , :PCSTBH02.CO-CODOFIUMO , :PCSTBH02.CO-USUARIOUMO , :PCSTBH02.CO-CODTERMUMO , :PCSTBH02.TS-CONTCUR FROM PCSTBH02_PRDO_PRCA WHERE CO_ENTIDADE = :CT-0104 AND CO_EMPSA_PARCEIRA = :WS-PARCEI-PAG AND CO_PRDTO_EMPRESA = :WS-PRODU-PAG END-EXEC.",
-				null, null);
-		artefato14.adicionarAtributo(atributo14_0);
-		// ***
-		Artefato artefato15 = new Artefato("DECLARACAO-SQL-6", null, null, TipoArtefato.DECLARACAO_SQL,
-				TipoAmbiente.PRD, "SIPCS", null, null);
-		Atributo atributo15_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
-				"EXEC SQL SELECT CURRENT TIMESTAMP INTO :WS-FECHA-CURR FROM SYSIBM.SYSDUMMY1 END-EXEC.", null, null);
-		artefato15.adicionarAtributo(atributo15_0);
-		// ***
-		Artefato artefato16 = new Artefato("DECLARACAO-SQL-7", null, null, TipoArtefato.DECLARACAO_SQL,
-				TipoAmbiente.PRD, "SIPCS", null, null);
-		Atributo atributo16_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
-				"EXEC SQL DELETE FROM PCSTBH02_PRDO_PRCA WHERE CO_ENTIDADE = :CT-0104 AND CO_EMPSA_PARCEIRA = :WS-PARCEI-PAG AND CO_PRDTO_EMPRESA = :WS-PRODU-PAG END-EXEC.",
-				null, null);
-		artefato16.adicionarAtributo(atributo16_0);
-		// ***
-		Artefato artefato17 = new Artefato("DECLARACAO-SQL-8", null, null, TipoArtefato.DECLARACAO_SQL,
-				TipoAmbiente.PRD, "SIPCS", null, null);
-		Atributo atributo17_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+		Atributo atributo12_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"EXEC SQL INSERT INTO MPDT083 (NUMSEC, INDICA, PROGRAMA, CADENA, DATOS) VALUES (:TB-083NUMSEC, :TB-083INDICA, :TB-083PROGRAMA, :TB-083CADENA, :TB-083DATOS) FOR :IND-TB083 ROWS END-EXEC.",
 				null, null);
-		artefato17.adicionarAtributo(atributo17_0);
+		artefato12.adicionarAtributo(atributo12_0);
 
+		listaArtefato.add(artefato01);
+		listaArtefato.add(artefato02);
+		listaArtefato.add(artefato03);
+		listaArtefato.add(artefato04);
+		listaArtefato.add(artefato05);
+		listaArtefato.add(artefato06);
+		listaArtefato.add(artefato07);
+		listaArtefato.add(artefato08);
+		listaArtefato.add(artefato09);
 		listaArtefato.add(artefato10);
 		listaArtefato.add(artefato11);
 		listaArtefato.add(artefato12);
-		listaArtefato.add(artefato13);
-		listaArtefato.add(artefato14);
-		listaArtefato.add(artefato15);
-		listaArtefato.add(artefato16);
-		listaArtefato.add(artefato17);
 
 		// ***
 
@@ -224,9 +256,45 @@ public class TEST_ProgramaCobol {
 		Artefato artefato03 = new Artefato("SYSDUMMY1", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD,
 				"DESCONHECIDO", null, null);
 		// ***
+		Artefato artefato04 = new Artefato("MPDT251", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD, "DESCONHECIDO",
+				null, null);
+		// ***
+		Artefato artefato05 = new Artefato("MPDT044", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD, "DESCONHECIDO",
+				null, null);
+		// ***
+		Artefato artefato06 = new Artefato("MPDT743", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD, "DESCONHECIDO",
+				null, null);
+		// ***
+		Artefato artefato07 = new Artefato("MPDT013", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD, "DESCONHECIDO",
+				null, null);
+		// ***
+		Artefato artefato08 = new Artefato("MPDT414", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD, "DESCONHECIDO",
+				null, null);
+		// ***
+		Artefato artefato09 = new Artefato("MPDT009", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD, "DESCONHECIDO",
+				null, null);
+		// ***
+		Artefato artefato10 = new Artefato("MPDT178", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD, "DESCONHECIDO",
+				null, null);
+		// ***
+		Artefato artefato11 = new Artefato("MPDT402", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD, "DESCONHECIDO",
+				null, null);
+		// ***
+		Artefato artefato12 = new Artefato("MPDT013", null, null, TipoArtefato.TABELA, TipoAmbiente.PRD, "DESCONHECIDO",
+				null, null);
+		// ***
 		listaArtefato.add(artefato01);
 		listaArtefato.add(artefato02);
 		listaArtefato.add(artefato03);
+		listaArtefato.add(artefato04);
+		listaArtefato.add(artefato05);
+		listaArtefato.add(artefato06);
+		listaArtefato.add(artefato07);
+		listaArtefato.add(artefato08);
+		listaArtefato.add(artefato09);
+		listaArtefato.add(artefato10);
+		listaArtefato.add(artefato11);
+		listaArtefato.add(artefato12);
 
 		// ***
 

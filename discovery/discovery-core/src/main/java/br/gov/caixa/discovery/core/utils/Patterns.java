@@ -5,19 +5,20 @@ import java.util.regex.Pattern;
 
 public class Patterns {
 
-
-	
-	
+	public static Pattern COBOL_P_JOIN = Pattern.compile("[\\s]{1,}JOIN[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}");
 
 	public static void main(String[] args) {
-		Matcher m = COBOL_P_HANDLE_1.matcher("EXEC CICS HANDLE CONDITION ENDDATA (9999-ERROR-CICS) ERROR (9999-ERROR-CICS) END-EXEC.");
+		Matcher m = COBOL_P_JOIN.matcher(
+				"EXEC SQL SELECT MAX(A.FECFAC) INTO :DCLMPDT251.FECFAC FROM PCS.MPDT251 A JOIN PCS.MPDT044 B ON A.TIPOFAC = B.TIPOFAC AND A.INDNORCOR = B.INDNORCOR WHERE A.CODENT = :DCLMPDT251.CODENT AND A.CENTALTA = :DCLMPDT251.CENTALTA AND A.CUENTA = :DCLMPDT251.CUENTA AND A.CLAMON = :DCLMPDT251.CLAMON AND B.TIPOFACSIST = 67 AND B.SIGNO = '-' AND B.INDFACINF = 'N' WITH UR END-EXEC.");
 		if (m.matches()) {
-			//System.out.println(m.group("parametro"));
+			System.out.println(m.group("tabela"));
 			System.out.println("Aqui");
 		} else {
 			System.out.println("Não");
 		}
 	}
+	
+	public static final Pattern JCL_P_JOBNAME = Pattern.compile("^.*[/]{2,2}(?<jobName>[\\S]{1,})[\\s]{1,}JOB.*$");
 
 	public static final Pattern JCL_P_DSN_DELETE = Pattern
 			.compile("^.*DELETE[\\s]{1,}(?<dsn>[\\S&&[^,]]{1,})[,|\\s]{0,}.*$");
@@ -200,8 +201,6 @@ public class Patterns {
 	public static Pattern COBOL_P_FROM_RIGHT_1 = Pattern.compile(".*[\\s]{1,}FROM[\\s]{1,}(?<tabela>.*) RIGHT.*");
 
 	public static Pattern COBOL_P_FROM_1 = Pattern.compile(".*[\\s]{1,}FROM[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}.*");
-	public static Pattern COBOL_P_JOIN = Pattern
-			.compile("[\\s]{1,}INNER[\\s]{1,}JOIN[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}");
 
 	public static Pattern COBOL_P_EXEC_SQL_1 = Pattern.compile("^[\\s]{1,}EXEC[\\s]{1,}SQL[\\s]{0,}$");
 	public static Pattern COBOL_P_EXEC_SQL_2 = Pattern.compile("^[\\s]{1,}EXEC[\\s]{1,}SQL[\\s]{1,}.*$");
@@ -245,7 +244,7 @@ public class Patterns {
 	public static Pattern COBOL_P_USERID_1 = Pattern.compile("^.*USERID[\\s]{0,}\\((?<parametro>.*?)[\\s]{0,}\\).*$");
 	public static Pattern COBOL_P_PROGRAM_1 = Pattern.compile("^.*PROGRAM[\\s]{0,}\\((?<parametro>.*?)[\\s]{0,}\\).*$");
 	public static Pattern COBOL_P_HANDLE_1 = Pattern.compile("^.*HANDLE[\\s]{1,}(?<parametro>.*?)[\\s]{1,}.*$");
-	
+
 	public static Pattern COBOL_P_COMMAREA_1 = Pattern
 			.compile("^.*COMMAREA[\\s]{0,}\\((?<parametro>.*?)[\\s]{0,}\\).*$");
 
@@ -415,7 +414,7 @@ public class Patterns {
 
 	public static final Pattern COPYBOOK_P_VAR_ANALITICA_11 = Pattern.compile(
 			"^.{0,}[\\s]{1,}(?<hierarquia>[\\d]{2,2})[\\s]{1,}(?<nomeVariavel>[\\S]{1,})[\\s]{1,}EXTERNAL PIC[\\s]{1,}(?<tipo>[\\S]{1,})[\\s]{1,}BINARY[\\s]{0,}[\\.]{1}.*$");
-	
+
 	/*
 	 * P_VAR_ANALITICA_12 | 09 EL-COMANDO OCCURS 8, INDEXED BY IND-COMANDO. |
 	 */
@@ -430,6 +429,5 @@ public class Patterns {
 	// Pattern P_VAR_LINHA_MEIO = Pattern.compile("^.{0,}[^\\.]{1,}[\\s]{0,}$");
 	public static final Pattern COPYBOOK_P_VAR_LINHA_MEIO = Pattern.compile("^[.&&[^\\.]]{1,}[\\s]{0,}$");
 	public static final Pattern COPYBOOK_P_VAR_LINHA_FIM = Pattern.compile("^.{0,}[\\.]{1,}[\\s]{0,}$");
-	
-	
+
 }

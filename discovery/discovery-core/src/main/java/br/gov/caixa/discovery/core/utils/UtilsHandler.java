@@ -1,12 +1,20 @@
 package br.gov.caixa.discovery.core.utils;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -177,6 +185,37 @@ public class UtilsHandler {
 		}
 
 		return null;
+	}
+
+	public static List<Path> recuperarListaArquivo(String pasta, boolean verificarSubpastas) {
+		List<Path> listaPasta = null;
+		List<Path> listaOutput = new ArrayList<>();
+
+		try {
+			listaPasta = Files.list(Paths.get(pasta)).collect(Collectors.toList());
+
+			listaPasta.stream().forEach((path) -> {
+				if (Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) && Files.isReadable(path)) {
+					if (!path.getFileName().toString().endsWith(".jasper")
+							&& !path.getFileName().toString().endsWith(".png")
+							&& !path.getFileName().toString().endsWith(".class")
+							&& !path.getFileName().toString().endsWith(".jrxml")
+							&& !path.getFileName().toString().endsWith(".xls")
+							&& !path.getFileName().toString().endsWith(".docx")) {
+						listaOutput.add(path);
+					}
+				} else if (verificarSubpastas && !Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS)
+						&& Files.isReadable(path)) {
+					List<Path> listaTemp = recuperarListaArquivo(path.toString(), true);
+					if (listaTemp != null) {
+						listaOutput.addAll(listaTemp);
+					}
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return listaOutput;
 	}
 
 }

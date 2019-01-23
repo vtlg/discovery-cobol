@@ -143,6 +143,92 @@ LADLA  COPY PCSDSD49 REPLACING  ==:PCSDSD49:== BY ==LOG==.
              FROM SYSIBM.SYSDUMMY1                                      
            END-EXEC.            
 
+            EXEC SQL                                                     
+                SELECT  T743.CODPORIEMI                                 
+                INTO :DCLMPDT743.CODPORIEMI                             
+                FROM PCS.MPDT743 T743                                   
+                   INNER JOIN PCS.MPDT007 T007 ON                       
+                           T743.CODENT    = T007.CODENT                 
+                   AND     T743.PRODUCTO  = T007.PRODUCTO               
+                   AND     T743.SUBPRODU  = T007.SUBPRODU               
+                   AND     T743.CODCOSIF  = 3                           
+                   INNER JOIN PCS.MPDT013 T013 ON                       
+                                 T007.CODENT    = T013.CODENT           
+                           AND   T007.CENTALTA  = T013.CENTALTA         
+                           AND   T007.CUENTA    = T013.CUENTA           
+                   INNER JOIN PCS.MPDT414 T414 ON                       
+                               T013.CODENT    = T414.CODENT             
+                       AND     T013.IDENTCLI  = T414.IDENTCLI           
+                WHERE   T007.CODENT    = :WS-CODENT-GDA                 
+                   AND  T007.CENTALTA  = :WS-CENTALTA-GDA               
+                   AND  T007.CUENTA    = :WS-CUENTA-GDA                 
+                   AND  T013.CALPART   = 'TI'                           
+                WITH UR                                                 
+               END-EXEC. 
+            
+            EXEC SQL                                                    
+                 SELECT MAX(A.FECFAC)                                   
+                   INTO :DCLMPDT251.FECFAC                              
+                   FROM PCS.MPDT251 A                                   
+                   JOIN PCS.MPDT044 B                                   
+                     ON A.TIPOFAC = B.TIPOFAC                           
+                    AND A.INDNORCOR = B.INDNORCOR                       
+                  WHERE A.CODENT    = :DCLMPDT251.CODENT                
+                    AND A.CENTALTA  = :DCLMPDT251.CENTALTA              
+                    AND A.CUENTA    = :DCLMPDT251.CUENTA                
+                    AND A.CLAMON    = :DCLMPDT251.CLAMON                
+                    AND B.TIPOFACSIST = 67                              
+                    AND B.SIGNO = '-'                                   
+                    AND B.INDFACINF = 'N'                               
+                   WITH UR                                              
+            END-EXEC.    
+
+               EXEC SQL                                                     
+                SELECT T9.PAN,                                          
+                       T178.CODBLQ,                                     
+                       T178.TEXBLQ                                      
+                 INTO :DCLMPDT009.PAN,                                  
+                      :DCLMPDT178.CODBLQ :WS-CODBLQ-NULO ,              
+                      :DCLMPDT178.TEXBLQ :WS-TEXBLQ-NULO                
+                 FROM MPDT009 T9                                        
+                 LEFT OUTER JOIN                                        
+                       MPDT178 T178                                     
+                    ON                                                  
+                       T9.CODENT    = T178.CODENT                       
+                   AND T9.CENTALTA  = T178.CENTALTA                     
+                   AND T9.CUENTA    = T178.CUENTA                       
+                 WHERE T9.CODENT    = :DCLMPDT009.CODENT                
+                   AND T9.CENTALTA  = :DCLMPDT009.CENTALTA              
+                   AND T9.CUENTA    = :DCLMPDT009.CUENTA                
+                   AND T9.INDULTTAR = 'S'                               
+                   AND T9.NUMBENCTA = 1                                 
+           END-EXEC.    
+
+           EXEC SQL                                                     
+              DECLARE CUR_402_013 CURSOR FOR                            
+                SELECT                                                  
+                    B.CODENT,                                           
+                    B.CENTALTA,                                         
+                    B.CUENTA,                                           
+                    B.NUMBENCTA,                                        
+                    B.CALPART,                                          
+                    B.FECBAJA                                           
+                FROM  MPDT402 A                                         
+                JOIN  MPDT013 B                                         
+                  ON  A.CODENT  = B.CODENT                              
+               AND  A.IDENTCLI  = B.IDENTCLI                            
+               AND  A.CENTALTA  = B.CENTALTA                            
+               AND  A.CUENTA    = B.CUENTA                              
+               WHERE                                                    
+                    A.CODENT    = :DCLMPDT402.CODENT                    
+               AND  A.IDENTCLI  = :DCLMPDT402.IDENTCLI                  
+               AND  A.TIPCONT   = :DCLMPDT402.TIPCONT                   
+               AND  B.FECBAJA   = :CT-FECINI                            
+             ORDER BY B.CODENT,B.CENTALTA,B.CUENTA,B.NUMBENCTA          
+             FETCH FIRST 16 ROWS ONLY                                   
+             OPTIMIZE FOR 1 ROW                                         
+           END-EXEC.      
+
        0003-DELETE_TABELA           SECTION.                        
                                                                         
            EXEC SQL                                                     

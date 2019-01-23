@@ -40,7 +40,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
 				<configuration>
-					<outputDirectory>C:\desenvolvimento\servers\jboss-eap-7.1\standalone\deployments\</outputDirectory>
+					<outputDirectory>D:\ti\servers\jboss\standalone\deployments\</outputDirectory>
 				</configuration>
 			</plugin>
 			<plugin>

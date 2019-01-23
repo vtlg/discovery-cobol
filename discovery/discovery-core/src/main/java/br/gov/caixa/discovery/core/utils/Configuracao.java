@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +21,7 @@ import com.google.gson.stream.JsonReader;
 import br.gov.caixa.discovery.core.modelos.ArquivoConfiguracao;
 import br.gov.caixa.discovery.core.modelos.Artefato;
 import br.gov.caixa.discovery.core.tipos.TipoAmbiente;
+import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 
 public class Configuracao {
 
@@ -41,10 +43,20 @@ public class Configuracao {
 	 *             convertidos serão movidos para subpasta ./arquivos_processados
 	 */
 	public static void carregar(String[] args) {
-		LoggerImpl.configurarFileLog();
+		LoggerImpl.configurarFileLog(Level.INFO);
 		_carregarParametro(args);
 		_carregarConfiguracaoJson();
 		_carregarCollectionArtefatos();
+	}
+
+	public static ArquivoConfiguracao getConfiguracao(TipoArtefato tipopArtefato) {
+		for (ArquivoConfiguracao entry : COLLECTION_ARQUIVO_CONFIGURACAO) {
+			if (AMBIENTE.get().equals(entry.getAmbiente()) && SISTEMA.equals(entry.getSistema())
+					&& tipopArtefato.get().equals(entry.getTipo())) {
+				return entry;
+			}
+		}
+		return null;
 	}
 
 	private static void _carregarParametro(String[] args) {

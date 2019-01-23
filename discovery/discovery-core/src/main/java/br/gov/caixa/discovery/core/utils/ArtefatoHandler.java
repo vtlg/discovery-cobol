@@ -105,9 +105,24 @@ public class ArtefatoHandler {
 		return null;
 	}
 
-	public static boolean existeArtefato(List<Artefato> lista, TipoArtefato tipo, String nome) {
+	public static boolean existeArtefato(List<Artefato> lista, String nome) {
 		for (Artefato artefato : lista) {
-			if (artefato.getTipoArtefato().equals(tipo) && artefato.getNome().equals(nome)) {
+			if (artefato.getNome().equals(nome)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean existeArtefato(List<Artefato> lista, TipoArtefato tipo, String nome) {
+
+		for (Artefato artefato : lista) {
+			if (artefato.getTipoArtefato() == null) {
+				boolean valor = existeArtefato(lista, nome);
+				if (valor) {
+					return true;
+				}
+			} else  if (artefato.getTipoArtefato().equals(tipo) && artefato.getNome().equals(nome)) {
 				return true;
 			}
 		}
@@ -115,6 +130,7 @@ public class ArtefatoHandler {
 	}
 
 	public static Artefato extrairArtefato(String nome, TipoArtefato tipoArtefato, int deslocamento) {
+
 		if (!TipoArtefato.COPYBOOK.equals(tipoArtefato) || nome == null || nome.trim().equals("")) {
 			return null;
 		}

@@ -2,6 +2,7 @@ package br.gov.caixa.discovery.core.extratores;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
@@ -57,9 +58,8 @@ public class ExtratorProgramaCobol {
 			this.artefato = atribuirAmbiente(this.artefato);
 			this.artefato = objetivo(this.artefato);
 			this.artefato = descricaoMaiframe(this.artefato);
-
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Erro ao tentar converter " + this.artefato.getCaminhoArquivo(), e);
 		}
 
 		return artefato;
@@ -71,9 +71,9 @@ public class ExtratorProgramaCobol {
 
 			if (texto != null && texto.length() > (this.deslocamento + 6)
 					&& "*".equals(texto.substring(this.deslocamento + 6, this.deslocamento + 7))) {
-				artefato.adicionarComentario(texto.substring(this.deslocamento));
+				artefato.adicionarComentario(texto.substring(this.deslocamento).toUpperCase());
 			} else {
-				artefato.adicionarCodigoFonte(texto.substring(this.deslocamento));
+				artefato.adicionarCodigoFonte(texto.substring(this.deslocamento).toUpperCase());
 			}
 		}
 		return artefato;
@@ -376,6 +376,7 @@ public class ExtratorProgramaCobol {
 			Atributo atributoDeclaracaoCompleta = artefatoDeclaracaoSql.buscaAtributo(TipoAtributo.DECLARACAO_COMPLETA);
 
 			String texto = atributoDeclaracaoCompleta.getValor();
+
 			m_Join = Patterns.COBOL_P_JOIN.matcher(texto);
 			m_From_1 = Patterns.COBOL_P_FROM_1.matcher(texto);
 			m_From_where_1 = Patterns.COBOL_P_FROM_WHERE_1.matcher(texto);
@@ -747,7 +748,7 @@ public class ExtratorProgramaCobol {
 		Matcher m_from_1 = null;
 		Matcher m_handle_1 = null;
 
-		Matcher m_label_1= null;
+		Matcher m_label_1 = null;
 		Matcher m_enddata_1 = null;
 		Matcher m_error_1 = null;
 		Matcher m_qname_1 = null;
@@ -776,7 +777,7 @@ public class ExtratorProgramaCobol {
 			m_enddata_1 = Patterns.COBOL_P_ENDDATA_1.matcher(texto);
 			m_error_1 = Patterns.COBOL_P_ERROR_1.matcher(texto);
 
-			m_label_1= Patterns.COBOL_P_LABEL_1.matcher(texto);
+			m_label_1 = Patterns.COBOL_P_LABEL_1.matcher(texto);
 			m_qname_1 = Patterns.COBOL_P_QNAME_1.matcher(texto);
 			m_item_1 = Patterns.COBOL_P_ITEM_1.matcher(texto);
 			m_numitems_1 = Patterns.COBOL_P_NUMITEMS_1.matcher(texto);
@@ -799,7 +800,7 @@ public class ExtratorProgramaCobol {
 			String transId = null;
 			String from = null;
 
-			String label= null;
+			String label = null;
 			String enddata = null;
 			String error = null;
 			String qname = null;
@@ -837,7 +838,7 @@ public class ExtratorProgramaCobol {
 				length = m_length_1.group("parametro");
 				length = length.replaceAll("[\\s]{2,}", " ").trim();
 			}
-			
+
 			if (m_label_1.matches()) {
 				label = m_label_1.group("parametro");
 				label = label.replaceAll("[\\s]{2,}", " ").trim();
@@ -966,7 +967,7 @@ public class ExtratorProgramaCobol {
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
-			
+
 			if (enddata != null) {
 				Atributo atributo = new Atributo();
 				atributo.setTipoAtributo(TipoAtributo.CICS_ENDDATA);
@@ -1165,7 +1166,9 @@ public class ExtratorProgramaCobol {
 					if (variavel.getArtefatosRelacionados() != null && variavel.getArtefatosRelacionados().size() > 0) {
 						Atributo subvariavelAtributo = variavel.getArtefatosRelacionados().get(0)
 								.buscaAtributo(TipoAtributo.VALOR_PADRAO);
-						novoNome = subvariavelAtributo.getValor();
+						if (subvariavelAtributo != null) {
+							novoNome = subvariavelAtributo.getValor();
+						}
 					}
 				}
 
@@ -1830,10 +1833,10 @@ public class ExtratorProgramaCobol {
 
 		boolean marcadorFileSelection = false;
 		boolean marcadorFdInicio = false;
-		boolean marcadorFdFim = false;
+		// boolean marcadorFdFim = false;
 
 		StringBuilder sb = null;
-		String reservaTextoParaMapaVariavel = null;
+		// String reservaTextoParaMapaVariavel = null;
 
 		List<String> listaOperacoes = new ArrayList<>();
 
@@ -1854,11 +1857,11 @@ public class ExtratorProgramaCobol {
 
 			if (m_fd_fim.matches() && marcadorFdInicio && marcadorFileSelection) {
 				marcadorFdInicio = false;
-				marcadorFdFim = true;
+				// marcadorFdFim = true;
 				sb.append(texto);
 				sb.append(" ");
 				listaOperacoes.add(sb.toString().replaceAll("[\\s]{2,}", " "));
-				reservaTextoParaMapaVariavel = sb.toString().replaceAll("[\\s]{2,}", " ");
+				// reservaTextoParaMapaVariavel = sb.toString().replaceAll("[\\s]{2,}", " ");
 				sb = null;
 			}
 
@@ -1872,19 +1875,19 @@ public class ExtratorProgramaCobol {
 				sb.append(texto);
 				sb.append(" ");
 				marcadorFdInicio = true;
-				marcadorFdFim = false;
-				reservaTextoParaMapaVariavel = null;
+				// marcadorFdFim = false;
+				// reservaTextoParaMapaVariavel = null;
 			}
 
 			if (m_fd_inicio.matches() && m_fd_fim.matches() && marcadorFdInicio && marcadorFileSelection) {
 				marcadorFdInicio = false;
-				marcadorFdFim = true;
+				// marcadorFdFim = true;
 				listaOperacoes.add(sb.toString().replaceAll("[\\s]{2,}", " "));
-				reservaTextoParaMapaVariavel = sb.toString().replaceAll("[\\s]{2,}", " ");
+				// reservaTextoParaMapaVariavel = sb.toString().replaceAll("[\\s]{2,}", " ");
 				sb = null;
 			}
 
-			marcadorFdFim = false;
+			// marcadorFdFim = false;
 		}
 
 		if (sb != null) {
