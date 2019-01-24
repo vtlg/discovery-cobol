@@ -51,9 +51,9 @@ public class ArtefatoDao {
 		dao.fecharConexao();
 
 		System.out.println(artefato.getNoNomeArtefato());
-		//System.out.println(artefato.getListaArtefato().get(0).getListaAtributos().toArray());
-		//System.out.println(artefato.getListaArtefato().get(1).getListaAtributos().toArray());
-		//System.out.println(artefato.getListaArtefato().get(2).getListaAtributos().toArray());
+		// System.out.println(artefato.getListaArtefato().get(0).getListaAtributos().toArray());
+		// System.out.println(artefato.getListaArtefato().get(1).getListaAtributos().toArray());
+		// System.out.println(artefato.getListaArtefato().get(2).getListaAtributos().toArray());
 	}
 
 	public ArtefatoPersistence pesquisarArtefato(Long coArtefato) {
@@ -93,7 +93,8 @@ public class ArtefatoDao {
 		EntityGraph<ArtefatoPersistence> graph = this.em.createEntityGraph(ArtefatoPersistence.class);
 		graph.addAttributeNodes("tipoArtefato");
 
-		//Subgraph<RelacionamentoPersistence> atributosartefatoGraph = graph.addSubgraph("listaAtributos");
+		// Subgraph<RelacionamentoPersistence> atributosartefatoGraph =
+		// graph.addSubgraph("listaAtributos");
 
 		Subgraph<RelacionamentoPersistence> relacionamentoGraph = graph.addSubgraph("listaArtefato");
 		relacionamentoGraph.addAttributeNodes("artefato");
@@ -103,7 +104,8 @@ public class ArtefatoDao {
 		relacionamentoGraph.addAttributeNodes("artefatoAnterior");
 		relacionamentoGraph.addAttributeNodes("artefatoPosterior");
 
-		Subgraph<RelacionamentoPersistence> atributosRelacionamentoGraph = relacionamentoGraph.addSubgraph("listaAtributos");
+		Subgraph<RelacionamentoPersistence> atributosRelacionamentoGraph = relacionamentoGraph
+				.addSubgraph("listaAtributos");
 
 		// relacionamentoGraph.addAttributeNodes("coExterno");
 
@@ -117,6 +119,39 @@ public class ArtefatoDao {
 		}
 
 		return output;
+	}
+
+	public List<ArtefatoPersistence> pesquisarRapida(String coNome) {
+		LOGGER.log(Level.FINE, "Pesquisar artefato " + "Nome (" + coNome + ")");
+
+		List<ArtefatoPersistence> listaOutput = new ArrayList<>();
+
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaQuery<ArtefatoPersistence> cq = cb.createQuery(ArtefatoPersistence.class);
+		Root<ArtefatoPersistence> artefatoRoot = cq.from(ArtefatoPersistence.class);
+
+		Predicate pNomeInterno = cb.like(cb.upper(artefatoRoot.get("noNomeInterno")), "%" + coNome.toUpperCase() + "%");
+		Predicate pNomeExibicao = cb.like(cb.upper(artefatoRoot.get("noNomeExibicao")),
+				"%" + coNome.toUpperCase() + "%");
+
+		Predicate orNome = cb.or(pNomeInterno, pNomeExibicao);
+
+		Expression<Calendar> exTsFimVigencia = artefatoRoot.get("tsFimVigencia");
+		Predicate pTsFimVigencia = cb.isNull(exTsFimVigencia);
+
+		cq.multiselect(artefatoRoot.get("coArtefato"), artefatoRoot.get("noNomeArtefato"),
+				artefatoRoot.get("noNomeExibicao"), artefatoRoot.get("noNomeInterno"),
+				artefatoRoot.get("coTipoArtefato"), artefatoRoot.get("coAmbiente"), artefatoRoot.get("coSistema"))
+				.where(cb.and(orNome, pTsFimVigencia));
+
+		try {
+			TypedQuery<ArtefatoPersistence> query = em.createQuery(cq);
+			listaOutput = query.getResultList();
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, "Erro ao tentar pesquisar artefato. " + "Nome (" + coNome + ")", e);
+		}
+
+		return listaOutput;
 	}
 
 	public List<ArtefatoPersistence> pesquisarArtefato(String coNome, String coTipoArtefato, String coAmbiente,

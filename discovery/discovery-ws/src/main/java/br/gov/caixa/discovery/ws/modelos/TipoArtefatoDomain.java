@@ -30,6 +30,18 @@ public class TipoArtefatoDomain {
 	@JsonProperty("coCor")
 	private String coCor;
 
+	@JsonProperty("coCorBorda")
+	private String coCorBorda;
+
+	public TipoArtefatoDomain() {
+		super();
+	}
+
+	public TipoArtefatoDomain(String coTipoArtefato) {
+		super();
+		this.coTipoArtefato = coTipoArtefato;
+	}
+
 	public String getCoTipoArtefato() {
 		return coTipoArtefato;
 	}
@@ -76,6 +88,14 @@ public class TipoArtefatoDomain {
 
 	public void setCoCor(String coCor) {
 		this.coCor = coCor;
+	}
+
+	public String getCoCorBorda() {
+		return coCorBorda;
+	}
+
+	public void setCoCorBorda(String coCorBorda) {
+		this.coCorBorda = coCorBorda;
 	}
 
 }

@@ -1,6 +1,7 @@
 package br.gov.caixa.discovery.ws.resources;
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -26,7 +27,11 @@ public class ArtefatoResource implements ArtefatoResourceI {
 
 		ArtefatoDomain domain = Conversores.converter(persistence, true);
 
-		response.entity(domain);
+		if (domain == null) {
+			response.status(Status.NOT_FOUND);
+		} else {
+			response.entity(domain);
+		}
 
 		return response.build();
 	}
@@ -63,6 +68,21 @@ public class ArtefatoResource implements ArtefatoResourceI {
 		domain = Conversores.converter(persistence, false);
 
 		response.entity(domain);
+
+		return response.build();
+	}
+
+	@Override
+	public Response pesquisar(String termo) {
+		ResponseBuilder response = Response.status(Status.OK);
+
+		List<ArtefatoPersistence> listaPersistence = artefatoDao.pesquisarRapida(termo);
+
+		if (listaPersistence == null || listaPersistence.size() == 0) {
+			response.status(Status.NOT_FOUND);
+		} else {
+			response.entity(Conversores.converterListaArtefato(listaPersistence));
+		}
 
 		return response.build();
 	}

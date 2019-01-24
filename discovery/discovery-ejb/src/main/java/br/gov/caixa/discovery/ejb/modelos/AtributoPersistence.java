@@ -36,7 +36,8 @@ public abstract class AtributoPersistence {
 
 	@Column(name = "IC_OPCIONAL", columnDefinition = "boolean NOT NULL DEFAULT false")
 	private Boolean icOpcional = false;
-
+	
+	
 	public String getCoAtributo() {
 		return coAtributo;
 	}

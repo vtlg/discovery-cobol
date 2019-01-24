@@ -74,7 +74,7 @@ public class RelacionamentoPersistence {
 	@JoinColumn(name = "CO_ARTEFATO_ULTIMO", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
 	private ArtefatoPersistence artefatoUltimo;
 
-	@OneToMany(mappedBy = "coExterno", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "relacionamento", fetch = FetchType.LAZY)
 	private List<AtributoRelacionamentoPersistence> listaAtributos;
 
 	@Transient

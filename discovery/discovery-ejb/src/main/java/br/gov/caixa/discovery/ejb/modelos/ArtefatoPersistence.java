@@ -97,7 +97,7 @@ public class ArtefatoPersistence {
 	@OneToMany(mappedBy = "artefatoPrimeiro", fetch = FetchType.LAZY)
 	private List<RelacionamentoPersistence> listaArtefatoUltimo;
 
-	@OneToMany(mappedBy = "coExterno", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "artefato", fetch = FetchType.LAZY)
 	private Set<AtributoArtefatoPersistence> listaAtributos;
 
 	@Transient
@@ -421,6 +421,20 @@ public class ArtefatoPersistence {
 		this.noNomeArtefato = noNomeArtefato;
 		this.noNomeExibicao = noNomeExibicao;
 	}
+
+	public ArtefatoPersistence(Long coArtefato, String noNomeArtefato, String noNomeExibicao, String noNomeInterno,
+			String coTipoArtefato, String coAmbiente, String coSistema) {
+		super();
+		this.coArtefato = coArtefato;
+		this.noNomeArtefato = noNomeArtefato;
+		this.noNomeExibicao = noNomeExibicao;
+		this.noNomeInterno = noNomeInterno;
+		this.coTipoArtefato = coTipoArtefato;
+		this.coAmbiente = coAmbiente;
+		this.coSistema = coSistema;
+	}
+	
+	
 
 	// ****
 

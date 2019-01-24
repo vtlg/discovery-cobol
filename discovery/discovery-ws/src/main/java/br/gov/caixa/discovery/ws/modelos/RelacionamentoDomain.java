@@ -1,5 +1,7 @@
 package br.gov.caixa.discovery.ws.modelos;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -15,47 +17,32 @@ public class RelacionamentoDomain {
 	@JsonProperty("coRelacionamento")
 	private Long coRelacionamento;
 
-	// @JsonProperty("coArtefato")
-	// private Long coArtefato;
-
-	// @JsonProperty("coArtefatoPai")
-	// private Long coArtefatoPai;
-
-	// @JsonProperty("coArtefatoAnterior")
-	// private Long coArtefatoAnterior;
-
-	// @JsonProperty("coArtefatoPosterior")
-	// private Long coArtefatoPosterior;
-
-	// @JsonProperty("coArtefatoPrimeiro")
-	// private Long coArtefatoPrimeiro;
-
-	// @JsonProperty("coArtefatoUltimo")
-	// private Long coArtefatoUltimo;
-
 	@JsonProperty("icInclusaoManual")
 	private boolean icInclusaoManual = false;
 
 	@JsonProperty("icInclusaoMalha")
 	private boolean icInclusaoMalha = false;
 
-	@JsonProperty("artefato")
-	private ArtefatoDomain artefato;
+	@JsonProperty("atributos")
+	private List<AtributoDomain> atributos;
 
-	@JsonProperty("artefatoPai")
-	private ArtefatoDomain artefatoPai;
+	@JsonProperty("descendente")
+	private ArtefatoDomain descendente;
 
-	@JsonProperty("artefatoAnterior")
-	private ArtefatoDomain artefatoAnterior;
+	@JsonProperty("ascendente")
+	private ArtefatoDomain ascendente;
 
-	@JsonProperty("artefatoPosterior")
-	private ArtefatoDomain artefatoPosterior;
+	@JsonProperty("anterior")
+	private ArtefatoDomain anterior;
 
-	@JsonProperty("artefatoPrimeiro")
-	private ArtefatoDomain artefatoPrimeiro;
+	@JsonProperty("posterior")
+	private ArtefatoDomain posterior;
 
-	@JsonProperty("artefatoUltimo")
-	private ArtefatoDomain artefatoUltimo;
+	@JsonProperty("primeiro")
+	private ArtefatoDomain primeiro;
+
+	@JsonProperty("ultimo")
+	private ArtefatoDomain ultimo;
 
 	public Long getCoRelacionamento() {
 		return coRelacionamento;
@@ -81,52 +68,60 @@ public class RelacionamentoDomain {
 		this.icInclusaoMalha = icInclusaoMalha;
 	}
 
-	public ArtefatoDomain getArtefato() {
-		return artefato;
+	public List<AtributoDomain> getAtributos() {
+		return atributos;
 	}
 
-	public void setArtefato(ArtefatoDomain artefato) {
-		this.artefato = artefato;
+	public void setAtributos(List<AtributoDomain> atributos) {
+		this.atributos = atributos;
 	}
 
-	public ArtefatoDomain getArtefatoPai() {
-		return artefatoPai;
+	public ArtefatoDomain getAscendente() {
+		return ascendente;
 	}
 
-	public void setArtefatoPai(ArtefatoDomain artefatoPai) {
-		this.artefatoPai = artefatoPai;
+	public void setAscendente(ArtefatoDomain ascendente) {
+		this.ascendente = ascendente;
 	}
 
-	public ArtefatoDomain getArtefatoAnterior() {
-		return artefatoAnterior;
+	public ArtefatoDomain getAnterior() {
+		return anterior;
 	}
 
-	public void setArtefatoAnterior(ArtefatoDomain artefatoAnterior) {
-		this.artefatoAnterior = artefatoAnterior;
+	public void setAnterior(ArtefatoDomain anterior) {
+		this.anterior = anterior;
 	}
 
-	public ArtefatoDomain getArtefatoPosterior() {
-		return artefatoPosterior;
+	public ArtefatoDomain getPosterior() {
+		return posterior;
 	}
 
-	public void setArtefatoPosterior(ArtefatoDomain artefatoPosterior) {
-		this.artefatoPosterior = artefatoPosterior;
+	public void setPosterior(ArtefatoDomain posterior) {
+		this.posterior = posterior;
 	}
 
-	public ArtefatoDomain getArtefatoPrimeiro() {
-		return artefatoPrimeiro;
+	public ArtefatoDomain getPrimeiro() {
+		return primeiro;
 	}
 
-	public void setArtefatoPrimeiro(ArtefatoDomain artefatoPrimeiro) {
-		this.artefatoPrimeiro = artefatoPrimeiro;
+	public void setPrimeiro(ArtefatoDomain primeiro) {
+		this.primeiro = primeiro;
 	}
 
-	public ArtefatoDomain getArtefatoUltimo() {
-		return artefatoUltimo;
+	public ArtefatoDomain getUltimo() {
+		return ultimo;
 	}
 
-	public void setArtefatoUltimo(ArtefatoDomain artefatoUltimo) {
-		this.artefatoUltimo = artefatoUltimo;
+	public void setUltimo(ArtefatoDomain ultimo) {
+		this.ultimo = ultimo;
+	}
+
+	public ArtefatoDomain getDescendente() {
+		return descendente;
+	}
+
+	public void setDescendente(ArtefatoDomain descendente) {
+		this.descendente = descendente;
 	}
 
 }

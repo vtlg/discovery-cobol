@@ -36,9 +36,6 @@ public class ArtefatoDomain {
 	@JsonProperty("coSistema")
 	private String coSistema;
 
-	@JsonProperty("coTipoArtefato")
-	private String coTipoArtefato;
-
 	@JsonProperty("deIdentificador")
 	private String deIdentificador;
 
@@ -66,26 +63,29 @@ public class ArtefatoDomain {
 	@XmlJavaTypeAdapter(CalendarAdapter.class)
 	private Calendar tsFimVigencia;
 
-	@JsonProperty("tipoAtributo")
+	@JsonProperty("tipoArtefato")
 	private TipoArtefatoDomain tipoArtefato;
 
-	@JsonProperty("listaArtefato")
-	private List<RelacionamentoDomain> listaArtefato;
+	@JsonProperty("atributos")
+	private List<AtributoDomain> atributos;
 
-	@JsonProperty("listaArtefatoPai")
-	private List<RelacionamentoDomain> listaArtefatoPai;
+	@JsonProperty("descendentes")
+	private List<RelacionamentoDomain> descendentes;
 
-	@JsonProperty("listaArtefatoAnterior")
-	private List<RelacionamentoDomain> listaArtefatoAnterior;
+	@JsonProperty("ascendentes")
+	private List<RelacionamentoDomain> ascendentes;
 
-	@JsonProperty("listaArtefatoPosterior")
-	private List<RelacionamentoDomain> listaArtefatoPosterior;
+	@JsonProperty("anteriores")
+	private List<RelacionamentoDomain> anteriores;
 
-	@JsonProperty("listaArtefatoPrimeiro")
-	private List<RelacionamentoDomain> listaArtefatoPrimeiro;
+	@JsonProperty("posteriores")
+	private List<RelacionamentoDomain> posteriores;
 
-	@JsonProperty("listaArtefatoUltimo")
-	private List<RelacionamentoDomain> listaArtefatoUltimo;
+	@JsonProperty("primeiros")
+	private List<RelacionamentoDomain> primeiros;
+
+	@JsonProperty("ultimos")
+	private List<RelacionamentoDomain> ultimos;
 
 	public Long getCoArtefato() {
 		return coArtefato;
@@ -133,14 +133,6 @@ public class ArtefatoDomain {
 
 	public void setCoSistema(String coSistema) {
 		this.coSistema = coSistema;
-	}
-
-	public String getCoTipoArtefato() {
-		return coTipoArtefato;
-	}
-
-	public void setCoTipoArtefato(String coTipoArtefato) {
-		this.coTipoArtefato = coTipoArtefato;
 	}
 
 	public String getDeIdentificador() {
@@ -215,52 +207,60 @@ public class ArtefatoDomain {
 		this.tipoArtefato = tipoArtefato;
 	}
 
-	public List<RelacionamentoDomain> getListaArtefato() {
-		return listaArtefato;
+	public List<AtributoDomain> getAtributos() {
+		return atributos;
 	}
 
-	public void setListaArtefato(List<RelacionamentoDomain> listaArtefato) {
-		this.listaArtefato = listaArtefato;
+	public void setAtributos(List<AtributoDomain> atributos) {
+		this.atributos = atributos;
 	}
 
-	public List<RelacionamentoDomain> getListaArtefatoPai() {
-		return listaArtefatoPai;
+	public List<RelacionamentoDomain> getDescendentes() {
+		return descendentes;
 	}
 
-	public void setListaArtefatoPai(List<RelacionamentoDomain> listaArtefatoPai) {
-		this.listaArtefatoPai = listaArtefatoPai;
+	public void setDescendentes(List<RelacionamentoDomain> descendentes) {
+		this.descendentes = descendentes;
 	}
 
-	public List<RelacionamentoDomain> getListaArtefatoAnterior() {
-		return listaArtefatoAnterior;
+	public List<RelacionamentoDomain> getAscendentes() {
+		return ascendentes;
 	}
 
-	public void setListaArtefatoAnterior(List<RelacionamentoDomain> listaArtefatoAnterior) {
-		this.listaArtefatoAnterior = listaArtefatoAnterior;
+	public void setAscendentes(List<RelacionamentoDomain> ascendentes) {
+		this.ascendentes = ascendentes;
 	}
 
-	public List<RelacionamentoDomain> getListaArtefatoPosterior() {
-		return listaArtefatoPosterior;
+	public List<RelacionamentoDomain> getAnteriores() {
+		return anteriores;
 	}
 
-	public void setListaArtefatoPosterior(List<RelacionamentoDomain> listaArtefatoPosterior) {
-		this.listaArtefatoPosterior = listaArtefatoPosterior;
+	public void setAnteriores(List<RelacionamentoDomain> anteriores) {
+		this.anteriores = anteriores;
 	}
 
-	public List<RelacionamentoDomain> getListaArtefatoPrimeiro() {
-		return listaArtefatoPrimeiro;
+	public List<RelacionamentoDomain> getPosteriores() {
+		return posteriores;
 	}
 
-	public void setListaArtefatoPrimeiro(List<RelacionamentoDomain> listaArtefatoPrimeiro) {
-		this.listaArtefatoPrimeiro = listaArtefatoPrimeiro;
+	public void setPosteriores(List<RelacionamentoDomain> posteriores) {
+		this.posteriores = posteriores;
 	}
 
-	public List<RelacionamentoDomain> getListaArtefatoUltimo() {
-		return listaArtefatoUltimo;
+	public List<RelacionamentoDomain> getPrimeiros() {
+		return primeiros;
 	}
 
-	public void setListaArtefatoUltimo(List<RelacionamentoDomain> listaArtefatoUltimo) {
-		this.listaArtefatoUltimo = listaArtefatoUltimo;
+	public void setPrimeiros(List<RelacionamentoDomain> primeiros) {
+		this.primeiros = primeiros;
+	}
+
+	public List<RelacionamentoDomain> getUltimos() {
+		return ultimos;
+	}
+
+	public void setUltimos(List<RelacionamentoDomain> ultimos) {
+		this.ultimos = ultimos;
 	}
 
 }

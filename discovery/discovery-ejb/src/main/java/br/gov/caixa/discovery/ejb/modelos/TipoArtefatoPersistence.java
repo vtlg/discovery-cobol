@@ -34,6 +34,9 @@ public class TipoArtefatoPersistence {
 	@Column(name = "CO_COR", columnDefinition = "character varying NOT NULL DEFAULT '#000000'::character varying")
 	private String coCor;
 
+	@Column(name = "CO_COR_BORDA", columnDefinition = "character varying NOT NULL DEFAULT '#000000'::character varying")
+	private String coCorBorda;
+
 	@OneToMany(mappedBy = "tipoArtefato", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ArtefatoPersistence> listaArtefatos;
 
@@ -93,6 +96,14 @@ public class TipoArtefatoPersistence {
 		this.coCor = coCor;
 	}
 
+	public String getCoCorBorda() {
+		return coCorBorda;
+	}
+
+	public void setCoCorBorda(String coCorBorda) {
+		this.coCorBorda = coCorBorda;
+	}
+
 	public TipoArtefatoPersistence() {
 		super();
 	}
@@ -118,6 +129,18 @@ public class TipoArtefatoPersistence {
 		this.icAtributo = icAtributo;
 		this.icGrafo = icGrafo;
 		this.coCor = coCor;
+	}
+
+	public TipoArtefatoPersistence(String coTipoArtefato, String deTipoArtefato, Boolean icPesquisavel,
+			Boolean icAtributo, Boolean icGrafo, String coCor, String coCorBorda) {
+		super();
+		this.coTipoArtefato = coTipoArtefato;
+		this.deTipoArtefato = deTipoArtefato;
+		this.icPesquisavel = icPesquisavel;
+		this.icAtributo = icAtributo;
+		this.icGrafo = icGrafo;
+		this.coCor = coCor;
+		this.coCorBorda = coCorBorda;
 	}
 
 }

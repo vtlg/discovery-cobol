@@ -44,7 +44,8 @@ public class TipoArtefatoDao {
 		// cq.select(artefatoRoot).where(pCoArtefato);
 		cq.multiselect(tipoArtefatoRoot.get("coTipoArtefato"), tipoArtefatoRoot.get("deTipoArtefato"),
 				tipoArtefatoRoot.get("icPesquisavel"), tipoArtefatoRoot.get("icAtributo"),
-				tipoArtefatoRoot.get("icGrafo"), tipoArtefatoRoot.get("coCor")).where(pCoTipoArtefato);
+				tipoArtefatoRoot.get("icGrafo"), tipoArtefatoRoot.get("coCor"), tipoArtefatoRoot.get("coCorBorda"))
+				.where(pCoTipoArtefato);
 		try {
 			TypedQuery<TipoArtefatoPersistence> query = em.createQuery(cq);
 			output = query.getSingleResult();
