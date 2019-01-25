@@ -9,11 +9,11 @@ import br.gov.caixa.discovery.ejb.modelos.AtributoArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.AtributoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.AtributoRelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
-import br.gov.caixa.discovery.ejb.modelos.TipoArtefatoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.TipoPersistence;
 import br.gov.caixa.discovery.ws.modelos.ArtefatoDomain;
 import br.gov.caixa.discovery.ws.modelos.AtributoDomain;
 import br.gov.caixa.discovery.ws.modelos.RelacionamentoDomain;
-import br.gov.caixa.discovery.ws.modelos.TipoArtefatoDomain;
+import br.gov.caixa.discovery.ws.modelos.TipoDomain;
 
 public class Conversores {
 
@@ -32,6 +32,7 @@ public class Conversores {
 		saida.setDeHash(entrada.getDeHash());
 		saida.setDeIdentificador(entrada.getDeIdentificador());
 		saida.setIcInclusaoManual(entrada.isIcInclusaoManual());
+		saida.setIcProcessoCritico(entrada.isIcProcessoCritico());
 		saida.setNoNomeArtefato(entrada.getNoNomeArtefato());
 		saida.setNoNomeExibicao(entrada.getNoNomeExibicao());
 		saida.setNoNomeInterno(entrada.getNoNomeInterno());
@@ -40,11 +41,11 @@ public class Conversores {
 		saida.setTsUltimaModificacao(entrada.getTsUltimaModificacao());
 
 		if (entrada.getTipoArtefato() == null) {
-			TipoArtefatoDomain tipoArtefatoDomain = new TipoArtefatoDomain();
-			tipoArtefatoDomain.setCoTipoArtefato(entrada.getCoTipoArtefato());
-			saida.setTipoArtefato(tipoArtefatoDomain);
+			TipoDomain tipoArtefatoDomain = new TipoDomain();
+			tipoArtefatoDomain.setCoTipo(entrada.getCoTipoArtefato());
+			saida.setTipo(tipoArtefatoDomain);
 		} else {
-			saida.setTipoArtefato(converter(entrada.getTipoArtefato()));
+			saida.setTipo(converter(entrada.getTipoArtefato()));
 		}
 
 		if (entrada.getListaAtributos() != null && entrada.getListaAtributos().size() > 0) {
@@ -83,6 +84,15 @@ public class Conversores {
 		saida.setIcInclusaoMalha(entrada.isIcInclusaoMalha());
 		saida.setIcInclusaoManual(entrada.isIcInclusaoManual());
 
+		if (entrada.getTipoRelacionamento() == null) {
+			TipoDomain tipoArtefatoDomain = new TipoDomain();
+			tipoArtefatoDomain.setCoTipo("NORMAL");
+			saida.setTipoRelacionamento(tipoArtefatoDomain);
+		} else {
+			System.out.println(entrada.getTipoRelacionamento().getCoTipo());
+			saida.setTipoRelacionamento(converter(entrada.getTipoRelacionamento()));
+		}
+
 		if (entrada.getListaAtributos() != null && entrada.getListaAtributos().size() > 0) {
 			saida.setAtributos(converterListaAtributoRelacionamento(entrada.getListaAtributos()));
 		}
@@ -97,7 +107,7 @@ public class Conversores {
 
 		AtributoDomain saida = new AtributoDomain();
 
-		saida.setCoAtributo(entrada.getCoAtributo());
+		saida.setCoTipoAtributo(entrada.getCoTipoAtributo());
 		saida.setCoExterno(entrada.getCoExterno());
 		saida.setDeValor(entrada.getDeValor());
 		saida.setIcEditavel(entrada.getIcEditavel());
@@ -107,20 +117,22 @@ public class Conversores {
 		return saida;
 	}
 
-	public static TipoArtefatoDomain converter(TipoArtefatoPersistence entrada) {
+	public static TipoDomain converter(TipoPersistence entrada) {
 		if (entrada == null) {
 			return null;
 		}
 
-		TipoArtefatoDomain saida = new TipoArtefatoDomain();
+		TipoDomain saida = new TipoDomain();
 
-		saida.setCoCorBorda(entrada.getCoCorBorda());
-		saida.setCoCor(entrada.getCoCor());
-		saida.setCoTipoArtefato(entrada.getCoTipoArtefato());
-		saida.setDeTipoArtefato(entrada.getDeTipoArtefato());
-		saida.setIcAtributo(entrada.getIcAtributo());
-		saida.setIcGrafo(entrada.getIcGrafo());
+		saida.setCoTipo(entrada.getCoTipo());
+		saida.setCoTabela(entrada.getCoTabela());
+		saida.setDeTipo(entrada.getDeTipo());
+		saida.setIcExibirAtributo(entrada.getIcExibirAtributo());
+		saida.setIcExibirGrafo(entrada.getIcExibirGrafo());
 		saida.setIcPesquisavel(entrada.getIcPesquisavel());
+		saida.setCoCor(entrada.getCoCor());
+		saida.setCoCorBorda(entrada.getCoCorBorda());
+		saida.setNuLarguraBorda(entrada.getNuLarguraBorda());
 
 		return saida;
 	}
@@ -139,7 +151,7 @@ public class Conversores {
 		return saida;
 	}
 
-	public static List<RelacionamentoDomain> converterListaRelacionamento(List<RelacionamentoPersistence> entrada) {
+	public static List<RelacionamentoDomain> converterListaRelacionamento(Set<RelacionamentoPersistence> entrada) {
 		if (entrada == null || entrada.size() == 0) {
 			return null;
 		}
@@ -168,7 +180,7 @@ public class Conversores {
 	}
 
 	public static List<AtributoDomain> converterListaAtributoRelacionamento(
-			List<AtributoRelacionamentoPersistence> entrada) {
+			Set<AtributoRelacionamentoPersistence> entrada) {
 		if (entrada == null || entrada.size() == 0) {
 			return null;
 		}
@@ -182,14 +194,14 @@ public class Conversores {
 		return saida;
 	}
 
-	public static List<TipoArtefatoDomain> converterListaTipoArtefato(List<TipoArtefatoPersistence> entrada) {
+	public static List<TipoDomain> converterListaTipo(List<TipoPersistence> entrada) {
 		if (entrada == null || entrada.size() == 0) {
 			return null;
 		}
 
-		List<TipoArtefatoDomain> saida = new ArrayList<>();
+		List<TipoDomain> saida = new ArrayList<>();
 
-		for (TipoArtefatoPersistence entry : entrada) {
+		for (TipoPersistence entry : entrada) {
 			saida.add(converter(entry));
 		}
 

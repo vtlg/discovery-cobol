@@ -26,6 +26,9 @@ public class RelacionamentoDomain {
 	@JsonProperty("atributos")
 	private List<AtributoDomain> atributos;
 
+	@JsonProperty("tipoRelacionamento")
+	private TipoDomain tipoRelacionamento;
+
 	@JsonProperty("descendente")
 	private ArtefatoDomain descendente;
 
@@ -122,6 +125,14 @@ public class RelacionamentoDomain {
 
 	public void setDescendente(ArtefatoDomain descendente) {
 		this.descendente = descendente;
+	}
+
+	public TipoDomain getTipoRelacionamento() {
+		return tipoRelacionamento;
+	}
+
+	public void setTipoRelacionamento(TipoDomain tipoRelacionamento) {
+		this.tipoRelacionamento = tipoRelacionamento;
 	}
 
 }

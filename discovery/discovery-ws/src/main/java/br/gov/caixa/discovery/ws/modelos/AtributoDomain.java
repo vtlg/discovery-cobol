@@ -15,8 +15,8 @@ public class AtributoDomain {
 	@JsonProperty("nuSequencial")
 	private Long nuSequencial;
 
-	@JsonProperty("coAtributo")
-	private String coAtributo;
+	@JsonProperty("coTipoAtributo")
+	private String coTipoAtributo;
 
 	@JsonProperty("coExterno")
 	private Long coExterno;
@@ -38,12 +38,12 @@ public class AtributoDomain {
 		this.nuSequencial = nuSequencial;
 	}
 
-	public String getCoAtributo() {
-		return coAtributo;
+	public String getCoTipoAtributo() {
+		return coTipoAtributo;
 	}
 
-	public void setCoAtributo(String coAtributo) {
-		this.coAtributo = coAtributo;
+	public void setCoTipoAtributo(String coTipoAtributo) {
+		this.coTipoAtributo = coTipoAtributo;
 	}
 
 	public Long getCoExterno() {

@@ -7,7 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity(name = "TBL_ATRIBUTO_RELACIONAMENTO")
-@DiscriminatorValue("TBL_RELACIONAMENTO_ARTEFATO")
+@DiscriminatorValue("RELACIONAMENTO_ARTEFATO")
 public class AtributoRelacionamentoPersistence extends AtributoPersistence {
 
 	@ManyToOne(fetch = FetchType.EAGER)

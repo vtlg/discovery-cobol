@@ -16,6 +16,7 @@ import br.gov.caixa.discovery.core.modelos.Artefato;
 import br.gov.caixa.discovery.core.modelos.ArtefatoSorted;
 import br.gov.caixa.discovery.core.modelos.Atributo;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
+import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.core.utils.UtilsHandler;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
@@ -41,8 +42,8 @@ public class Conversor {
 
 		List<Callable<List<ArtefatoPersistence>>> listaThread = new ArrayList<>();
 
-		// listaThread.addAll(threadsCopybook);
-		// listaThread.addAll(threadsProgramaCobol);
+		listaThread.addAll(threadsCopybook);
+		listaThread.addAll(threadsProgramaCobol);
 		listaThread.addAll(threadsJcl);
 
 		listaOutput.addAll(executarConverter(listaThread));
@@ -288,14 +289,17 @@ public class Conversor {
 		}
 
 		// CRIA UMA RELACIONAMENTO SEM PAI
-		if ((artefatoPaiEntrada == null)
-				|| (TipoArtefato.JCL.get().equals(artefatoPaiEntrada.getCoTipoArtefato())
-						&& TipoArtefato.JCL_STEP.equals(artefato.getTipoArtefato()))
-				|| (TipoArtefato.JCL_STEP.get().equals(artefatoPaiEntrada.getCoTipoArtefato())
-						&& TipoArtefato.DDNAME.equals(artefato.getTipoArtefato()))) {
+		// if ( (artefatoPaiEntrada == null) ||
+		// ( TipoArtefato.JCL.get().equals(artefatoPaiEntrada.getCoTipoArtefato()) &&
+		// TipoArtefato.JCL_STEP.equals(artefato.getTipoArtefato()) )
+		// ||
+		// (TipoArtefato.JCL_STEP.get().equals(artefatoPaiEntrada.getCoTipoArtefato())
+		// && TipoArtefato.DDNAME.equals(artefato.getTipoArtefato()))) {
+		if (artefatoPaiEntrada == null) {
 			RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
 			relacionamento.setIcInclusaoMalha(false);
 			relacionamento.setIcInclusaoManual(false);
+			relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
 
 			relacionamento.setArtefatoPai(null);
 			relacionamento.setArtefato(artefatoPersistence);
@@ -327,7 +331,7 @@ public class Conversor {
 
 				AtributoArtefatoPersistence atributoPersistence = new AtributoArtefatoPersistence();
 
-				atributoPersistence.setCoAtributo(entry.getTipoAtributo().get());
+				atributoPersistence.setCoTipoAtributo(entry.getTipoAtributo().get());
 				atributoPersistence.setDeValor(entry.getValor());
 				atributoPersistence.setIcEditavel(false);
 				atributoPersistence.setIcOpcional(false);
@@ -350,7 +354,7 @@ public class Conversor {
 
 				AtributoRelacionamentoPersistence atributoPersistence = new AtributoRelacionamentoPersistence();
 
-				atributoPersistence.setCoAtributo(entry.getTipoAtributo().get());
+				atributoPersistence.setCoTipoAtributo(entry.getTipoAtributo().get());
 				atributoPersistence.setDeValor(entry.getValor());
 				atributoPersistence.setIcEditavel(false);
 				atributoPersistence.setIcOpcional(false);

@@ -63,6 +63,9 @@ public class ArtefatoPersistence {
 	@Column(name = "IC_INCLUSAO_MANUAL", columnDefinition = "boolean DEFAULT false")
 	private boolean icInclusaoManual = false;
 
+	@Column(name = "IC_PROCESSO_CRITICO", columnDefinition = "boolean DEFAULT false")
+	private boolean icProcessoCritico = false;
+
 	@Column(name = "TS_INICIO_VIGENCIA", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar tsInicioVigencia;
@@ -76,26 +79,26 @@ public class ArtefatoPersistence {
 	private Calendar tsFimVigencia;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CO_TIPO_ARTEFATO", referencedColumnName = "CO_TIPO_ARTEFATO", insertable = false, updatable = false)
+	@JoinColumn(name = "CO_TIPO_ARTEFATO", referencedColumnName = "CO_TIPO", insertable = false, updatable = false)
 	private TipoArtefatoPersistence tipoArtefato;
 
 	@OneToMany(mappedBy = "artefatoPai", fetch = FetchType.LAZY)
-	private List<RelacionamentoPersistence> listaArtefato;
+	private Set<RelacionamentoPersistence> listaArtefato;
 
 	@OneToMany(mappedBy = "artefato", fetch = FetchType.LAZY)
-	private List<RelacionamentoPersistence> listaArtefatoPai;
+	private Set<RelacionamentoPersistence> listaArtefatoPai;
 
 	@OneToMany(mappedBy = "artefatoPosterior", fetch = FetchType.LAZY)
-	private List<RelacionamentoPersistence> listaArtefatoAnterior;
+	private Set<RelacionamentoPersistence> listaArtefatoAnterior;
 
 	@OneToMany(mappedBy = "artefatoAnterior", fetch = FetchType.LAZY)
-	private List<RelacionamentoPersistence> listaArtefatoPosterior;
+	private Set<RelacionamentoPersistence> listaArtefatoPosterior;
 
 	@OneToMany(mappedBy = "artefatoUltimo", fetch = FetchType.LAZY)
-	private List<RelacionamentoPersistence> listaArtefatoPrimeiro;
+	private Set<RelacionamentoPersistence> listaArtefatoPrimeiro;
 
 	@OneToMany(mappedBy = "artefatoPrimeiro", fetch = FetchType.LAZY)
-	private List<RelacionamentoPersistence> listaArtefatoUltimo;
+	private Set<RelacionamentoPersistence> listaArtefatoUltimo;
 
 	@OneToMany(mappedBy = "artefato", fetch = FetchType.LAZY)
 	private Set<AtributoArtefatoPersistence> listaAtributos;
@@ -251,51 +254,51 @@ public class ArtefatoPersistence {
 		this.tipoArtefato = tipoArtefato;
 	}
 
-	public List<RelacionamentoPersistence> getListaArtefato() {
+	public Set<RelacionamentoPersistence> getListaArtefato() {
 		return listaArtefato;
 	}
 
-	public void setListaArtefato(List<RelacionamentoPersistence> listaArtefato) {
+	public void setListaArtefato(Set<RelacionamentoPersistence> listaArtefato) {
 		this.listaArtefato = listaArtefato;
 	}
 
-	public List<RelacionamentoPersistence> getListaArtefatoPai() {
+	public Set<RelacionamentoPersistence> getListaArtefatoPai() {
 		return listaArtefatoPai;
 	}
 
-	public void setListaArtefatoPai(List<RelacionamentoPersistence> listaArtefatoPai) {
+	public void setListaArtefatoPai(Set<RelacionamentoPersistence> listaArtefatoPai) {
 		this.listaArtefatoPai = listaArtefatoPai;
 	}
 
-	public List<RelacionamentoPersistence> getListaArtefatoAnterior() {
+	public Set<RelacionamentoPersistence> getListaArtefatoAnterior() {
 		return listaArtefatoAnterior;
 	}
 
-	public void setListaArtefatoAnterior(List<RelacionamentoPersistence> listaArtefatoAnterior) {
+	public void setListaArtefatoAnterior(Set<RelacionamentoPersistence> listaArtefatoAnterior) {
 		this.listaArtefatoAnterior = listaArtefatoAnterior;
 	}
 
-	public List<RelacionamentoPersistence> getListaArtefatoPosterior() {
+	public Set<RelacionamentoPersistence> getListaArtefatoPosterior() {
 		return listaArtefatoPosterior;
 	}
 
-	public void setListaArtefatoPosterior(List<RelacionamentoPersistence> listaArtefatoPosterior) {
+	public void setListaArtefatoPosterior(Set<RelacionamentoPersistence> listaArtefatoPosterior) {
 		this.listaArtefatoPosterior = listaArtefatoPosterior;
 	}
 
-	public List<RelacionamentoPersistence> getListaArtefatoPrimeiro() {
+	public Set<RelacionamentoPersistence> getListaArtefatoPrimeiro() {
 		return listaArtefatoPrimeiro;
 	}
 
-	public void setListaArtefatoPrimeiro(List<RelacionamentoPersistence> listaArtefatoPrimeiro) {
+	public void setListaArtefatoPrimeiro(Set<RelacionamentoPersistence> listaArtefatoPrimeiro) {
 		this.listaArtefatoPrimeiro = listaArtefatoPrimeiro;
 	}
 
-	public List<RelacionamentoPersistence> getListaArtefatoUltimo() {
+	public Set<RelacionamentoPersistence> getListaArtefatoUltimo() {
 		return listaArtefatoUltimo;
 	}
 
-	public void setListaArtefatoUltimo(List<RelacionamentoPersistence> listaArtefatoUltimo) {
+	public void setListaArtefatoUltimo(Set<RelacionamentoPersistence> listaArtefatoUltimo) {
 		this.listaArtefatoUltimo = listaArtefatoUltimo;
 	}
 
@@ -339,6 +342,14 @@ public class ArtefatoPersistence {
 		this.listaAtributos = listaAtributos;
 	}
 
+	public boolean isIcProcessoCritico() {
+		return icProcessoCritico;
+	}
+
+	public void setIcProcessoCritico(boolean icProcessoCritico) {
+		this.icProcessoCritico = icProcessoCritico;
+	}
+
 	public boolean isTransientAtualizarRelacionamentos() {
 		return transientAtualizarRelacionamentos;
 	}
@@ -376,11 +387,33 @@ public class ArtefatoPersistence {
 	public ArtefatoPersistence(Long coArtefato, String noNomeArtefato, String noNomeExibicao, String noNomeInterno,
 			String coAmbiente, String coSistema, String coTipoArtefato, String deIdentificador, String deHash,
 			String deDescricaoUsuario, String deDescricaoArtefato, boolean icInclusaoManual, Calendar tsInicioVigencia,
+			Calendar tsUltimaModificacao, Calendar tsFimVigencia, boolean icProcessoCritico) {
+		super();
+		this.coArtefato = coArtefato;
+		this.noNomeArtefato = noNomeArtefato;
+		this.noNomeExibicao = noNomeExibicao;
+		this.noNomeInterno = noNomeInterno;
+		this.coAmbiente = coAmbiente;
+		this.coSistema = coSistema;
+		this.coTipoArtefato = coTipoArtefato;
+		this.deIdentificador = deIdentificador;
+		this.deHash = deHash;
+		this.deDescricaoUsuario = deDescricaoUsuario;
+		this.deDescricaoArtefato = deDescricaoArtefato;
+		this.icInclusaoManual = icInclusaoManual;
+		this.tsInicioVigencia = tsInicioVigencia;
+		this.tsUltimaModificacao = tsUltimaModificacao;
+		this.tsFimVigencia = tsFimVigencia;
+		this.icProcessoCritico = icProcessoCritico;
+	}
+
+	public ArtefatoPersistence(Long coArtefato, String noNomeArtefato, String noNomeExibicao, String noNomeInterno,
+			String coAmbiente, String coSistema, String coTipoArtefato, String deIdentificador, String deHash,
+			String deDescricaoUsuario, String deDescricaoArtefato, boolean icInclusaoManual, Calendar tsInicioVigencia,
 			Calendar tsUltimaModificacao, Calendar tsFimVigencia, TipoArtefatoPersistence tipoArtefato,
-			List<RelacionamentoPersistence> listaArtefato, List<RelacionamentoPersistence> listaArtefatoPai,
-			List<RelacionamentoPersistence> listaArtefatoAnterior,
-			List<RelacionamentoPersistence> listaArtefatoPosterior,
-			List<RelacionamentoPersistence> listaArtefatoPrimeiro, List<RelacionamentoPersistence> listaArtefatoUltimo,
+			Set<RelacionamentoPersistence> listaArtefato, Set<RelacionamentoPersistence> listaArtefatoPai,
+			Set<RelacionamentoPersistence> listaArtefatoAnterior, Set<RelacionamentoPersistence> listaArtefatoPosterior,
+			Set<RelacionamentoPersistence> listaArtefatoPrimeiro, Set<RelacionamentoPersistence> listaArtefatoUltimo,
 			boolean transientAtualizarRelacionamentos, List<AtributoArtefatoPersistence> transientListaAtributos,
 			List<RelacionamentoPersistence> transientListaRelacionamentos) {
 		super();
@@ -433,8 +466,19 @@ public class ArtefatoPersistence {
 		this.coAmbiente = coAmbiente;
 		this.coSistema = coSistema;
 	}
-	
-	
+
+	public ArtefatoPersistence(Long coArtefato, String noNomeArtefato, String noNomeExibicao, String noNomeInterno,
+			String coTipoArtefato, String coAmbiente, String coSistema, boolean icProcessoCritico) {
+		super();
+		this.coArtefato = coArtefato;
+		this.noNomeArtefato = noNomeArtefato;
+		this.noNomeExibicao = noNomeExibicao;
+		this.noNomeInterno = noNomeInterno;
+		this.coTipoArtefato = coTipoArtefato;
+		this.coAmbiente = coAmbiente;
+		this.coSistema = coSistema;
+		this.icProcessoCritico = icProcessoCritico;
+	}
 
 	// ****
 

@@ -2,6 +2,7 @@ package br.gov.caixa.discovery.ejb.modelos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,11 +45,18 @@ public class RelacionamentoPersistence {
 	@Column(name = "CO_ARTEFATO_ULTIMO")
 	private Long coArtefatoUltimo;
 
+	@Column(name = "CO_TIPO_RELACIONAMENTO", columnDefinition = "NOT NULL DEFAULT 'NORMAL'::character varying")
+	private String coTipoRelacionamento = "NORMAL";
+
 	@Column(name = "IC_INCLUSAO_MANUAL", columnDefinition = "boolean NOT NULL DEFAULT false")
 	private boolean icInclusaoManual = false;
 
 	@Column(name = "IC_INCLUSAO_MALHA", columnDefinition = "boolean NOT NULL DEFAULT false")
 	private boolean icInclusaoMalha = false;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CO_TIPO_RELACIONAMENTO", referencedColumnName = "CO_TIPO", insertable = false, updatable = false)
+	private TipoRelacionamentoPersistence tipoRelacionamento;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CO_ARTEFATO", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
@@ -74,8 +82,8 @@ public class RelacionamentoPersistence {
 	@JoinColumn(name = "CO_ARTEFATO_ULTIMO", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
 	private ArtefatoPersistence artefatoUltimo;
 
-	@OneToMany(mappedBy = "relacionamento", fetch = FetchType.LAZY)
-	private List<AtributoRelacionamentoPersistence> listaAtributos;
+	@OneToMany(mappedBy = "relacionamento", fetch = FetchType.EAGER)
+	private Set<AtributoRelacionamentoPersistence> listaAtributos;
 
 	@Transient
 	private List<AtributoRelacionamentoPersistence> transientListaAtributos = new ArrayList<>();
@@ -216,12 +224,28 @@ public class RelacionamentoPersistence {
 		this.transientListaAtributos = transientListaAtributos;
 	}
 
-	public List<AtributoRelacionamentoPersistence> getListaAtributos() {
+	public Set<AtributoRelacionamentoPersistence> getListaAtributos() {
 		return listaAtributos;
 	}
 
-	public void setListaAtributos(List<AtributoRelacionamentoPersistence> listaAtributos) {
+	public void setListaAtributos(Set<AtributoRelacionamentoPersistence> listaAtributos) {
 		this.listaAtributos = listaAtributos;
+	}
+
+	public String getCoTipoRelacionamento() {
+		return coTipoRelacionamento;
+	}
+
+	public void setCoTipoRelacionamento(String coTipoRelacionamento) {
+		this.coTipoRelacionamento = coTipoRelacionamento;
+	}
+
+	public TipoRelacionamentoPersistence getTipoRelacionamento() {
+		return tipoRelacionamento;
+	}
+
+	public void setTipoRelacionamento(TipoRelacionamentoPersistence tipoRelacionamento) {
+		this.tipoRelacionamento = tipoRelacionamento;
 	}
 
 }

@@ -45,15 +45,23 @@ public class ArtefatoDao {
 		EntityManager em = dao.getEmFactory().createEntityManager();
 		ArtefatoDao artefatoDao = new ArtefatoDao(em);
 
-		ArtefatoPersistence artefato = artefatoDao.pesquisarArtefatoRelacionamento(46250L);
+		ArtefatoPersistence artefato = artefatoDao.pesquisarArtefatoRelacionamento(46790L);
 
 		em.close();
 		dao.fecharConexao();
 
-		System.out.println(artefato.getNoNomeArtefato());
+		// System.out.println(artefato.getNoNomeArtefato());
 		// System.out.println(artefato.getListaArtefato().get(0).getListaAtributos().toArray());
 		// System.out.println(artefato.getListaArtefato().get(1).getListaAtributos().toArray());
 		// System.out.println(artefato.getListaArtefato().get(2).getListaAtributos().toArray());
+
+		if (artefato.getListaArtefato() != null) {
+			artefato.getListaArtefato().forEach((rel) -> {
+				System.out.println(rel.getCoRelacionamento());
+				System.out.println(rel.getArtefato().getNoNomeArtefato());
+			});
+		}
+
 	}
 
 	public ArtefatoPersistence pesquisarArtefato(Long coArtefato) {
@@ -73,7 +81,7 @@ public class ArtefatoDao {
 				artefatoRoot.get("deHash"), artefatoRoot.get("deDescricaoUsuario"),
 				artefatoRoot.get("deDescricaoArtefato"), artefatoRoot.get("icInclusaoManual"),
 				artefatoRoot.get("tsInicioVigencia"), artefatoRoot.get("tsUltimaModificacao"),
-				artefatoRoot.get("tsFimVigencia")).where(pCoArtefato);
+				artefatoRoot.get("tsFimVigencia"), artefatoRoot.get("icProcessoCritico")).where(pCoArtefato);
 		try {
 			TypedQuery<ArtefatoPersistence> query = em.createQuery(cq);
 			output = query.getSingleResult();

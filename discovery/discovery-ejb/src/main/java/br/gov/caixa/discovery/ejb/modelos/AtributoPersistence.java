@@ -3,11 +3,14 @@ package br.gov.caixa.discovery.ejb.modelos;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity(name = "TBL_ATRIBUTO")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -19,14 +22,11 @@ public abstract class AtributoPersistence {
 	@Column(name = "NU_SEQUENCIAL")
 	private Long nuSequencial;
 
-	@Column(name = "CO_ATRIBUTO", length = 100)
-	private String coAtributo;
+	@Column(name = "CO_TIPO_ATRIBUTO", length = 100)
+	private String coTipoAtributo;
 
 	@Column(name = "CO_EXTERNO")
 	private Long coExterno;
-
-	//@Column(name = "CO_TABELA", length = 100, insertable=false, updatable=false)
-	//private String coTabela;
 
 	@Column(name = "DE_VALOR", columnDefinition = "text DEFAULT text::' '")
 	private String deValor;
@@ -36,14 +36,17 @@ public abstract class AtributoPersistence {
 
 	@Column(name = "IC_OPCIONAL", columnDefinition = "boolean NOT NULL DEFAULT false")
 	private Boolean icOpcional = false;
-	
-	
-	public String getCoAtributo() {
-		return coAtributo;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CO_TIPO_ATRIBUTO", referencedColumnName = "CO_TIPO", insertable = false, updatable = false)
+	private TipoAtributoPersistence tipoAtributo;
+
+	public String getCoTipoAtributo() {
+		return coTipoAtributo;
 	}
 
-	public void setCoAtributo(String coAtributo) {
-		this.coAtributo = coAtributo;
+	public void setCoTipoAtributo(String coTipoAtributo) {
+		this.coTipoAtributo = coTipoAtributo;
 	}
 
 	public Long getCoExterno() {
@@ -55,14 +58,10 @@ public abstract class AtributoPersistence {
 	}
 
 	/*
-	public String getCoTabela() {
-		return coTabela;
-	}
-
-	public void setCoTabela(String coTabela) {
-		this.coTabela = coTabela;
-	}
-	*/
+	 * public String getCoTabela() { return coTabela; }
+	 * 
+	 * public void setCoTabela(String coTabela) { this.coTabela = coTabela; }
+	 */
 
 	public String getDeValor() {
 		return deValor;
@@ -94,6 +93,14 @@ public abstract class AtributoPersistence {
 
 	public void setNuSequencial(Long nuSequencial) {
 		this.nuSequencial = nuSequencial;
+	}
+
+	public TipoAtributoPersistence getTipoAtributo() {
+		return tipoAtributo;
+	}
+
+	public void setTipoAtributo(TipoAtributoPersistence tipoAtributo) {
+		this.tipoAtributo = tipoAtributo;
 	}
 
 }

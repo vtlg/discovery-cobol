@@ -96,5 +96,4 @@ public class Dao {
 		this.emFactory = emFactory;
 	}
 
-
 }

@@ -51,6 +51,9 @@ public class ArtefatoDomain {
 	@JsonProperty("icInclusaoManual")
 	private boolean icInclusaoManual = false;
 
+	@JsonProperty("icProcessoCritico")
+	private boolean icProcessoCritico = false;
+
 	@JsonProperty("tsInicioVigencia")
 	@XmlJavaTypeAdapter(CalendarAdapter.class)
 	private Calendar tsInicioVigencia;
@@ -64,7 +67,7 @@ public class ArtefatoDomain {
 	private Calendar tsFimVigencia;
 
 	@JsonProperty("tipoArtefato")
-	private TipoArtefatoDomain tipoArtefato;
+	private TipoDomain tipoArtefato;
 
 	@JsonProperty("atributos")
 	private List<AtributoDomain> atributos;
@@ -199,12 +202,12 @@ public class ArtefatoDomain {
 		this.tsFimVigencia = tsFimVigencia;
 	}
 
-	public TipoArtefatoDomain getTipoArtefato() {
+	public TipoDomain getTipoArtefato() {
 		return tipoArtefato;
 	}
 
-	public void setTipoArtefato(TipoArtefatoDomain tipoArtefato) {
-		this.tipoArtefato = tipoArtefato;
+	public void setTipo(TipoDomain tipo) {
+		this.tipoArtefato = tipo;
 	}
 
 	public List<AtributoDomain> getAtributos() {
@@ -261,6 +264,18 @@ public class ArtefatoDomain {
 
 	public void setUltimos(List<RelacionamentoDomain> ultimos) {
 		this.ultimos = ultimos;
+	}
+
+	public boolean isIcProcessoCritico() {
+		return icProcessoCritico;
+	}
+
+	public void setIcProcessoCritico(boolean icProcessoCritico) {
+		this.icProcessoCritico = icProcessoCritico;
+	}
+
+	public void setTipoArtefato(TipoDomain tipoArtefato) {
+		this.tipoArtefato = tipoArtefato;
 	}
 
 }

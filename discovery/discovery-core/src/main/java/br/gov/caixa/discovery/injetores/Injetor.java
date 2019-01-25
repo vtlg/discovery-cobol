@@ -254,6 +254,8 @@ public class Injetor {
 			artefato.setCoAmbiente(artefatoPesquisa.getCoAmbiente());
 		}
 
+		artefato.setIcProcessoCritico(artefatoPesquisa.isIcProcessoCritico());
+
 		return artefato;
 	}
 
