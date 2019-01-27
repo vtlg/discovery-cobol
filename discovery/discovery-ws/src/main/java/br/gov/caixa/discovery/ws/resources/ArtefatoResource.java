@@ -25,7 +25,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 		ResponseBuilder response = Response.status(Status.OK);
 		ArtefatoPersistence persistence = artefatoDao.pesquisarArtefato(coArtefato);
 
-		ArtefatoDomain domain = Conversores.converter(persistence, true);
+		ArtefatoDomain domain = Conversores.converter(persistence, true, false);
 
 		if (domain == null) {
 			response.status(Status.NOT_FOUND);
@@ -41,7 +41,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 		ResponseBuilder response = Response.status(Status.OK);
 		ArtefatoPersistence persistence = artefatoDao.pesquisarArtefatoRelacionamento(coArtefato);
 
-		ArtefatoDomain domain = Conversores.converter(persistence, true);
+		ArtefatoDomain domain = Conversores.converter(persistence, true, false);
 
 		response.entity(domain);
 
@@ -65,7 +65,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 
 		artefatoDao.atualizar(persistence);
 
-		domain = Conversores.converter(persistence, false);
+		domain = Conversores.converter(persistence, false, false);
 
 		response.entity(domain);
 

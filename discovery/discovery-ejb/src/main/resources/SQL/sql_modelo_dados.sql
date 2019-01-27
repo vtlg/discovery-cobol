@@ -44,11 +44,11 @@ CREATE TABLE public.tbl_artefato
     de_hash character varying(256) COLLATE pg_catalog."default" NOT NULL DEFAULT ' '::character varying,
     de_descricao_usuario text COLLATE pg_catalog."default" NOT NULL DEFAULT ' '::text,
     de_descricao_artefato text COLLATE pg_catalog."default" NOT NULL DEFAULT ' '::text,
+    ic_processo_critico boolean NOT NULL DEFAULT false,
     ic_inclusao_manual boolean NOT NULL DEFAULT false,
     ts_inicio_vigencia timestamp without time zone NOT NULL DEFAULT now(),
     ts_ultima_modificacao timestamp without time zone NOT NULL DEFAULT now(),
     ts_fim_vigencia timestamp without time zone,
-    ic_processo_critico boolean NOT NULL DEFAULT false,
     CONSTRAINT tbl_artefato_pkey PRIMARY KEY (co_artefato),
     CONSTRAINT unique_tbl_artefato UNIQUE (no_nome_artefato, co_ambiente, co_tipo_artefato, co_sistema, ts_fim_vigencia)
 
@@ -100,6 +100,7 @@ ALTER TABLE public.tbl_atributo
 CREATE TABLE public.tbl_relacionamento_artefato
 (
     co_relacionamento bigint NOT NULL DEFAULT nextval('seq_relacionamento_co_relacionamento'::regclass),
+    co_tipo_relacionamento character varying(100) COLLATE pg_catalog."default" NOT NULL DEFAULT 'NORMAL'::character varying,
     co_artefato bigint,
     co_artefato_pai bigint,
     co_artefato_anterior bigint,
@@ -108,7 +109,8 @@ CREATE TABLE public.tbl_relacionamento_artefato
     co_artefato_ultimo bigint,
     ic_inclusao_manual boolean NOT NULL DEFAULT false,
     ic_inclusao_malha boolean NOT NULL DEFAULT false,
-    co_tipo_relacionamento character varying(100) COLLATE pg_catalog."default" NOT NULL DEFAULT 'NORMAL'::character varying,
+    ts_inicio_vigencia timestamp without time zone NOT NULL DEFAULT now(),
+    ts_fim_vigencia timestamp without time zone,
     CONSTRAINT tbl_relacionamento_artefato_pkey PRIMARY KEY (co_relacionamento),
     CONSTRAINT unique_tbl_relacionamento_artefato UNIQUE (co_artefato, co_artefato_pai, co_artefato_anterior, co_artefato_posterior, co_artefato_primeiro, co_artefato_ultimo)
 
@@ -135,7 +137,7 @@ CREATE TABLE public.tbl_tipo
     ic_exibir_grafo boolean NOT NULL DEFAULT true,
     co_cor character varying(30) COLLATE pg_catalog."default" NOT NULL DEFAULT '#000000'::character varying,
     co_cor_borda character varying(30) COLLATE pg_catalog."default",
-    nu_largura_borda integer NOT NULL DEFAULT 2,
+    nu_largura_borda integer NOT NULL DEFAULT 1,
     CONSTRAINT tbl_tipo_pkey PRIMARY KEY (co_tipo)
 )
 WITH (

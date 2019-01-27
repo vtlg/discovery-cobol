@@ -22,7 +22,7 @@ public class TipoResource implements TipoResourceI {
 	@Override
 	public Response getLista(String coTabela) {
 		ResponseBuilder response = Response.status(Status.OK);
-		List<TipoPersistence> persistence = tipoDao.listar(null);
+		List<TipoPersistence> persistence = tipoDao.listar(coTabela);
 
 		List<TipoDomain> domain = Conversores.converterListaTipo(persistence);
 

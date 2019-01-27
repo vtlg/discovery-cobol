@@ -252,25 +252,15 @@ public class Conversor {
 			for (int i = 0; i < artefato.getArtefatosRelacionados().size(); i++) {
 				// for (Artefato entry : artefato.getArtefatosRelacionados()) {
 				Artefato entry = artefato.getArtefatosRelacionados().get(i);
-				ArtefatoPersistence artefatoAnterior = null;
-				ArtefatoPersistence artefatoPosterior = null;
+//				ArtefatoPersistence artefatoAnterior = null;
+//				ArtefatoPersistence artefatoPosterior = null;
 
 				if (TipoArtefato.COPYBOOK.equals(artefato.getTipoArtefato())
 						&& TipoArtefato.COPYBOOK_VARIAVEL.equals(entry.getTipoArtefato())) {
 					continue;
 				}
 
-				if (i > 0) {
-					artefatoAnterior = converterArtefato(artefato.getArtefatosRelacionados().get(i - 1),
-							artefatoPersistence, null, null);
-				}
-				if (i < artefato.getArtefatosRelacionados().size() - 1) {
-					artefatoPosterior = converterArtefato(artefato.getArtefatosRelacionados().get(i + 1),
-							artefatoPersistence, null, null);
-				}
-
-				ArtefatoPersistence artefatoRelacionado = converterArtefato(entry, artefatoPersistence,
-						artefatoAnterior, artefatoPosterior);
+				ArtefatoPersistence artefatoRelacionado = converterArtefato(entry, artefatoPersistence, null, null);
 
 				RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
 				relacionamento.setIcInclusaoMalha(false);
@@ -278,8 +268,7 @@ public class Conversor {
 
 				relacionamento.setArtefatoPai(artefatoPersistence);
 				relacionamento.setArtefato(artefatoRelacionado);
-				relacionamento.setArtefatoAnterior(artefatoAnterior);
-				relacionamento.setArtefatoPosterior(artefatoPosterior);
+				relacionamento.setTsInicioVigencia(Configuracao.TS_ATUAL);
 
 				relacionamento.setTransientListaAtributos(
 						converterAtributoRelacionamento(entry.getAtributos(), Tabelas.TBL_RELACIONAMENTO_ARTEFATO));
@@ -289,35 +278,47 @@ public class Conversor {
 		}
 
 		// CRIA UMA RELACIONAMENTO SEM PAI
-		// if ( (artefatoPaiEntrada == null) ||
+		 if ( (artefatoPaiEntrada == null) ) {
+				RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
+				relacionamento.setIcInclusaoMalha(false);
+				relacionamento.setIcInclusaoManual(false);
+				relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
+				relacionamento.setTsInicioVigencia(Configuracao.TS_ATUAL);
+				
+				relacionamento.setArtefatoPai(null);
+				relacionamento.setArtefato(artefatoPersistence);
+				artefatoPersistence.adicionarRelacionamentoTransient(relacionamento);
+		 }
+		 
 		// ( TipoArtefato.JCL.get().equals(artefatoPaiEntrada.getCoTipoArtefato()) &&
 		// TipoArtefato.JCL_STEP.equals(artefato.getTipoArtefato()) )
 		// ||
 		// (TipoArtefato.JCL_STEP.get().equals(artefatoPaiEntrada.getCoTipoArtefato())
 		// && TipoArtefato.DDNAME.equals(artefato.getTipoArtefato()))) {
-		if (artefatoPaiEntrada == null) {
-			RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
-			relacionamento.setIcInclusaoMalha(false);
-			relacionamento.setIcInclusaoManual(false);
-			relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
-
-			relacionamento.setArtefatoPai(null);
-			relacionamento.setArtefato(artefatoPersistence);
-
-			if (artefato.getArtefatosRelacionados() != null && artefato.getArtefatosRelacionados().size() > 0) {
-				Collections.sort(artefato.getArtefatosRelacionados(), new ArtefatoSorted());
-
-				ArtefatoPersistence artefatoPrimeiro = converterArtefato(artefato.getArtefatosRelacionados().get(0),
-						artefatoPersistence, null, null);
-				ArtefatoPersistence artefatoUltimo = converterArtefato(
-						artefato.getArtefatosRelacionados().get(artefato.getArtefatosRelacionados().size() - 1),
-						artefatoPersistence, null, null);
-
-				relacionamento.setArtefatoPrimeiro(artefatoPrimeiro);
-				relacionamento.setArtefatoUltimo(artefatoUltimo);
-			}
-			artefatoPersistence.adicionarRelacionamentoTransient(relacionamento);
-		}
+//		if (artefatoPaiEntrada == null) {
+//			RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
+//			relacionamento.setIcInclusaoMalha(false);
+//			relacionamento.setIcInclusaoManual(false);
+//			relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
+//
+//			relacionamento.setArtefatoPai(null);
+//			relacionamento.setArtefato(artefatoPersistence);
+//
+//			if (artefato.getArtefatosRelacionados() != null && artefato.getArtefatosRelacionados().size() > 0) {
+//				Collections.sort(artefato.getArtefatosRelacionados(), new ArtefatoSorted());
+//
+//				ArtefatoPersistence artefatoPrimeiro = converterArtefato(artefato.getArtefatosRelacionados().get(0),
+//						artefatoPersistence, null, null);
+//				ArtefatoPersistence artefatoUltimo = converterArtefato(
+//						artefato.getArtefatosRelacionados().get(artefato.getArtefatosRelacionados().size() - 1),
+//						artefatoPersistence, null, null);
+//
+//				relacionamento.setArtefatoPrimeiro(artefatoPrimeiro);
+//				relacionamento.setArtefatoUltimo(artefatoUltimo);
+//				relacionamento.setTsInicioVigencia(Configuracao.TS_ATUAL);
+//			}
+//			artefatoPersistence.adicionarRelacionamentoTransient(relacionamento);
+//		}
 
 		return artefatoPersistence;
 	}
