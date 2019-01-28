@@ -67,8 +67,18 @@ public class ExtratorProgramaCobol {
 	}
 
 	private Artefato processarCodigoCompleto(Artefato artefato) throws Exception {
-		for (String texto : artefato.getCodigoCompleto()) {
-			this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento));
+		for (String textoCompleto : artefato.getCodigoCompleto()) {
+			if ("".equals(textoCompleto.trim())) {
+				continue;
+			}
+			String texto = textoCompleto;
+			if (texto.length() >= 73) {
+				texto = texto.substring(this.deslocamento, 72);
+				this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, 72));
+			} else {
+				texto = texto.substring(this.deslocamento, texto.length());
+				this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, texto.length()));
+			}
 
 			if (texto != null && texto.length() > (this.deslocamento + 6)
 					&& "*".equals(texto.substring(this.deslocamento + 6, this.deslocamento + 7))) {

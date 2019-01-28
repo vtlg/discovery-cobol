@@ -26,19 +26,6 @@ import javax.persistence.UniqueConstraint;
 @Entity(name = "TBL_ARTEFATO")
 @Table(schema = "public", uniqueConstraints = { @UniqueConstraint(columnNames = { "NO_NOME_ARTEFATO", "CO_AMBIENTE",
 		"CO_SISTEMA", "CO_TIPO_ARTEFATO", "TS_FIM_VIGENCIA" }) })
-@NamedQueries(
-		{
-			@NamedQuery(
-					name="pesquisarArtefatoRelacionamento",
-					query = "SELECT t1.noNomeArtefato, tRelPai FROM TBL_ARTEFATO t1 "
-							+ " LEFT JOIN TBL_RELACIONAMENTO_ARTEFATO tRelPai "
-							+ "       ON t1.coArtefato = tRelPai.coArtefatoPai and tRelPai.tsFimVigencia is null "
-							+ " LEFT JOIN TBL_RELACIONAMENTO_ARTEFATO tRelPai "
-							+ "       ON t1.coArtefato = tRelPai.coArtefatoPai and tRelPai.tsFimVigencia is null "
-							+ " where t1.coArtefato = :coArtefato "
-							+ "   and t1.tsFimVigencia is null "
-		     )
-		})
 public class ArtefatoPersistence {
 
 	@Id

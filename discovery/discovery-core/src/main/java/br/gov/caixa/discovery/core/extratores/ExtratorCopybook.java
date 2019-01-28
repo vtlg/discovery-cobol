@@ -84,7 +84,7 @@ public class ExtratorCopybook {
 
 	private Artefato processarCodigoCompleto(Artefato artefato) throws Exception {
 		for (String texto : artefato.getCodigoCompleto()) {
-			this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento));
+			this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, 72));
 
 			if (texto != null && texto.length() > (this.deslocamento + 6)
 					&& "*".equals(texto.substring(this.deslocamento + 6, this.deslocamento + 7))) {

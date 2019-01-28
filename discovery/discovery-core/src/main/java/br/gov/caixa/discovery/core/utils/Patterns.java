@@ -9,10 +9,13 @@ public class Patterns {
 	
 	public static final Pattern INJETOR_P_DSN_CARDLIB = Pattern.compile("^.*\\((?<cardlib>[\\S]{1,}?)\\).*$");
 	
+	public static final Pattern EXTRATOR_P_NOME_ARTEFATO = Pattern.compile("^.*\\((?<parametro>[\\S]{1,}?)\\).*$");
+
+	
 
 	public static void main(String[] args) {
 		Matcher m = INJETOR_P_DSN_CARDLIB.matcher(
-				"(%%CARDLIB(PCSTESTE))");
+				"'DES.PCS.V00.C083347.FONTES.COBLE(PCSPRO11)'");
 		if (m.matches()) {
 			System.out.println(m.group("cardlib"));
 			System.out.println("Aqui");

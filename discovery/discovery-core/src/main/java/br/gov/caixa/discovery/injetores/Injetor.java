@@ -30,7 +30,6 @@ public class Injetor {
 		List<ArtefatoPersistence> listaArtefatosPersistence = Conversor.executar();
 
 		executar(listaArtefatosPersistence);
-
 	}
 
 	private static void executar(List<ArtefatoPersistence> listaEntrada) {

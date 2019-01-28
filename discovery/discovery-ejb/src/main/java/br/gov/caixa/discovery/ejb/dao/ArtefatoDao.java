@@ -106,7 +106,7 @@ public class ArtefatoDao {
 		}
 
 		if (icInterface != null && icInterface == true) {
-			Predicate pCoTipoRelacionamento = cb.equal(artefatoRoot.get("coTipoRelacionamento"), "INTERFACE");
+			Predicate pCoTipoRelacionamento = cb.greaterThan(artefatoRoot.get("countRelacionamentoInterface"), 0);
 			listaPredicadosAnd.add(pCoTipoRelacionamento);
 		}
 
@@ -225,17 +225,12 @@ public class ArtefatoDao {
 					output.adicionarRelacionamento(relacionamento);
 				} else if (coArtefato.equals(entry.getCoArtefatoDesc())) {
 					output.adicionarRelacionamentoPai(relacionamento);
-
 				}
-
 			}
-
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar pesquisar artefato. " + "CoArtefato (" + coArtefato + ")", e);
 		}
-
 		return output;
-
 	}
 
 	public List<ArtefatoPersistence> pesquisarRapida(String coNome) {

@@ -1,6 +1,7 @@
 package br.gov.caixa.discovery.core.utils;
 
 import java.util.List;
+import java.util.regex.Matcher;
 
 import br.gov.caixa.discovery.core.extratores.Extrator;
 import br.gov.caixa.discovery.core.modelos.Artefato;
@@ -11,7 +12,10 @@ public class ArtefatoHandler {
 	public static String tratarNomeArtefato(String nome) {
 		String output = nome;
 
+
 		try {
+
+			
 			if (nome.contains(".")) {
 				output = nome.split("\\.")[0];
 			} else if (nome.contains(",")) {
@@ -122,7 +126,7 @@ public class ArtefatoHandler {
 				if (valor) {
 					return true;
 				}
-			} else  if (artefato.getTipoArtefato().equals(tipo) && artefato.getNome().equals(nome)) {
+			} else if (artefato.getTipoArtefato().equals(tipo) && artefato.getNome().equals(nome)) {
 				return true;
 			}
 		}

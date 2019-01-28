@@ -78,12 +78,13 @@ INSERT INTO public.tbl_tipo(
 ('ARTEFATO','TABELA','Tabela',true,false,true,'green','green', 1),
 ('ARTEFATO','TABELA-CAMPO','Tabela Campo',false,true,true,'#FFFFFF','green', 1),
 ('ARTEFATO','UTILITARIO','Utilitário',false,false,true,'steelblue','steelblue', 1),
-('ARTEFATO','DECLARACAO-SQL','Declaração SQL',false,false,false,'#000000','#000000', 1),
+('ARTEFATO','DECLARACAO-SQL','Declaração SQL',false,false,true,'#000000','#000000', 1),
 ('ARTEFATO','DESCONHECIDO','Desconhecido',true,false,true,'#000000','#000000', 1),
 ('ARTEFATO','JCL','JCL',true,false,true,'#e57373','#e57373', 1),
-('ARTEFATO','JCL-STEP','JCL Step',false,false,false,'#FFFFFF','#e57373', 1),
+('ARTEFATO','JCL-STEP','JCL Step',true,false,true,'#FFFFFF','#e57373', 1),
 ('ARTEFATO','DSN','DSN',true,false,true,'darkkhaki','darkkhaki', 1),
 ('ATRIBUTO','PROCESSO-CRITICO','Processo Crítico',true,true,true,'orange','orange', 1),
 ('RELACIONAMENTO_ARTEFATO','NORMAL','Normal',false,true,true,'none','#cecece', 0.8),
 ('RELACIONAMENTO_ARTEFATO','INTERFACE','Interface',false,true,true,'none','#000000', 2),
 ('RELACIONAMENTO_ARTEFATO','CONTROL-M','Control-M',false,true,true,'none','#e57373', 2)
+('RELACIONAMENTO_ARTEFATO','DESATIVADO','Desativado',false,false,false,'none','#e57373', 1)

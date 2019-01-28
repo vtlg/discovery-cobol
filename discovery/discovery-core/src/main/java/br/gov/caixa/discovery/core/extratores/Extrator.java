@@ -11,11 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 import br.gov.caixa.discovery.core.modelos.Artefato;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.utils.ArtefatoHandler;
 import br.gov.caixa.discovery.core.utils.Configuracao;
+import br.gov.caixa.discovery.core.utils.Patterns;
 
 public class Extrator {
 
@@ -66,8 +68,17 @@ public class Extrator {
 			artefato.setTipoArtefato(this.tipoArtefato);
 			artefato.setCodigoCompleto(codigoCompleto);
 			artefato.setCaminhoArquivo(path.toAbsolutePath().toString());
-			artefato.setNomeArquivo(ArtefatoHandler.tratarNomeArtefato(path.getFileName().toString())); //
-			artefato.setNome(ArtefatoHandler.tratarNomeArtefato(artefato.getNomeArquivo()));
+			// artefato.setNomeArquivo(ArtefatoHandler.tratarNomeArtefato(); //
+
+			String nomeArtefato = path.getFileName().toString();
+
+			Matcher m_extrator_p_nome_artefato = Patterns.EXTRATOR_P_NOME_ARTEFATO
+					.matcher(path.getFileName().toString());
+			if (m_extrator_p_nome_artefato.matches()) {
+				nomeArtefato = m_extrator_p_nome_artefato.group("parametro");
+			}
+
+			artefato.setNome(ArtefatoHandler.tratarNomeArtefato(nomeArtefato));
 
 			if (TipoArtefato.PROGRAMA_COBOL.equals(tipoArtefato)) { // ExtratorCobol
 				ExtratorProgramaCobol extrator = new ExtratorProgramaCobol(artefato, deslocamento);

@@ -51,7 +51,7 @@ public class ExtratorJcl {
 		boolean inicioJcl = false;
 
 		for (String texto : artefato.getCodigoCompleto()) {
-			this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento));
+			this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, 72));
 
 			if ((texto != null) && (texto.length() > (deslocamento))
 					&& (texto.substring(deslocamento).startsWith("//"))) {
