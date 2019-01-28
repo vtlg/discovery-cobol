@@ -3,27 +3,27 @@
 		"ambiente": "QUALQUER",
 		"sistema": "QUALQUER",
 		"tipo": "UTILITARIO",
-		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\utilitarios_mainframe.txt"
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codIgo\\sipcs\\CEFPRD\\utilitarios_mainframe.txt"
 	},
 	{
 		"ambiente": "PRD",
 		"sistema": "SIPCS",
 		"tipo": "MODELO_DADOS_CSV",
-		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\ARQUIVOS\\modelo_dados_tabelas.csv",
-		"caminhoPastaAcessoria": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\ARQUIVOS\\modelo_dados_campos.csv"
-	},
-	{ 
-		"ambiente": "PRD",
-		"sistema": "SIPCS",
-		"tipo": "PARAMETRO_MPDT304",
-		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\ARQUIVOS\\MPDT304.csv",
-		"caminhoPastaAcessoria": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\ARQUIVOS\\MPDT304.properties"
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\ARQUIVOS\\modelo_dados_tabelas.csv",
+		"caminhoPastaAcessoria": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\ARQUIVOS\\modelo_dados_campos.csv"
 	},
 	{
 		"ambiente": "PRD",
 		"sistema": "SIPCS",
-		"tipo": "CONTROL_M_ARQUIVO_MALHA",
-		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\MALHA\\"
+		"tipo": "PARAMETRO_MPDT304",
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\ARQUIVOS\\MPDT304.csv",
+		"caminhoPastaAcessoria": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\ARQUIVOS\\MPDT304.properties"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "CONTROL-M",
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\SCHEDULE\\"
 	},
 	{
 		"ambiente": "PRD",
@@ -35,20 +35,20 @@
 		"ambiente": "PRD",
 		"sistema": "SIPCS",
 		"tipo": "PROGRAMA-COBOL",
-		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\COBOL\\",
-		"caminhoPastaAcessoria": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\copybook\\"
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\COBOL\\",
+		"caminhoPastaAcessoria": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\copybook\\"
 	},
 	{
 		"ambiente": "PRD",
 		"sistema": "SIPCS",
 		"tipo": "COPYBOOK",
-		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\COPYBOOK\\"
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\COPYBOOK\\"
 	},
 	{
 		"ambiente": "PRD",
 		"sistema": "SIPCS",
 		"tipo": "JCL",
-		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\JCL\\"
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\JCL\\"
 	},
 	{
 		"ambiente": "PRD",

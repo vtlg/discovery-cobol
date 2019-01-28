@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 import br.gov.caixa.discovery.core.modelos.Artefato;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
@@ -48,6 +49,15 @@ public class Extrator {
 		this.deslocamento = deslocamento;
 	}
 
+	public void inicializar(List<Path> listaArquivos, TipoArtefato tipoArtefato2) {
+		List<String> tempLista = listaArquivos.stream().map((o) -> {
+			return o.toAbsolutePath().toString();
+		}).collect(Collectors.toList());
+
+		this.listaCaminhoArquivos = tempLista;
+		this.tipoArtefato = tipoArtefato2;
+	}
+
 	public List<Artefato> converter() {
 		if (this.listaCaminhoArquivos == null && listaCaminhoArquivos.size() == 0) {
 			LOGGER.log(Level.WARNING, "Nenhum arquivo para extração!");
@@ -56,44 +66,50 @@ public class Extrator {
 
 		List<Artefato> listaArtefato = new ArrayList<>();
 
-		for (String caminhoArquivo : this.listaCaminhoArquivos) {
-			Path path = Paths.get(caminhoArquivo);
-			_validarArquivo(path);
-			_extrairodigoCompleto(path);
-			List<String> codigoCompleto = _extrairodigoCompleto(path);
+		if (TipoArtefato.CONTROL_M.equals(this.tipoArtefato)) {
+			ExtratorControlM extrator = new ExtratorControlM();
+			extrator.inicializar(listaCaminhoArquivos);
+			listaArtefato = extrator.executa();
+		} else {
+			for (String caminhoArquivo : this.listaCaminhoArquivos) {
+				Path path = Paths.get(caminhoArquivo);
+				_validarArquivo(path);
+				_extrairodigoCompleto(path);
+				List<String> codigoCompleto = _extrairodigoCompleto(path);
 
-			Artefato artefato = new Artefato();
-			artefato.setAmbiente(Configuracao.AMBIENTE);
-			artefato.setSistema(Configuracao.SISTEMA);
-			artefato.setTipoArtefato(this.tipoArtefato);
-			artefato.setCodigoCompleto(codigoCompleto);
-			artefato.setCaminhoArquivo(path.toAbsolutePath().toString());
-			// artefato.setNomeArquivo(ArtefatoHandler.tratarNomeArtefato(); //
+				Artefato artefato = new Artefato();
+				artefato.setAmbiente(Configuracao.AMBIENTE);
+				artefato.setSistema(Configuracao.SISTEMA);
+				artefato.setTipoArtefato(this.tipoArtefato);
+				artefato.setCodigoCompleto(codigoCompleto);
+				artefato.setCaminhoArquivo(path.toAbsolutePath().toString());
+				// artefato.setNomeArquivo(ArtefatoHandler.tratarNomeArtefato(); //
 
-			String nomeArtefato = path.getFileName().toString();
+				String nomeArtefato = path.getFileName().toString();
 
-			Matcher m_extrator_p_nome_artefato = Patterns.EXTRATOR_P_NOME_ARTEFATO
-					.matcher(path.getFileName().toString());
-			if (m_extrator_p_nome_artefato.matches()) {
-				nomeArtefato = m_extrator_p_nome_artefato.group("parametro");
-			}
+				Matcher m_extrator_p_nome_artefato = Patterns.EXTRATOR_P_NOME_ARTEFATO
+						.matcher(path.getFileName().toString());
+				if (m_extrator_p_nome_artefato.matches()) {
+					nomeArtefato = m_extrator_p_nome_artefato.group("parametro");
+				}
 
-			artefato.setNome(ArtefatoHandler.tratarNomeArtefato(nomeArtefato));
+				artefato.setNome(ArtefatoHandler.tratarNomeArtefato(nomeArtefato));
 
-			if (TipoArtefato.PROGRAMA_COBOL.equals(tipoArtefato)) { // ExtratorCobol
-				ExtratorProgramaCobol extrator = new ExtratorProgramaCobol(artefato, deslocamento);
-				artefato = extrator.executa();
-				listaArtefato.add(artefato);
-			}
-			if (TipoArtefato.COPYBOOK.equals(tipoArtefato)) { // ExtratorCopybook
-				ExtratorCopybook extrator = new ExtratorCopybook(artefato, deslocamento);
-				artefato = extrator.executa();
-				listaArtefato.add(artefato);
-			}
-			if (TipoArtefato.JCL.equals(tipoArtefato)) { // ExtratorJcl
-				ExtratorJcl extrator = new ExtratorJcl(artefato, deslocamento);
-				artefato = extrator.executa();
-				listaArtefato.add(artefato);
+				if (TipoArtefato.PROGRAMA_COBOL.equals(tipoArtefato)) { // ExtratorCobol
+					ExtratorProgramaCobol extrator = new ExtratorProgramaCobol(artefato, deslocamento);
+					artefato = extrator.executa();
+					listaArtefato.add(artefato);
+				}
+				if (TipoArtefato.COPYBOOK.equals(tipoArtefato)) { // ExtratorCopybook
+					ExtratorCopybook extrator = new ExtratorCopybook(artefato, deslocamento);
+					artefato = extrator.executa();
+					listaArtefato.add(artefato);
+				}
+				if (TipoArtefato.JCL.equals(tipoArtefato)) { // ExtratorJcl
+					ExtratorJcl extrator = new ExtratorJcl(artefato, deslocamento);
+					artefato = extrator.executa();
+					listaArtefato.add(artefato);
+				}
 			}
 		}
 

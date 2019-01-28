@@ -50,8 +50,18 @@ public class ExtratorJcl {
 	private Artefato processarCodigoCompleto(Artefato artefato) throws Exception {
 		boolean inicioJcl = false;
 
-		for (String texto : artefato.getCodigoCompleto()) {
-			this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, 72));
+		for (String textoCompleto : artefato.getCodigoCompleto()) {
+			if ("".equals(textoCompleto.trim())) {
+				continue;
+			}
+			String texto = textoCompleto;
+			if (texto.length() >= 73) {
+				texto = texto.substring(this.deslocamento, 72);
+				this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, 72));
+			} else {
+				texto = texto.substring(this.deslocamento, texto.length());
+				this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, texto.length()));
+			}
 
 			if ((texto != null) && (texto.length() > (deslocamento))
 					&& (texto.substring(deslocamento).startsWith("//"))) {
@@ -60,6 +70,7 @@ public class ExtratorJcl {
 
 			if (!inicioJcl || texto.startsWith("**")) {
 			} else if ((texto != null) && (texto.length() > (deslocamento))
+					&& (!texto.trim().equals("/*"))
 					&& (texto.substring(deslocamento, deslocamento + 3).equals("//*")
 							|| texto.substring(deslocamento, deslocamento + 3).equals("/* "))) {
 

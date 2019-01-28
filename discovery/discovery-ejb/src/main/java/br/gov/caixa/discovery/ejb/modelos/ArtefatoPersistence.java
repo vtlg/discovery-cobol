@@ -14,8 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -142,6 +140,14 @@ public class ArtefatoPersistence {
 		this.transientRelacionamentosDesativados.add(entry);
 	}
 
+	public void adicionarRelacionamentoTransient(List<RelacionamentoPersistence> entry) {
+		if (this.transientListaRelacionamentos == null) {
+			this.transientListaRelacionamentos = new ArrayList<>();
+		}
+
+		this.transientListaRelacionamentos.addAll(entry);
+	}
+	
 	public void adicionarRelacionamentoTransient(RelacionamentoPersistence entry) {
 		if (this.transientListaRelacionamentos == null) {
 			this.transientListaRelacionamentos = new ArrayList<>();

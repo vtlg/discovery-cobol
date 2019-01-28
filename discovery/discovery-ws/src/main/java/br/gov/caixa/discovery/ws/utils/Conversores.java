@@ -116,12 +116,16 @@ public class Conversores {
 		saida.setIcInclusaoMalha(entrada.isIcInclusaoMalha());
 		saida.setIcInclusaoManual(entrada.isIcInclusaoManual());
 
-		if (entrada.getTipoRelacionamento() == null) {
+		if (entrada.getTipoRelacionamento() == null && entrada.getCoTipoRelacionamento() == null) {
 			TipoDomain tipoArtefatoDomain = new TipoDomain();
 			tipoArtefatoDomain.setCoTipo("NORMAL");
 			saida.setTipoRelacionamento(tipoArtefatoDomain);
-		} else {
+		} else if (entrada.getCoTipoRelacionamento() == null) {
 			saida.setTipoRelacionamento(converter(entrada.getTipoRelacionamento()));
+		} else {
+			TipoDomain tipoArtefatoDomain = new TipoDomain();
+			tipoArtefatoDomain.setCoTipo(entrada.getCoTipoRelacionamento());
+			saida.setTipoRelacionamento(tipoArtefatoDomain);
 		}
 
 		if (entrada.getListaAtributos() != null && entrada.getListaAtributos().size() > 0) {

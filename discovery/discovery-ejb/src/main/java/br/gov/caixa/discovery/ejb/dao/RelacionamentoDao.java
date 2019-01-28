@@ -1,11 +1,13 @@
 package br.gov.caixa.discovery.ejb.dao;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -128,6 +130,49 @@ public class RelacionamentoDao {
 				LOGGER.log(Level.SEVERE,
 						"Erro ao tentar desativar relacionamento. " + "CoArtefato (" + coArtefato + ")", e);
 			}
+		}
+
+		return output;
+	}
+
+	@SuppressWarnings("unused")
+	public int desativarControlM(Long coArtefato, Calendar tsFimVigencia) {
+		int output = 0;
+		List<RelacionamentoPersistence> resultRelacionamento = getListaRelacionamento(coArtefato);
+		List<RelacionamentoPersistence> listaDesativar = new ArrayList<>();
+
+		if (resultRelacionamento != null && resultRelacionamento.size() > 0) {
+			for (RelacionamentoPersistence entry : resultRelacionamento) {
+				if (entry.isIcInclusaoMalha() && !entry.getCoArtefato().equals(coArtefato)) {
+					listaDesativar.add(entry);
+				}
+			}
+
+			if (listaDesativar != null && listaDesativar.size() > 0) {
+				CriteriaBuilder cb = this.em.getCriteriaBuilder();
+				CriteriaUpdate<RelacionamentoPersistence> cq = cb.createCriteriaUpdate(RelacionamentoPersistence.class);
+				Root<RelacionamentoPersistence> relacionamentoRoot = cq.from(RelacionamentoPersistence.class);
+
+				Set<Long> listaCoRelacionamento = new HashSet<>();
+				for (RelacionamentoPersistence persistence : listaDesativar) {
+					listaCoRelacionamento.add(persistence.getCoRelacionamento());
+					persistence.setTsFimVigencia(tsFimVigencia);
+				}
+
+				Predicate pcoRelacionamento = relacionamentoRoot.get("coRelacionamento").in(listaCoRelacionamento);
+				cq.set(relacionamentoRoot.get("tsFimVigencia"), tsFimVigencia);
+
+				cq.where(pcoRelacionamento);
+
+				try {
+					int i = this.em.createQuery(cq).executeUpdate();
+				} catch (Exception e) {
+					LOGGER.log(Level.SEVERE,
+							"Erro ao tentar desativar relacionamento control-m. " + "CoArtefato (" + coArtefato + ")",
+							e);
+				}
+			}
+
 		}
 
 		return output;

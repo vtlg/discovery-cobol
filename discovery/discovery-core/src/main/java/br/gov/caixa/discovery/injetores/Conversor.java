@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -33,25 +34,156 @@ public class Conversor {
 
 	@SuppressWarnings("unused")
 	public static List<ArtefatoPersistence> executar() {
-		List<ArtefatoPersistence> listaOutput = new ArrayList<>();
+		return executar(false);
+	}
 
-		List<Callable<List<ArtefatoPersistence>>> threadsCopybook = _criarThreads(
-				Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0);
-		List<Callable<List<ArtefatoPersistence>>> threadsProgramaCobol = _criarThreads(
-				Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL), TipoArtefato.PROGRAMA_COBOL, 0);
-		List<Callable<List<ArtefatoPersistence>>> threadsJcl = _criarThreads(
-				Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0);
+	@SuppressWarnings("unused")
+	public static List<ArtefatoPersistence> executar(boolean controlM) {
+		List<ArtefatoPersistence> listaOutput = new ArrayList<>();
 
 		List<Callable<List<ArtefatoPersistence>>> listaThread = new ArrayList<>();
 
-		listaThread.addAll(threadsCopybook);
-		listaThread.addAll(threadsProgramaCobol);
-		listaThread.addAll(threadsJcl);
+		if (!controlM) {
+			List<Callable<List<ArtefatoPersistence>>> threadsCopybook = _criarThreads(
+					Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0);
+			List<Callable<List<ArtefatoPersistence>>> threadsProgramaCobol = _criarThreads(
+					Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL), TipoArtefato.PROGRAMA_COBOL, 0);
+			List<Callable<List<ArtefatoPersistence>>> threadsJcl = _criarThreads(
+					Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0);
+
+			listaThread.addAll(threadsCopybook);
+			listaThread.addAll(threadsProgramaCobol);
+			listaThread.addAll(threadsJcl);
+		} else if (controlM) {
+			List<Path> listaArquivos = UtilsHandler.recuperarListaArquivo(
+					Configuracao.getConfiguracao(TipoArtefato.CONTROL_M).getCaminhoPasta(), false);
+			Extrator extrator = new Extrator();
+			extrator.inicializar(listaArquivos, TipoArtefato.CONTROL_M);
+
+			List<Artefato> listaArtefato = extrator.converter();
+
+			if (listaArtefato != null) {
+				ArtefatoPersistence artefatoPersistence = null;
+				HashMap<String, ArtefatoPersistence> map = new HashMap<>();
+
+				for (Artefato entry : listaArtefato) {
+					artefatoPersistence = converterArtefato(entry);
+					if (map.containsKey(artefatoPersistence.getNoNomeArtefato())) {
+						map.get(artefatoPersistence.getNoNomeArtefato()).adicionarRelacionamentoTransient(
+								artefatoPersistence.getTransientListaRelacionamentos());
+					} else {
+						map.put(artefatoPersistence.getNoNomeArtefato(), artefatoPersistence);
+					}
+				}
+
+				listaOutput.addAll(map.values());
+
+				for (ArtefatoPersistence entry : listaOutput) {
+					List<ArtefatoPersistence> listaArtefatos = getListaArtefatos(new ArrayList<>(), entry);
+
+					entry = substituirArtefatos(listaArtefatos, entry);
+				}
+
+			}
+		}
 
 		listaOutput.addAll(executarConverter(listaThread));
 		executor.shutdown();
 
 		return listaOutput;
+	}
+
+	private static ArtefatoPersistence converterArtefato(Artefato artefato) {
+		ArtefatoPersistence artefatoPersistence = converterArtefato(artefato, null, null, null);
+		List<ArtefatoPersistence> listaArtefatos = getListaArtefatos(new ArrayList<>(), artefatoPersistence);
+
+		if (artefato.isMalhaControlm() == false) {
+			artefatoPersistence = substituirArtefatos(listaArtefatos, artefatoPersistence);
+		}
+
+		return artefatoPersistence;
+	}
+
+	private static List<ArtefatoPersistence> getListaArtefatos(List<ArtefatoPersistence> lista,
+			ArtefatoPersistence artefato) {
+
+		// for (RelacionamentoPersistence relacionamento :
+		// artefato.getTransientListaRelacionamentos()) {
+		lista.add(artefato);
+		// }
+
+		for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
+			ArtefatoPersistence result = existeArtefato(lista, relacionamento.getArtefato());
+
+			if (result == null) {
+				getListaArtefatos(lista, relacionamento.getArtefato());
+			}
+		}
+
+		return lista;
+	}
+
+	private static ArtefatoPersistence substituirArtefatos(List<ArtefatoPersistence> lista,
+			ArtefatoPersistence artefatoEntrada) {
+
+		for (RelacionamentoPersistence entry : artefatoEntrada.getTransientListaRelacionamentos()) {
+			ArtefatoPersistence artefatoPrimeiro = null;
+			ArtefatoPersistence artefatoUltimo = null;
+			ArtefatoPersistence artefatoAnterior = null;
+			ArtefatoPersistence artefatoPosterior = null;
+			ArtefatoPersistence artefato = null;
+			ArtefatoPersistence artefatoPai = null;
+
+			if (entry.isIcInclusaoMalha()) {
+				artefatoPrimeiro = existeArtefato(lista, entry.getArtefatoPrimeiro());
+				artefatoUltimo = existeArtefato(lista, entry.getArtefatoUltimo());
+				artefatoAnterior = existeArtefato(lista, entry.getArtefatoAnterior());
+				artefatoPosterior = existeArtefato(lista, entry.getArtefatoPosterior());
+				artefato = existeArtefato(lista, entry.getArtefato());
+				artefatoPai = existeArtefato(lista, entry.getArtefatoPai());
+			} else {
+				artefatoPrimeiro = existeArtefato(lista, entry.getArtefatoPrimeiro());
+				artefatoUltimo = existeArtefato(lista, entry.getArtefatoUltimo());
+				artefatoAnterior = existeArtefato(lista, entry.getArtefatoAnterior());
+				artefatoPosterior = existeArtefato(lista, entry.getArtefatoPosterior());
+				artefato = existeArtefato(lista, entry.getArtefato());
+				artefatoPai = existeArtefato(lista, entry.getArtefatoPai());
+			}
+
+			entry.setArtefatoPrimeiro(artefatoPrimeiro);
+			entry.setArtefatoUltimo(artefatoUltimo);
+			entry.setArtefatoAnterior(artefatoAnterior);
+			entry.setArtefatoPosterior(artefatoPosterior);
+			entry.setArtefato(artefato);
+			entry.setArtefatoPai(artefatoPai);
+
+			if (artefatoPai != null) {
+				artefato = substituirArtefatos(lista, artefato);
+			}
+		}
+
+		return artefatoEntrada;
+	}
+
+	private static ArtefatoPersistence existeArtefato(List<ArtefatoPersistence> lista, ArtefatoPersistence artefato) {
+		if (artefato == null) {
+			return null;
+		}
+
+		for (ArtefatoPersistence entry : lista) {
+
+//			if (entry.getNoNomeArtefato().equals(artefato.getNoNomeArtefato())
+//					&& entry.getCoTipoArtefato().equals(artefato.getCoTipoArtefato())
+//					&& entry.getCoSistema().equals(artefato.getCoSistema())
+//					&& entry.getCoAmbiente().equals(artefato.getCoAmbiente())) {
+			if (entry.getNoNomeArtefato().equals(artefato.getNoNomeArtefato())
+					&& entry.getCoTipoArtefato().equals(artefato.getCoTipoArtefato())) {
+				return entry;
+			}
+
+		}
+
+		return null;
 	}
 
 	private static List<ArtefatoPersistence> executarConverter(List<Callable<List<ArtefatoPersistence>>> listaThread) {
@@ -129,75 +261,6 @@ public class Conversor {
 		return listaThreads;
 	}
 
-	private static ArtefatoPersistence converterArtefato(Artefato artefato) {
-		ArtefatoPersistence artefatoPersistence = converterArtefato(artefato, null, null, null);
-		List<ArtefatoPersistence> listaArtefatos = getListaArtefatos(new ArrayList<>(), artefatoPersistence);
-		artefatoPersistence = substituirArtefatos(listaArtefatos, artefatoPersistence);
-		return artefatoPersistence;
-	}
-
-	private static ArtefatoPersistence substituirArtefatos(List<ArtefatoPersistence> lista,
-			ArtefatoPersistence artefatoEntrada) {
-
-		for (RelacionamentoPersistence entry : artefatoEntrada.getTransientListaRelacionamentos()) {
-			ArtefatoPersistence artefatoPrimeiro = existeArtefato(lista, entry.getArtefatoPrimeiro());
-			ArtefatoPersistence artefatoUltimo = existeArtefato(lista, entry.getArtefatoUltimo());
-			ArtefatoPersistence artefatoAnterior = existeArtefato(lista, entry.getArtefatoAnterior());
-			ArtefatoPersistence artefatoPosterior = existeArtefato(lista, entry.getArtefatoPosterior());
-			ArtefatoPersistence artefato = existeArtefato(lista, entry.getArtefato());
-			ArtefatoPersistence artefatoPai = existeArtefato(lista, entry.getArtefatoPai());
-
-			entry.setArtefatoPrimeiro(artefatoPrimeiro);
-			entry.setArtefatoUltimo(artefatoUltimo);
-			entry.setArtefatoAnterior(artefatoAnterior);
-			entry.setArtefatoPosterior(artefatoPosterior);
-
-			if (artefatoPai != null) {
-				artefato = substituirArtefatos(lista, artefato);
-			}
-		}
-
-		return artefatoEntrada;
-	}
-
-	private static List<ArtefatoPersistence> getListaArtefatos(List<ArtefatoPersistence> lista,
-			ArtefatoPersistence artefato) {
-
-		// for (RelacionamentoPersistence relacionamento :
-		// artefato.getTransientListaRelacionamentos()) {
-		lista.add(artefato);
-		// }
-
-		for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
-			ArtefatoPersistence result = existeArtefato(lista, relacionamento.getArtefato());
-
-			if (result == null) {
-				getListaArtefatos(lista, relacionamento.getArtefato());
-			}
-		}
-
-		return lista;
-	}
-
-	private static ArtefatoPersistence existeArtefato(List<ArtefatoPersistence> lista, ArtefatoPersistence artefato) {
-		if (artefato == null) {
-			return null;
-		}
-
-		for (ArtefatoPersistence entry : lista) {
-
-			if (entry.getNoNomeArtefato().equals(artefato.getNoNomeArtefato())
-					&& entry.getCoTipoArtefato().equals(artefato.getCoTipoArtefato())
-					&& entry.getCoSistema().equals(artefato.getCoSistema())
-					&& entry.getCoAmbiente().equals(artefato.getCoAmbiente())) {
-				return entry;
-			}
-
-		}
-
-		return null;
-	}
-
 	private static ArtefatoPersistence converterArtefato(Artefato artefato, ArtefatoPersistence artefatoPaiEntrada,
 			ArtefatoPersistence artefatoAnteriorEntrada, ArtefatoPersistence artefatoPosteriorEntrada) {
 		if (artefato == null) {
@@ -265,9 +328,14 @@ public class Conversor {
 				ArtefatoPersistence artefatoRelacionado = converterArtefato(entry, artefatoPersistence, null, null);
 
 				RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
-				relacionamento.setIcInclusaoMalha(false);
-				relacionamento.setIcInclusaoManual(false);
 
+				if (entry.isMalhaControlm()) {
+					relacionamento.setIcInclusaoMalha(true);
+				} else {
+					relacionamento.setIcInclusaoMalha(false);
+				}
+
+				relacionamento.setIcInclusaoManual(false);
 				relacionamento.setArtefatoPai(artefatoPersistence);
 				relacionamento.setArtefato(artefatoRelacionado);
 				relacionamento.setTsInicioVigencia(Configuracao.TS_ATUAL);
@@ -288,11 +356,9 @@ public class Conversor {
 						artefatoRelacionado.setCoSistema("SI" + siglaSistemaDsn);
 						relacionamento.setCoTipoRelacionamento(TipoRelacionamento.INTERFACE.get());
 					}
-
-					System.out.println(siglaSistemaDsn + "  (" + artefatoRelacionado.getNoNomeExibicao() + ")");
-				}
-
-				else if (("DESCONHECIDO".equals(artefatoRelacionado.getCoSistema())
+				} else if (entry.isMalhaControlm()) {
+					relacionamento.setCoTipoRelacionamento(TipoRelacionamento.CONTROL_M.get());
+				} else if (("DESCONHECIDO".equals(artefatoRelacionado.getCoSistema())
 						|| "DESCONHECIDO".equals(artefatoPersistence.getCoSistema()))) {
 					relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
 				}
@@ -305,12 +371,13 @@ public class Conversor {
 		}
 
 		// CRIA UMA RELACIONAMENTO SEM PAI
-		if ((artefatoPaiEntrada == null)) {
+		if ((artefatoPaiEntrada == null) && !artefato.isMalhaControlm()) {
 			RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
 			relacionamento.setIcInclusaoMalha(false);
 			relacionamento.setIcInclusaoManual(false);
 			relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
 			relacionamento.setTsInicioVigencia(Configuracao.TS_ATUAL);
+			relacionamento.setIcInclusaoMalha(false);
 
 			relacionamento.setArtefatoPai(null);
 			relacionamento.setArtefato(artefatoPersistence);

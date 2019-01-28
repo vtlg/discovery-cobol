@@ -41,7 +41,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 		ResponseBuilder response = Response.status(Status.OK);
 		ArtefatoPersistence persistence = artefatoDao.pesquisarArtefatoRelacionamento(coArtefato);
 
-		ArtefatoDomain domain = Conversores.converter(persistence, true, false);
+		ArtefatoDomain domain = Conversores.converter(persistence, true, true);
 
 		response.entity(domain);
 

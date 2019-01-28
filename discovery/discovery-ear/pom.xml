@@ -39,11 +39,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
-				 
+<!-- 				 
 				<configuration>
 					<outputDirectory>C:\desenvolvimento\servers\jboss-eap-7.1\standalone\deployments\</outputDirectory>
 				</configuration>
-				
+	 -->			
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

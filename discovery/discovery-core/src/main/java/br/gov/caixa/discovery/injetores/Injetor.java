@@ -28,11 +28,13 @@ public class Injetor {
 		LOGGER.log(Level.INFO, "Carregando parâmetros");
 		Configuracao.carregar(args);
 		List<ArtefatoPersistence> listaArtefatosPersistence = Conversor.executar();
+		List<ArtefatoPersistence> listaArtefatosControlMPersistence = Conversor.executar(true);
 
-		executar(listaArtefatosPersistence);
+		executar(listaArtefatosPersistence, false);
+		// executar(listaArtefatosControlMPersistence, true);
 	}
 
-	private static void executar(List<ArtefatoPersistence> listaEntrada) {
+	private static void executar(List<ArtefatoPersistence> listaEntrada, boolean controlM) {
 		if (listaEntrada != null) {
 			Dao dao = new Dao();
 			dao.abrirConexao();
@@ -40,17 +42,92 @@ public class Injetor {
 			// EntityTransaction transaction = em.getTransaction();
 
 			for (ArtefatoPersistence artefato : listaEntrada) {
-				em.getTransaction().begin();
-				atualizarTabelaArtefato(artefato);
-				atribuirCoArtefato(artefato);
-				unificarListasRelacionamento(artefato);
-				verificarTipoListasRelacionamento(artefato);
-				atualizarTabelaRelacionamento(artefato);
-				em.getTransaction().commit();
+
+				if (controlM == false) {
+					em.getTransaction().begin();
+					atualizarTabelaArtefato(artefato);
+					atribuirCoArtefato(artefato);
+					unificarListasRelacionamento(artefato);
+					verificarTipoListasRelacionamento(artefato);
+					atualizarTabelaRelacionamento(artefato);
+					em.getTransaction().commit();
+				} else {
+					em.getTransaction().begin();
+					atualizarTabelaArtefatoControlM(artefato, true);
+					atribuirCoArtefato(artefato);
+					ajustarRelacionamentoParaInclusao(artefato);
+					atualizarTabelaRelacionamento(artefato);
+					em.getTransaction().commit();
+
+				}
 				// atualizarRelacionamento(artefato);
 			}
 			dao.fecharConexao();
 		}
+	}
+
+	private static ArtefatoPersistence ajustarRelacionamentoParaInclusao(ArtefatoPersistence artefato) {
+
+		for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
+
+			relacionamento.setArtefato(null);
+			relacionamento.setArtefatoPai(null);
+
+			if (relacionamento.getArtefatoPai() != null) {
+				ajustarRelacionamentoParaInclusao(relacionamento.getArtefato());
+			}
+		}
+
+		return artefato;
+	}
+
+	private static ArtefatoPersistence atualizarTabelaArtefatoControlM(ArtefatoPersistence artefato,
+			boolean desativarPai) {
+
+		boolean incluirArtefato = false;
+
+		ArtefatoDao artefatoDao = new ArtefatoDao(em);
+		RelacionamentoDao relacionamentoDao = new RelacionamentoDao(em);
+
+		String coNome = artefato.getNoNomeArtefato();
+		String coTipoArtefato = artefato.getCoTipoArtefato();
+
+		ArtefatoPersistence artefatoPesquisa = null;
+
+		List<ArtefatoPersistence> resultListaArtefatoPesquisa = artefatoDao.pesquisarArtefato(coNome, coTipoArtefato,
+				null, null, true);
+
+		if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() >= 2) {
+			LOGGER.log(Level.WARNING, "Verificar pois não deveria retornar mais de um artefato. Nome (" + coNome
+					+ ")  Tipo Artefato (" + coTipoArtefato + ")");
+		} else if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() > 0) {
+			artefato = atribuirDadosArtefato(artefato, resultListaArtefatoPesquisa.get(0));
+			artefatoPesquisa = resultListaArtefatoPesquisa.get(0);
+		}
+
+		if (artefatoPesquisa == null) {
+			incluirArtefato = true;
+		} else {
+			incluirArtefato = false;
+			artefato.setCoArtefato(artefatoPesquisa.getCoArtefato());
+		}
+
+		if (incluirArtefato) {
+			artefatoDao.incluir(artefato);
+		} else if (desativarPai) {
+			relacionamentoDao.desativarControlM(artefatoPesquisa.getCoArtefato(), Configuracao.TS_ATUAL);
+		}
+
+		if (artefato.getTransientListaRelacionamentos() != null
+				&& artefato.getTransientListaRelacionamentos().size() > 0) {
+			for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
+				if (relacionamento.getArtefatoPai() != null) {
+					atualizarTabelaArtefatoControlM(relacionamento.getArtefato(), false);
+				}
+			}
+		}
+
+		return artefato;
 	}
 
 	@SuppressWarnings("unused")
@@ -177,7 +254,8 @@ public class Injetor {
 			resultListaArtefatoPesquisa = artefatoDao.pesquisarArtefato(coNome, artefato.getCoTipoArtefato(), null,
 					null, true);
 			if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() >= 2) {
-				System.out.println("Verificar poi não deveria retornar mais de um artefato");
+				LOGGER.log(Level.WARNING,
+						"Verificar pois não deveria retornar mais de um artefato. Nome (" + coNome + ")");
 			} else if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() > 0) {
 				artefato = atribuirDadosArtefato(artefato, resultListaArtefatoPesquisa.get(0));
 				artefatoPesquisa = resultListaArtefatoPesquisa.get(0);
@@ -325,7 +403,8 @@ public class Injetor {
 						if (entry.getCoArtefato().equals(artefatoPesquisa.getCoArtefato())) {
 							entry.setCoArtefato(artefato.getCoArtefato());
 						}
-						if (entry.getCoArtefatoPai().equals(artefatoPesquisa.getCoArtefato())) {
+						if (entry.getCoArtefatoPai() != null
+								&& entry.getCoArtefatoPai().equals(artefatoPesquisa.getCoArtefato())) {
 							entry.setCoArtefatoPai(artefato.getCoArtefato());
 						}
 
@@ -424,6 +503,7 @@ public class Injetor {
 			if (artefato != null) {
 				relacionamento.setCoArtefato(artefato.getCoArtefato());
 			}
+
 			if (artefatoPai != null) {
 				relacionamento.setCoArtefatoPai(artefatoPai.getCoArtefato());
 				artefato = atribuirCoArtefato(artefato);

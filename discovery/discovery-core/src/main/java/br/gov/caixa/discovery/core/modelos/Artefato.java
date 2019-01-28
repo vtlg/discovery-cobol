@@ -32,7 +32,7 @@ public class Artefato {
 	private List<Artefato> artefatosRelacionados = new ArrayList<>();
 	private List<Atributo> atributos = new ArrayList<>();
 	private boolean excluir = false;
-	private boolean isMalhaControlm;
+	private boolean isMalhaControlm = false;
 
 	public Artefato() {
 		super();

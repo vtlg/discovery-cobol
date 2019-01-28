@@ -69,6 +69,13 @@ CREATE INDEX index_tbl_artefato_01
     (co_sistema COLLATE pg_catalog."default" varchar_ops, co_ambiente COLLATE pg_catalog."default" varchar_ops, co_tipo_artefato COLLATE pg_catalog."default" varchar_ops, no_nome_artefato COLLATE pg_catalog."default" varchar_pattern_ops)
     TABLESPACE pg_default;
     
+-- DROP INDEX public.index_tbl_artefato_02;
+
+CREATE INDEX index_tbl_artefato_02
+    ON public.tbl_artefato USING btree
+    (ts_fim_vigencia, co_tipo_artefato COLLATE pg_catalog."default" varchar_ops, no_nome_artefato COLLATE pg_catalog."default" varchar_ops)
+    TABLESPACE pg_default;
+    
 -- Table: public.tbl_atributo
 
 -- DROP TABLE public.tbl_atributo;

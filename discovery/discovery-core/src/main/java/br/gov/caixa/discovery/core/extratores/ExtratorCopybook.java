@@ -83,8 +83,18 @@ public class ExtratorCopybook {
 	}
 
 	private Artefato processarCodigoCompleto(Artefato artefato) throws Exception {
-		for (String texto : artefato.getCodigoCompleto()) {
-			this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, 72));
+		for (String textoCompleto : artefato.getCodigoCompleto()) {
+			if ("".equals(textoCompleto.trim())) {
+				continue;
+			}
+			String texto = textoCompleto;
+			if (texto.length() >= 73) {
+				texto = texto.substring(this.deslocamento, 72);
+				this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, 72));
+			} else {
+				texto = texto.substring(this.deslocamento, texto.length());
+				this.artefato.adicionarRepresentacaoTextual(texto.substring(this.deslocamento, texto.length()));
+			}
 
 			if (texto != null && texto.length() > (this.deslocamento + 6)
 					&& "*".equals(texto.substring(this.deslocamento + 6, this.deslocamento + 7))) {
@@ -235,9 +245,9 @@ public class ExtratorCopybook {
 		// List<Artefato> listaSaida = new ArrayList<>();
 
 		for (int i = 0; i <= listaEntrada.size() - 1; i++) {
-			
+
 			Artefato artefatoI = listaEntrada.get(i);
-			
+
 			Atributo atributoI = artefatoI.buscaAtributo(TipoAtributo.COBOL_HIERARQUIA_VARIAVEL);
 			int hierarquiaI = Integer.parseInt(atributoI.getValor());
 			int guardarHierarquia = hierarquiaI;

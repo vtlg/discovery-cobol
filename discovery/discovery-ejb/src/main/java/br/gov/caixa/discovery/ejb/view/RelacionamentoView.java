@@ -1,5 +1,8 @@
 package br.gov.caixa.discovery.ejb.view;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -113,10 +116,21 @@ public class RelacionamentoView {
 	private AtributoRelacionamentoPersistence transientAtributo;
 
 	@Transient
+	private Set<AtributoRelacionamentoPersistence> transientListaAtributos;
+
+	@Transient
 	private ArtefatoPersistence transientArtefatoAsc;
 
 	@Transient
 	private ArtefatoPersistence transientArtefatoDesc;
+
+	public void adicionarAtributo(AtributoRelacionamentoPersistence atributo) {
+		if (transientListaAtributos == null) {
+			this.transientListaAtributos = new HashSet<>();
+		}
+
+		this.transientListaAtributos.add(atributo);
+	}
 
 	public RelacionamentoPersistence getTransientRelacionamento() {
 		if (this.transientRelacionamento != null || this.coRelacionamentoRel == null) {
@@ -457,6 +471,14 @@ public class RelacionamentoView {
 
 	public void setIcProcessoCriticoDesc(Boolean icProcessoCriticoDesc) {
 		this.icProcessoCriticoDesc = icProcessoCriticoDesc;
+	}
+
+	public Set<AtributoRelacionamentoPersistence> getTransientListaAtributos() {
+		return transientListaAtributos;
+	}
+
+	public void setTransientListaAtributos(Set<AtributoRelacionamentoPersistence> transientListaAtributos) {
+		this.transientListaAtributos = transientListaAtributos;
 	}
 
 }

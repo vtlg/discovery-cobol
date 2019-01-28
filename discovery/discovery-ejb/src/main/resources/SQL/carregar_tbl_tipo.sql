@@ -86,5 +86,5 @@ INSERT INTO public.tbl_tipo(
 ('ATRIBUTO','PROCESSO-CRITICO','Processo Crítico',true,true,true,'orange','orange', 1),
 ('RELACIONAMENTO_ARTEFATO','NORMAL','Normal',false,true,true,'none','#cecece', 0.8),
 ('RELACIONAMENTO_ARTEFATO','INTERFACE','Interface',false,true,true,'none','#000000', 2),
-('RELACIONAMENTO_ARTEFATO','CONTROL-M','Control-M',false,true,true,'none','#e57373', 2)
+('RELACIONAMENTO_ARTEFATO','CONTROL-M','Control-M',false,true,true,'none','#e57373', 2),
 ('RELACIONAMENTO_ARTEFATO','DESATIVADO','Desativado',false,false,false,'none','#e57373', 1)
