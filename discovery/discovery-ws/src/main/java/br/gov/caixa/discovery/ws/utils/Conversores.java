@@ -1,6 +1,7 @@
 package br.gov.caixa.discovery.ws.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -26,20 +27,23 @@ public class Conversores {
 		saida.setCoArtefato(entrada.getCoArtefato());
 		saida.setCoSistema(entrada.getCoSistema());
 		saida.setCoTipoArtefato(entrada.getCoTipoArtefato());
-		saida.setCoTipoRelacionamento(entrada.getCoTipoRelacionamento());
+		// saida.setCoTipoRelacionamento(entrada.getCoTipoRelacionamento());
 		saida.setDeDescricaoArtefato(entrada.getDeDescricaoArtefato());
 		saida.setDeDescricaoUsuario(entrada.getDeDescricaoUsuario());
 		saida.setDeHash(entrada.getDeHash());
 		saida.setDeIdentificador(entrada.getDeIdentificador());
-		saida.setIcInclusaoMalhaRelacionamento(entrada.getIcInclusaoMalhaRelacionamento());
 		saida.setIcInclusaoManual(entrada.getIcInclusaoManual());
-		saida.setIcInclusaoManualRelacionamento(entrada.getIcInclusaoManualRelacionamento());
 		saida.setIcProcessoCritico(entrada.getIcProcessoCritico());
 		saida.setNoNomeArtefato(entrada.getNoNomeArtefato());
 		saida.setNoNomeExibicao(entrada.getNoNomeExibicao());
 		saida.setNoNomeInterno(entrada.getNoNomeInterno());
 		saida.setTsInicioVigencia(entrada.getTsInicioVigencia());
 		saida.setTsUltimaModificacao(entrada.getTsUltimaModificacao());
+
+		saida.setCountRelacionamento(entrada.getCountRelacionamento());
+		saida.setCountRelacionamentoControlM(entrada.getCountRelacionamentoControlM());
+		saida.setCountRelacionamentoInterface(entrada.getCountRelacionamentoInterface());
+		saida.setCountRelacionamentoNormal(entrada.getCountRelacionamentoNormal());
 
 		return saida;
 	}
@@ -178,7 +182,7 @@ public class Conversores {
 		return saida;
 	}
 
-	public static List<ArtefatoViewDomain> converterListaArtefatoView(List<ArtefatoView> entrada) {
+	public static List<ArtefatoViewDomain> converterListaArtefatoView(Collection<ArtefatoView> entrada) {
 		if (entrada == null || entrada.size() == 0) {
 			return null;
 		}

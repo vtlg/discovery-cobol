@@ -5,6 +5,7 @@ import java.util.Calendar;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity(name = "VW_ARTEFATO")
 public class ArtefatoView {
@@ -55,14 +56,54 @@ public class ArtefatoView {
 	@Column(name = "TS_ULTIMA_MODIFICACAO")
 	private Calendar tsUltimaModificacao;
 
-	@Column(name = "CO_TIPO_RELACIONAMENTO")
-	private String coTipoRelacionamento;
+	@Column(name = "COUNT_RELACIONAMENTO")
+	private Long countRelacionamento;
 
-	@Column(name = "REL_IC_INCLUSAO_MANUAL")
-	private Boolean icInclusaoManualRelacionamento;
+	@Column(name = "COUNT_RELACIONAMENTO_INTERFACE")
+	private Long countRelacionamentoInterface;
 
-	@Column(name = "REL_INCLUSAO_MALHA")
-	private Boolean icInclusaoMalhaRelacionamento;
+	@Column(name = "COUNT_RELACIONAMENTO_NORMAL")
+	private Long countRelacionamentoNormal;
+
+	@Column(name = "COUNT_RELACIONAMENTO_CONTROL_M")
+	private Long countRelacionamentoControlM;
+
+//	@Column(name = "CO_TIPO_RELACIONAMENTO")
+//	private String coTipoRelacionamento;
+//
+//	@Transient
+//	private Integer transientCountRelacionamentoInterface = 0;
+//
+//	@Transient
+//	private Integer transientCountRelacionamentoControlM = 0;
+//
+//	@Transient
+//	private Integer transientCountRelacionamentoNormal = 0;
+//
+//	@Transient
+//	private Integer transientCountRelacionamento = 0;
+//
+//	@Column(name = "REL_IC_INCLUSAO_MANUAL")
+//	private Boolean icInclusaoManualRelacionamento;
+//
+//	@Column(name = "REL_INCLUSAO_MALHA")
+//	private Boolean icInclusaoMalhaRelacionamento;
+//
+//	public void adicionarTransientCountRelacionamentoInterface(Integer valor) {
+//		this.transientCountRelacionamentoInterface += valor;
+//	}
+//
+//	public void adicionarTransientCountRelacionamentoControlM(Integer valor) {
+//		this.transientCountRelacionamentoControlM += valor;
+//	}
+//
+//	public void adicionarTransientCountRelacionamentoNormal(Integer valor) {
+//		this.transientCountRelacionamentoNormal += valor;
+//	}
+//
+//	public void adicionarTransientCountRelacionamento(Integer valor) {
+//		this.transientCountRelacionamento += valor;
+//	}
 
 	public Long getCoArtefato() {
 		return coArtefato;
@@ -184,28 +225,38 @@ public class ArtefatoView {
 		this.tsUltimaModificacao = tsUltimaModificacao;
 	}
 
-	public String getCoTipoRelacionamento() {
-		return coTipoRelacionamento;
+	public Long getCountRelacionamento() {
+		return countRelacionamento;
 	}
 
-	public void setCoTipoRelacionamento(String coTipoRelacionamento) {
-		this.coTipoRelacionamento = coTipoRelacionamento;
+	public void setCountRelacionamento(Long countRelacionamento) {
+		this.countRelacionamento = countRelacionamento;
 	}
 
-	public Boolean getIcInclusaoManualRelacionamento() {
-		return icInclusaoManualRelacionamento;
+	public Long getCountRelacionamentoInterface() {
+		return countRelacionamentoInterface;
 	}
 
-	public void setIcInclusaoManualRelacionamento(Boolean icInclusaoManualRelacionamento) {
-		this.icInclusaoManualRelacionamento = icInclusaoManualRelacionamento;
+	public void setCountRelacionamentoInterface(Long countRelacionamentoInterface) {
+		this.countRelacionamentoInterface = countRelacionamentoInterface;
 	}
 
-	public Boolean getIcInclusaoMalhaRelacionamento() {
-		return icInclusaoMalhaRelacionamento;
+	public Long getCountRelacionamentoNormal() {
+		return countRelacionamentoNormal;
 	}
 
-	public void setIcInclusaoMalhaRelacionamento(Boolean icInclusaoMalhaRelacionamento) {
-		this.icInclusaoMalhaRelacionamento = icInclusaoMalhaRelacionamento;
+	public void setCountRelacionamentoNormal(Long countRelacionamentoNormal) {
+		this.countRelacionamentoNormal = countRelacionamentoNormal;
 	}
+
+	public Long getCountRelacionamentoControlM() {
+		return countRelacionamentoControlM;
+	}
+
+	public void setCountRelacionamentoControlM(Long countRelacionamentoControlM) {
+		this.countRelacionamentoControlM = countRelacionamentoControlM;
+	}
+
+	
 
 }

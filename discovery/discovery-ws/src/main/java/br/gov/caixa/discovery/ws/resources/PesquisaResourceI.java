@@ -1,6 +1,7 @@
 package br.gov.caixa.discovery.ws.resources;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,12 +19,15 @@ public interface PesquisaResourceI {
 	@Path("avancada")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response pesquisaAvancada(PesquisaDomain pesquisaDomain);
+	public Response pesquisaAvancada(
+			@QueryParam("offset") @DefaultValue("0") int offset,
+			@QueryParam("limit") @DefaultValue("20") int limit, PesquisaDomain pesquisaDomain);
 
 	@GET
 	@Path("rapida")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response pesquisaRapida(@QueryParam("termo") String termo);
+	public Response pesquisaRapida(
+			@QueryParam("termo") String termo);
 
 }

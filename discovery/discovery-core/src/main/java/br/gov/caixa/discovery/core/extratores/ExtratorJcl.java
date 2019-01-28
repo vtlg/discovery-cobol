@@ -293,6 +293,8 @@ public class ExtratorJcl {
 					artefatoDdname.setNome(_tratarNomeDsn(identificador));
 					artefatoDdname.setTipoArtefato(TipoArtefato.DDNAME);
 					artefatoDdname.setPosicao(artefato.getPosicao() + posicaoLinha);
+					artefatoDdname.setSistema(artefato.getSistema());
+					artefatoDdname.setAmbiente(artefato.getAmbiente());
 
 					artefato.adicionarArtefatosRelacionados(artefatoDdname);
 

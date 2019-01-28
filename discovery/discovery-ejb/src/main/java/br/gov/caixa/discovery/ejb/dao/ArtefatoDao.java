@@ -3,7 +3,11 @@ package br.gov.caixa.discovery.ejb.dao;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +24,7 @@ import javax.persistence.criteria.Root;
 
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.TipoRelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.view.ArtefatoView;
 import br.gov.caixa.discovery.ejb.view.RelacionamentoView;
 
@@ -64,15 +69,15 @@ public class ArtefatoDao {
 
 	}
 
-	public List<ArtefatoView> pesquisaAvancada(String expNome, String expDescricao, String[] listaTipoArtefato,
-			Boolean icProcessoCritico, Boolean icInterface) {
+	public Collection<ArtefatoView> pesquisaAvancada(String expNome, String expDescricao, String[] listaTipoArtefato,
+			Boolean icProcessoCritico, Boolean icInterface, int offset, int limit) {
 
 		LOGGER.log(Level.FINE,
 				"Pesquisa Avançada." + " expNome (" + expNome + ")" + " expDescricao (" + expDescricao + ")"
 						+ " listaTipoArtefato (" + listaTipoArtefato + ")" + " icProcessoCritico (" + icProcessoCritico
 						+ ")" + " icInterface (" + icInterface + ")");
 
-		List<ArtefatoView> output = null;
+		Collection<ArtefatoView> output = null;
 		List<Predicate> listaPredicadosAnd = new ArrayList<>();
 
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -80,31 +85,33 @@ public class ArtefatoDao {
 		Root<ArtefatoView> artefatoRoot = cq.from(ArtefatoView.class);
 
 		if (expNome != null && !"".equals(expNome.trim())) {
-			Predicate pNoNomeExibicao = cb.like(artefatoRoot.get("noNomeExibicao"), "%" + expNome + "%");
-			Predicate pNoNomeInterno = cb.like(artefatoRoot.get("noNomeInterno"), "%" + expNome + "%");
+			Predicate pNoNomeExibicao = cb.like(cb.upper(artefatoRoot.get("noNomeExibicao")),
+					"%" + expNome.toUpperCase() + "%");
+			Predicate pNoNomeInterno = cb.like(cb.upper(artefatoRoot.get("noNomeInterno")),
+					"%" + expNome.toUpperCase() + "%");
 
 			listaPredicadosAnd.add(cb.or(pNoNomeExibicao, pNoNomeInterno));
 		}
 		if (expDescricao != null && !"".equals(expDescricao.trim())) {
-			Predicate pDeDescricaoArtefato = cb.like(artefatoRoot.get("deDescricaoArtefato"), "%" + expDescricao + "%");
-			Predicate pDeDescricaoUsuario = cb.like(artefatoRoot.get("deDescricaoUsuario"), "%" + expDescricao + "%");
+			Predicate pDeDescricaoArtefato = cb.like(cb.upper(artefatoRoot.get("deDescricaoArtefato")),
+					"%" + expDescricao.toUpperCase() + "%");
+			Predicate pDeDescricaoUsuario = cb.like(cb.upper(artefatoRoot.get("deDescricaoUsuario")),
+					"%" + expDescricao.toUpperCase() + "%");
 			listaPredicadosAnd.add(cb.or(pDeDescricaoArtefato, pDeDescricaoUsuario));
 		}
-		
-		if (icInterface != null && icInterface == true) {
-			Predicate pCoTipoRelacionamento = cb.equal(artefatoRoot.get("coTipoRelacionamento"), "INTERFACE");
-			listaPredicadosAnd.add(pCoTipoRelacionamento);
-		}
 
-		if (listaTipoArtefato != null && listaTipoArtefato.length > 0) {
-			Predicate pCoTipArtefato = artefatoRoot.get("coTipoArtefato").in(Arrays.asList(listaTipoArtefato));
-			listaPredicadosAnd.add(pCoTipArtefato);
+		if (icProcessoCritico != null && icProcessoCritico == true) {
+			Predicate pIcProcessoCritico = cb.equal(artefatoRoot.get("icProcessoCritico"), true);
+			listaPredicadosAnd.add(pIcProcessoCritico);
 		}
 
 		if (icInterface != null && icInterface == true) {
 			Predicate pCoTipoRelacionamento = cb.equal(artefatoRoot.get("coTipoRelacionamento"), "INTERFACE");
 			listaPredicadosAnd.add(pCoTipoRelacionamento);
 		}
+
+		Predicate pCoTipArtefato = artefatoRoot.get("coTipoArtefato").in(Arrays.asList(listaTipoArtefato));
+		listaPredicadosAnd.add(pCoTipArtefato);
 
 		if (listaPredicadosAnd.size() > 0) {
 			cq.select(artefatoRoot).where(listaPredicadosAnd.toArray(new Predicate[] {}));
@@ -113,8 +120,37 @@ public class ArtefatoDao {
 		}
 
 		try {
-			TypedQuery<ArtefatoView> query = em.createQuery(cq);
+			cq.orderBy(cb.asc(artefatoRoot.get("coArtefato")));
+			TypedQuery<ArtefatoView> query = em.createQuery(cq).setFirstResult(offset).setMaxResults(limit);
+			
 			output = query.getResultList();
+//			List<ArtefatoView> resultList = query.getResultList();
+//			System.out.println("Size resultList : " + resultList.size());
+//
+//			HashMap<Long, ArtefatoView> mapArtefatoView = new HashMap<>();
+//
+//			for (ArtefatoView artefatoView : resultList) {
+//				if (!mapArtefatoView.containsKey(artefatoView.getCoArtefato())) {
+//					mapArtefatoView.put(artefatoView.getCoArtefato(), artefatoView);
+//					System.out.println("Incluindo  : " + artefatoView.getNoNomeArtefato());
+//				}
+//
+//				if (artefatoView.getCoTipoRelacionamento() != null) {
+//					ArtefatoView mapEntry = mapArtefatoView.get(artefatoView.getCoArtefato());
+//					mapEntry.adicionarTransientCountRelacionamento(1);
+//					if ("INTERFACE".equals(artefatoView.getCoTipoRelacionamento())) {
+//						mapEntry.adicionarTransientCountRelacionamentoInterface(1);
+//					}
+//					if ("CONTROL-M".equals(artefatoView.getCoTipoRelacionamento())) {
+//						mapEntry.adicionarTransientCountRelacionamentoControlM(1);
+//					}
+//					if ("NORMAL".equals(artefatoView.getCoTipoRelacionamento())) {
+//						mapEntry.adicionarTransientCountRelacionamentoNormal(1);
+//					}
+//				}
+//			}
+//			output = mapArtefatoView.values();
+//			System.out.println("Size output  : " + output.size());
 
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE,

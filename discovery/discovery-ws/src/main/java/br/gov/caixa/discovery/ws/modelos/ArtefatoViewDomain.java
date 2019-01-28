@@ -73,6 +73,18 @@ public class ArtefatoViewDomain {
 	@JsonProperty("icInclusaoMalhaRelacionamento")
 	private Boolean icInclusaoMalhaRelacionamento;
 
+	@JsonProperty("countRelacionamento")
+	private Long countRelacionamento;
+
+	@JsonProperty("countRelacionamentoInterface")
+	private Long countRelacionamentoInterface;
+
+	@JsonProperty("countRelacionamentoNormal")
+	private Long countRelacionamentoNormal;
+
+	@JsonProperty("countRelacionamentoControlM")
+	private Long countRelacionamentoControlM;
+
 	public Long getCoArtefato() {
 		return coArtefato;
 	}
@@ -215,6 +227,38 @@ public class ArtefatoViewDomain {
 
 	public void setIcInclusaoMalhaRelacionamento(Boolean icInclusaoMalhaRelacionamento) {
 		this.icInclusaoMalhaRelacionamento = icInclusaoMalhaRelacionamento;
+	}
+
+	public Long getCountRelacionamento() {
+		return countRelacionamento;
+	}
+
+	public void setCountRelacionamento(Long countRelacionamento) {
+		this.countRelacionamento = countRelacionamento;
+	}
+
+	public Long getCountRelacionamentoInterface() {
+		return countRelacionamentoInterface;
+	}
+
+	public void setCountRelacionamentoInterface(Long countRelacionamentoInterface) {
+		this.countRelacionamentoInterface = countRelacionamentoInterface;
+	}
+
+	public Long getCountRelacionamentoNormal() {
+		return countRelacionamentoNormal;
+	}
+
+	public void setCountRelacionamentoNormal(Long countRelacionamentoNormal) {
+		this.countRelacionamentoNormal = countRelacionamentoNormal;
+	}
+
+	public Long getCountRelacionamentoControlM() {
+		return countRelacionamentoControlM;
+	}
+
+	public void setCountRelacionamentoControlM(Long countRelacionamentoControlM) {
+		this.countRelacionamentoControlM = countRelacionamentoControlM;
 	}
 
 }

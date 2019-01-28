@@ -9,6 +9,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
 
 import br.gov.caixa.discovery.core.extratores.Extrator;
 import br.gov.caixa.discovery.core.modelos.ArquivoConfiguracao;
@@ -18,6 +19,7 @@ import br.gov.caixa.discovery.core.modelos.Atributo;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.Configuracao;
+import br.gov.caixa.discovery.core.utils.Patterns;
 import br.gov.caixa.discovery.core.utils.UtilsHandler;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.AtributoArtefatoPersistence;
@@ -270,6 +272,31 @@ public class Conversor {
 				relacionamento.setArtefato(artefatoRelacionado);
 				relacionamento.setTsInicioVigencia(Configuracao.TS_ATUAL);
 
+				Matcher m_injetor_p_dsn_cardlib = Patterns.INJETOR_P_DSN_CARDLIB
+						.matcher(artefatoRelacionado.getNoNomeExibicao());
+
+				if (TipoArtefato.DSN.get().equals(artefatoRelacionado.getCoTipoArtefato())
+						&& !artefatoRelacionado.getNoNomeExibicao().substring(0, 3).equals("CND")
+						&& !artefatoRelacionado.getNoNomeExibicao().substring(0, 3).equals("V01")
+						&& !artefatoRelacionado.getNoNomeExibicao().startsWith("&&")
+						&& !artefatoRelacionado.getNoNomeExibicao().startsWith("%%")
+						&& !m_injetor_p_dsn_cardlib.matches()) {
+					String siglaSistemaDsn = artefatoRelacionado.getNoNomeExibicao().substring(0, 3);
+					String siglaSistemaPai = artefatoPersistence.getCoSistema().substring(2);
+
+					if (!siglaSistemaPai.equals(siglaSistemaDsn)) {
+						artefatoRelacionado.setCoSistema("SI" + siglaSistemaDsn);
+						relacionamento.setCoTipoRelacionamento(TipoRelacionamento.INTERFACE.get());
+					}
+
+					System.out.println(siglaSistemaDsn + "  (" + artefatoRelacionado.getNoNomeExibicao() + ")");
+				}
+
+				else if (("DESCONHECIDO".equals(artefatoRelacionado.getCoSistema())
+						|| "DESCONHECIDO".equals(artefatoPersistence.getCoSistema()))) {
+					relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
+				}
+
 				relacionamento.setTransientListaAtributos(
 						converterAtributoRelacionamento(entry.getAtributos(), Tabelas.TBL_RELACIONAMENTO_ARTEFATO));
 
@@ -278,47 +305,17 @@ public class Conversor {
 		}
 
 		// CRIA UMA RELACIONAMENTO SEM PAI
-		 if ( (artefatoPaiEntrada == null) ) {
-				RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
-				relacionamento.setIcInclusaoMalha(false);
-				relacionamento.setIcInclusaoManual(false);
-				relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
-				relacionamento.setTsInicioVigencia(Configuracao.TS_ATUAL);
-				
-				relacionamento.setArtefatoPai(null);
-				relacionamento.setArtefato(artefatoPersistence);
-				artefatoPersistence.adicionarRelacionamentoTransient(relacionamento);
-		 }
-		 
-		// ( TipoArtefato.JCL.get().equals(artefatoPaiEntrada.getCoTipoArtefato()) &&
-		// TipoArtefato.JCL_STEP.equals(artefato.getTipoArtefato()) )
-		// ||
-		// (TipoArtefato.JCL_STEP.get().equals(artefatoPaiEntrada.getCoTipoArtefato())
-		// && TipoArtefato.DDNAME.equals(artefato.getTipoArtefato()))) {
-//		if (artefatoPaiEntrada == null) {
-//			RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
-//			relacionamento.setIcInclusaoMalha(false);
-//			relacionamento.setIcInclusaoManual(false);
-//			relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
-//
-//			relacionamento.setArtefatoPai(null);
-//			relacionamento.setArtefato(artefatoPersistence);
-//
-//			if (artefato.getArtefatosRelacionados() != null && artefato.getArtefatosRelacionados().size() > 0) {
-//				Collections.sort(artefato.getArtefatosRelacionados(), new ArtefatoSorted());
-//
-//				ArtefatoPersistence artefatoPrimeiro = converterArtefato(artefato.getArtefatosRelacionados().get(0),
-//						artefatoPersistence, null, null);
-//				ArtefatoPersistence artefatoUltimo = converterArtefato(
-//						artefato.getArtefatosRelacionados().get(artefato.getArtefatosRelacionados().size() - 1),
-//						artefatoPersistence, null, null);
-//
-//				relacionamento.setArtefatoPrimeiro(artefatoPrimeiro);
-//				relacionamento.setArtefatoUltimo(artefatoUltimo);
-//				relacionamento.setTsInicioVigencia(Configuracao.TS_ATUAL);
-//			}
-//			artefatoPersistence.adicionarRelacionamentoTransient(relacionamento);
-//		}
+		if ((artefatoPaiEntrada == null)) {
+			RelacionamentoPersistence relacionamento = new RelacionamentoPersistence();
+			relacionamento.setIcInclusaoMalha(false);
+			relacionamento.setIcInclusaoManual(false);
+			relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
+			relacionamento.setTsInicioVigencia(Configuracao.TS_ATUAL);
+
+			relacionamento.setArtefatoPai(null);
+			relacionamento.setArtefato(artefatoPersistence);
+			artefatoPersistence.adicionarRelacionamentoTransient(relacionamento);
+		}
 
 		return artefatoPersistence;
 	}

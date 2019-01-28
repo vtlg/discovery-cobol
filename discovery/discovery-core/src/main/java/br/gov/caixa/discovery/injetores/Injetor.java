@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
+import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.ejb.dao.ArtefatoDao;
 import br.gov.caixa.discovery.ejb.dao.AtributoDao;
@@ -44,12 +45,36 @@ public class Injetor {
 				atualizarTabelaArtefato(artefato);
 				atribuirCoArtefato(artefato);
 				unificarListasRelacionamento(artefato);
+				verificarTipoListasRelacionamento(artefato);
 				atualizarTabelaRelacionamento(artefato);
 				em.getTransaction().commit();
 				// atualizarRelacionamento(artefato);
 			}
 			dao.fecharConexao();
 		}
+	}
+
+	@SuppressWarnings("unused")
+	private static ArtefatoPersistence verificarTipoListasRelacionamento(ArtefatoPersistence artefato) {
+		if (artefato.getTransientListaRelacionamentos() != null) {
+			for (RelacionamentoPersistence entry : artefato.getTransientListaRelacionamentos()) {
+				ArtefatoPersistence artefatoPai = entry.getArtefatoPai();
+				ArtefatoPersistence artefatoFilho = entry.getArtefato();
+
+				if (artefatoPai != null && artefatoFilho != null && !"DESCONHECIDO".equals(artefatoPai.getCoSistema())
+						&& !"DESCONHECIDO".equals(artefatoFilho.getCoSistema())
+						&& !artefatoFilho.getCoSistema().equals(artefatoPai.getCoSistema())) {
+					entry.setCoTipoRelacionamento(TipoRelacionamento.INTERFACE.get());
+				}
+
+				if (entry.getArtefatoPai() != null) {
+					verificarTipoListasRelacionamento(entry.getArtefato());
+				}
+
+			}
+		}
+
+		return artefato;
 	}
 
 	private static ArtefatoPersistence unificarListasRelacionamento(ArtefatoPersistence artefato) {
@@ -237,6 +262,8 @@ public class Injetor {
 					&& (!artefato.getDeHash().equals(artefatoPesquisa.getDeHash()))) {
 
 				artefatoPesquisa.setTsFimVigencia(Configuracao.TS_ATUAL);
+				artefato.setDeDescricaoUsuario(artefatoPesquisa.getDeDescricaoUsuario());
+				artefato.setIcProcessoCritico(artefatoPesquisa.isIcProcessoCritico());
 
 				incluirArtefato = false;
 				atualizarArtefato = true;

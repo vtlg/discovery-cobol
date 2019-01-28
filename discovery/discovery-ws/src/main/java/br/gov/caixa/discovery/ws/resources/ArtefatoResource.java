@@ -61,6 +61,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 		persistence.setCoAmbiente(domain.getCoAmbiente());
 		persistence.setDeDescricaoUsuario(domain.getDeDescricaoUsuario());
 		persistence.setNoNomeExibicao(domain.getNoNomeExibicao());
+		persistence.setIcProcessoCritico(domain.isIcProcessoCritico());
 		persistence.setTsUltimaModificacao(Calendar.getInstance());
 
 		artefatoDao.atualizar(persistence);

@@ -44,7 +44,34 @@ public class RelacionamentoDao {
 		return relacionamento;
 	}
 
-	public List<RelacionamentoPersistence> getRelacionamento(Long coArtefato) {
+	public RelacionamentoPersistence getRelacionamento(Long coRelacionamento) {
+		RelacionamentoPersistence output = null;
+
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaQuery<RelacionamentoPersistence> cq = cb.createQuery(RelacionamentoPersistence.class);
+		Root<RelacionamentoPersistence> relacionamentoRoot = cq.from(RelacionamentoPersistence.class);
+
+		Predicate pCoRelacionamento = cb.equal(relacionamentoRoot.get("coRelacionamento"), coRelacionamento);
+
+		cq.multiselect(relacionamentoRoot.get("coRelacionamento"), relacionamentoRoot.get("coArtefato"),
+				relacionamentoRoot.get("coArtefatoPai"), relacionamentoRoot.get("coArtefatoAnterior"),
+				relacionamentoRoot.get("coArtefatoPosterior"), relacionamentoRoot.get("coArtefatoPrimeiro"),
+				relacionamentoRoot.get("coArtefatoUltimo"), relacionamentoRoot.get("coTipoRelacionamento"),
+				relacionamentoRoot.get("icInclusaoManual"), relacionamentoRoot.get("icInclusaoMalha"),
+				relacionamentoRoot.get("tsInicioVigencia"), relacionamentoRoot.get("tsFimVigencia"))
+				.where(cb.and(pCoRelacionamento));
+
+		try {
+			output = em.createQuery(cq).getSingleResult();
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE,
+					"Erro ao retornar relacionamento. " + "CoRelacionamento (" + coRelacionamento + ")", e);
+		}
+
+		return output;
+	}
+
+	public List<RelacionamentoPersistence> getListaRelacionamento(Long coArtefato) {
 		List<RelacionamentoPersistence> output = null;
 
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -74,9 +101,10 @@ public class RelacionamentoDao {
 		return output;
 	}
 
+	@SuppressWarnings("unused")
 	public List<RelacionamentoPersistence> desativar(Long coArtefato, Calendar tsFimVigencia) {
 
-		List<RelacionamentoPersistence> output = getRelacionamento(coArtefato);
+		List<RelacionamentoPersistence> output = getListaRelacionamento(coArtefato);
 
 		if (output != null) {
 			CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -103,6 +131,30 @@ public class RelacionamentoDao {
 		}
 
 		return output;
+	}
+
+	@SuppressWarnings("unused")
+	public RelacionamentoPersistence atualizar(RelacionamentoPersistence relacionamento) {
+
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaUpdate<RelacionamentoPersistence> cq = cb.createCriteriaUpdate(RelacionamentoPersistence.class);
+		Root<RelacionamentoPersistence> relacionamentoRoot = cq.from(RelacionamentoPersistence.class);
+
+		Predicate pcoRelacionamento = cb.equal(relacionamentoRoot.get("coRelacionamento"),
+				relacionamento.getCoRelacionamento());
+
+		cq.set(relacionamentoRoot.get("coTipoRelacionamento"), relacionamento.getCoTipoRelacionamento());
+
+		cq.where(pcoRelacionamento);
+
+		try {
+			int i = this.em.createQuery(cq).executeUpdate();
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, "Erro ao tentar atualizar relacionamento. " + "CoArtefato ("
+					+ relacionamento.getCoRelacionamento() + ")", e);
+		}
+
+		return relacionamento;
 	}
 
 }

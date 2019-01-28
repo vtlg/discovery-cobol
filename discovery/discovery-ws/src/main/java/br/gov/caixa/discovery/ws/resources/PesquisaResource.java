@@ -1,5 +1,6 @@
 package br.gov.caixa.discovery.ws.resources;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -21,11 +22,12 @@ public class PesquisaResource implements PesquisaResourceI {
 	ArtefatoDao artefatoDao;
 
 	@Override
-	public Response pesquisaAvancada(PesquisaDomain pesquisaDomain) {
+	public Response pesquisaAvancada(int offset, int limit, PesquisaDomain pesquisaDomain) {
 		ResponseBuilder response = Response.status(Status.OK);
-		List<ArtefatoView> listaView = artefatoDao.pesquisaAvancada(pesquisaDomain.getExpNome(),
+		Collection<ArtefatoView> listaView = artefatoDao.pesquisaAvancada(pesquisaDomain.getExpNome(),
 				pesquisaDomain.getExpDescricao(), pesquisaDomain.getListaTipoArtefato(),
-				pesquisaDomain.getIcProcessoCritico(), pesquisaDomain.getIcInterface());
+				pesquisaDomain.getIcProcessoCritico(), pesquisaDomain.getIcInterface(),
+				offset, limit);
 
 		List<ArtefatoViewDomain> listaDomain = Conversores.converterListaArtefatoView(listaView);
 
