@@ -83,7 +83,8 @@ public class TipoDao {
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();
 		CriteriaQuery<TipoPersistence> cq = cb.createQuery(TipoPersistence.class);
 		Root<TipoPersistence> tipoRoot = cq.from(TipoPersistence.class);
-
+	
+		
 		cq.multiselect(tipoRoot.get("coTipo"), tipoRoot.get("coTabela"), tipoRoot.get("deTipo"),
 				tipoRoot.get("icPesquisavel"), tipoRoot.get("icExibirAtributo"), tipoRoot.get("icExibirGrafo"),
 				tipoRoot.get("coCor"), tipoRoot.get("coCorBorda"), tipoRoot.get("nuLarguraBorda"));

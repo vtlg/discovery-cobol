@@ -1,5 +1,6 @@
 package br.gov.caixa.discovery.injetores;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -7,6 +8,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
+import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.ejb.dao.ArtefatoDao;
 import br.gov.caixa.discovery.ejb.dao.AtributoDao;
@@ -42,12 +44,92 @@ public class Injetor {
 				em.getTransaction().begin();
 				atualizarTabelaArtefato(artefato);
 				atribuirCoArtefato(artefato);
+				unificarListasRelacionamento(artefato);
+				verificarTipoListasRelacionamento(artefato);
 				atualizarTabelaRelacionamento(artefato);
 				em.getTransaction().commit();
 				// atualizarRelacionamento(artefato);
 			}
 			dao.fecharConexao();
 		}
+	}
+
+	@SuppressWarnings("unused")
+	private static ArtefatoPersistence verificarTipoListasRelacionamento(ArtefatoPersistence artefato) {
+		if (artefato.getTransientListaRelacionamentos() != null) {
+			for (RelacionamentoPersistence entry : artefato.getTransientListaRelacionamentos()) {
+				ArtefatoPersistence artefatoPai = entry.getArtefatoPai();
+				ArtefatoPersistence artefatoFilho = entry.getArtefato();
+
+				if (artefatoPai != null && artefatoFilho != null && !"DESCONHECIDO".equals(artefatoPai.getCoSistema())
+						&& !"DESCONHECIDO".equals(artefatoFilho.getCoSistema())
+						&& !artefatoFilho.getCoSistema().equals(artefatoPai.getCoSistema())) {
+					entry.setCoTipoRelacionamento(TipoRelacionamento.INTERFACE.get());
+				}
+
+				if (entry.getArtefatoPai() != null) {
+					verificarTipoListasRelacionamento(entry.getArtefato());
+				}
+
+			}
+		}
+
+		return artefato;
+	}
+
+	private static ArtefatoPersistence unificarListasRelacionamento(ArtefatoPersistence artefato) {
+		List<RelacionamentoPersistence> tempLista = new ArrayList<>();
+
+		if (artefato.getTransientRelacionamentosDesativados() != null) {
+			for (RelacionamentoPersistence entry : artefato.getTransientRelacionamentosDesativados()) {
+				RelacionamentoPersistence newEntry = new RelacionamentoPersistence();
+
+				newEntry.setCoArtefato(entry.getCoArtefato());
+				newEntry.setCoArtefatoPai(entry.getCoArtefatoPai());
+				newEntry.setCoTipoRelacionamento(entry.getCoTipoRelacionamento());
+				newEntry.setIcInclusaoMalha(entry.isIcInclusaoMalha());
+				newEntry.setIcInclusaoManual(entry.isIcInclusaoManual());
+				newEntry.setTsInicioVigencia(artefato.getTsInicioVigencia());
+
+				if (!relacionamentoDuplicidade(tempLista, newEntry)) {
+					tempLista.add(newEntry);
+				}
+			}
+		}
+
+		if (artefato.getTransientListaRelacionamentos() != null) {
+			for (RelacionamentoPersistence entry : artefato.getTransientListaRelacionamentos()) {
+				if (!relacionamentoDuplicidade(tempLista, entry)) {
+					tempLista.add(entry);
+				}
+			}
+		}
+
+		artefato.setTransientListaRelacionamentos(tempLista);
+
+		return artefato;
+	}
+
+	private static boolean relacionamentoDuplicidade(List<RelacionamentoPersistence> lista,
+			RelacionamentoPersistence relacionamento) {
+		StringBuilder sbRelacionamento = new StringBuilder();
+		sbRelacionamento.append(relacionamento.getCoRelacionamento());
+		sbRelacionamento.append(relacionamento.getCoArtefato());
+		sbRelacionamento.append(relacionamento.getCoArtefatoPai());
+
+		for (RelacionamentoPersistence entry : lista) {
+			StringBuilder sbEntry = new StringBuilder();
+			sbEntry.append(entry.getCoRelacionamento());
+			sbEntry.append(entry.getCoArtefato());
+			sbEntry.append(entry.getCoArtefatoPai());
+
+			if (sbRelacionamento.toString().equals(sbEntry.toString())) {
+				return true;
+			}
+
+		}
+
+		return false;
 	}
 
 	private static ArtefatoPersistence atualizarTabelaRelacionamento(ArtefatoPersistence artefato) {
@@ -86,20 +168,63 @@ public class Injetor {
 
 		ArtefatoDao artefatoDao = new ArtefatoDao(em);
 		AtributoDao atributoDao = new AtributoDao(em);
+		RelacionamentoDao relacionamentoDao = new RelacionamentoDao(em);
 		String coNome = artefato.getNoNomeArtefato();
 
-		List<ArtefatoPersistence> resultListaArtefatoPesquisa = artefatoDao.pesquisarArtefato(coNome, null, null, null,
-				true);
-		ArtefatoPersistence artefatoPesquisa = null;
+		List<ArtefatoPersistence> resultListaArtefatoPesquisa = null;
 
-		if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() > 0) {
+		ArtefatoPersistence artefatoPesquisa = null;
+		if (!TipoArtefato.DESCONHECIDO.get().equals(artefato.getCoTipoArtefato())) {
+			resultListaArtefatoPesquisa = artefatoDao.pesquisarArtefato(coNome, artefato.getCoTipoArtefato(), null,
+					null, true);
+			if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() >= 2) {
+				System.out.println("Verificar poi não deveria retornar mais de um artefato");
+			} else if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() > 0) {
+				artefato = atribuirDadosArtefato(artefato, resultListaArtefatoPesquisa.get(0));
+				artefatoPesquisa = resultListaArtefatoPesquisa.get(0);
+			}
+		}
+
+		if (TipoArtefato.DESCONHECIDO.get().equals(artefato.getCoTipoArtefato()) || artefatoPesquisa == null) {
+			//
+			// caso o tipo do artefato seja DESCONHECIDO
+			//
+			resultListaArtefatoPesquisa = artefatoDao.pesquisarArtefato(coNome, null, null, null, true);
+
+			boolean isAribuido = false;
+			boolean hasCobol = false;
+			boolean hasJcl = false;
+
+			hasCobol = resultListaArtefatoPesquisa.stream()
+					.anyMatch(p -> TipoArtefato.PROGRAMA_COBOL.get().equals(p.getCoTipoArtefato()));
+			hasJcl = resultListaArtefatoPesquisa.stream()
+					.anyMatch(p -> TipoArtefato.JCL.get().equals(p.getCoTipoArtefato()));
 
 			for (ArtefatoPersistence entry : resultListaArtefatoPesquisa) {
+				if (!TipoArtefato.DESCONHECIDO.get().equals(entry.getCoTipoArtefato())
+						&& !TipoArtefato.DESCONHECIDO.get().equals(artefato.getCoTipoArtefato())
+						&& !entry.getCoTipoArtefato().equals(artefato.getCoTipoArtefato())) {
+					continue;
+				}
+
+				if (hasCobol && !TipoArtefato.PROGRAMA_COBOL.get().equals(entry.getCoTipoArtefato())) {
+					continue;
+				}
+
 				artefato = atribuirDadosArtefato(artefato, entry);
 				artefatoPesquisa = entry;
 			}
+		}
 
-			if ((artefato.getDeHash() == null || "".equals(artefato.getDeHash().trim()))
+		if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() > 0) {
+
+			if (artefatoPesquisa == null) {
+				incluirArtefato = true;
+				atualizarArtefato = false;
+				desativarArtefato = false;
+
+				artefato.setTransientAtualizarRelacionamentos(true);
+			} else if ((artefato.getDeHash() == null || "".equals(artefato.getDeHash().trim()))
 					&& (artefatoPesquisa.getDeHash() != null && !"".equals(artefatoPesquisa.getDeHash().trim()))) {
 				// ##############################################
 				// Quando o artefato tiver hash null
@@ -135,19 +260,10 @@ public class Injetor {
 			} else if ((artefato.getDeHash() != null && !"".equals(artefato.getDeHash().trim()))
 					&& (artefatoPesquisa.getDeHash() != null && !"".equals(artefatoPesquisa.getDeHash().trim()))
 					&& (!artefato.getDeHash().equals(artefatoPesquisa.getDeHash()))) {
-				// ##############################################
-				// Quando os artefatos tiverem hashs diferentes
-				// ##############################################
-				// artefato.setCoArtefato(artefatoPesquisa.getCoArtefato());
-				// artefatoPesquisa.setDeHash(artefato.getDeHash());
-				// artefatoPesquisa.setCoSistema(artefato.getCoSistema());
-				// artefatoPesquisa.setCoAmbiente(artefato.getCoAmbiente());
-				// artefatoPesquisa.setCoTipoArtefato(artefato.getCoTipoArtefato());
-				// artefatoPesquisa.setTsUltimaModificacao(artefato.getTsUltimaModificacao());
-				// artefatoPesquisa.setDeDescricaoArtefato(artefato.getDeDescricaoArtefato());
-				// artefatoPesquisa.setIcInclusaoManual(false);
-				// artefatoPesquisa.setNoNomeInterno(artefato.getNoNomeInterno());
+
 				artefatoPesquisa.setTsFimVigencia(Configuracao.TS_ATUAL);
+				artefato.setDeDescricaoUsuario(artefatoPesquisa.getDeDescricaoUsuario());
+				artefato.setIcProcessoCritico(artefatoPesquisa.isIcProcessoCritico());
 
 				incluirArtefato = false;
 				atualizarArtefato = true;
@@ -193,8 +309,33 @@ public class Injetor {
 			}
 
 		} else if (atualizarArtefato && desativarArtefato) {
+			// DESATIVAR ARTEFATO E RELACIONAMENTOS
+
+			List<RelacionamentoPersistence> tempLista = relacionamentoDao.desativar(artefatoPesquisa.getCoArtefato(),
+					artefatoPesquisa.getTsFimVigencia());
+
 			artefatoDao.desativar(artefatoPesquisa);
 			artefatoDao.incluir(artefato);
+
+			if (tempLista != null) {
+				for (RelacionamentoPersistence entry : tempLista) {
+					if ((entry.getCoArtefato() != null
+							&& entry.getCoArtefato().equals(artefatoPesquisa.getCoArtefato()))
+							|| entry.isIcInclusaoMalha() || entry.isIcInclusaoManual()) {
+
+						if (entry.getCoArtefato().equals(artefatoPesquisa.getCoArtefato())) {
+							entry.setCoArtefato(artefato.getCoArtefato());
+						}
+						if (entry.getCoArtefatoPai().equals(artefatoPesquisa.getCoArtefato())) {
+							entry.setCoArtefatoPai(artefato.getCoArtefato());
+						}
+
+						artefato.adicionarRelacionamentoDesativadoTransient(entry);
+
+					}
+				}
+			}
+
 			for (AtributoPersistence atributo : artefato.getTransientListaAtributos()) {
 				atributo.setCoExterno(artefato.getCoArtefato());
 				atributoDao.incluir(atributo);

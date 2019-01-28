@@ -5,13 +5,16 @@ import java.util.regex.Pattern;
 
 public class Patterns {
 
-	public static Pattern COBOL_P_JOIN = Pattern.compile("[\\s]{1,}JOIN[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}");
+	//("^.*[\\s]{1,}PROGRAM-ID[\\.]{1,1}[\\s]{1,}(?<nomePrograma>[\\S]{1,})[\\s]{0,}[\\.]{1,}[\\s]{0,}$")
+	
+	public static final Pattern INJETOR_P_DSN_CARDLIB = Pattern.compile("^.*\\((?<cardlib>[\\S]{1,}?)\\).*$");
+	
 
 	public static void main(String[] args) {
-		Matcher m = COBOL_P_JOIN.matcher(
-				"EXEC SQL SELECT MAX(A.FECFAC) INTO :DCLMPDT251.FECFAC FROM PCS.MPDT251 A JOIN PCS.MPDT044 B ON A.TIPOFAC = B.TIPOFAC AND A.INDNORCOR = B.INDNORCOR WHERE A.CODENT = :DCLMPDT251.CODENT AND A.CENTALTA = :DCLMPDT251.CENTALTA AND A.CUENTA = :DCLMPDT251.CUENTA AND A.CLAMON = :DCLMPDT251.CLAMON AND B.TIPOFACSIST = 67 AND B.SIGNO = '-' AND B.INDFACINF = 'N' WITH UR END-EXEC.");
+		Matcher m = INJETOR_P_DSN_CARDLIB.matcher(
+				"(%%CARDLIB(PCSTESTE))");
 		if (m.matches()) {
-			System.out.println(m.group("tabela"));
+			System.out.println(m.group("cardlib"));
 			System.out.println("Aqui");
 		} else {
 			System.out.println("Não");
@@ -429,5 +432,8 @@ public class Patterns {
 	// Pattern P_VAR_LINHA_MEIO = Pattern.compile("^.{0,}[^\\.]{1,}[\\s]{0,}$");
 	public static final Pattern COPYBOOK_P_VAR_LINHA_MEIO = Pattern.compile("^[.&&[^\\.]]{1,}[\\s]{0,}$");
 	public static final Pattern COPYBOOK_P_VAR_LINHA_FIM = Pattern.compile("^.{0,}[\\.]{1,}[\\s]{0,}$");
+	
+	
+	public static Pattern COBOL_P_JOIN = Pattern.compile("[\\s]{1,}JOIN[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}");
 
 }

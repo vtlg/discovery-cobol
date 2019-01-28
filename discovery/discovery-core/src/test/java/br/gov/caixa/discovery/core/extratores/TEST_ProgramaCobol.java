@@ -61,11 +61,11 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato01 = new Artefato("ENTRADA1", null, null, TipoArtefato.FILE_DESCRIPTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo1_0 = new Atributo(TipoAtributo.COBOL_DDNAME, "E1DQ9730", null, null);
-		Atributo atributo1_1 = new Atributo(TipoAtributo.RECORDING_MODE, "F", null, null);
-		Atributo atributo1_2 = new Atributo(TipoAtributo.BLOCK_CONTAINS, "0", null, null);
-		Atributo atributo1_3 = new Atributo(TipoAtributo.RECORD_CONTAINS, "500 CHARACTERS.", null, null);
-		Atributo atributo1_4 = new Atributo(TipoAtributo.OPTIONAL, "FALSE", null, null);
+		Atributo atributo1_0 = new Atributo(TipoAtributo.COBOL_DDNAME, "E1DQ9730", null, "ARTEFATO");
+		Atributo atributo1_1 = new Atributo(TipoAtributo.RECORDING_MODE, "F", null, "ARTEFATO");
+		Atributo atributo1_2 = new Atributo(TipoAtributo.BLOCK_CONTAINS, "0", null, "ARTEFATO");
+		Atributo atributo1_3 = new Atributo(TipoAtributo.RECORD_CONTAINS, "500 CHARACTERS.", null, "ARTEFATO");
+		Atributo atributo1_4 = new Atributo(TipoAtributo.OPTIONAL, "FALSE", null, "ARTEFATO");
 
 		artefato01.adicionarAtributo(atributo1_0);
 		artefato01.adicionarAtributo(atributo1_1);
@@ -75,12 +75,12 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato02 = new Artefato("ENTRADA2", null, null, TipoArtefato.FILE_DESCRIPTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo2_0 = new Atributo(TipoAtributo.COBOL_DDNAME, "E2DQ9730", null, null);
-		Atributo atributo2_1 = new Atributo(TipoAtributo.RECORDING_MODE, "F", null, null);
-		Atributo atributo2_2 = new Atributo(TipoAtributo.BLOCK_CONTAINS, "0", null, null);
-		Atributo atributo2_3 = new Atributo(TipoAtributo.RECORD_CONTAINS, "160 CHARACTERS.", null, null);
-		Atributo atributo2_4 = new Atributo(TipoAtributo.OPTIONAL, "FALSE", null, null);
-		Atributo atributo2_5 = new Atributo(TipoAtributo.DATA_RECORD, "RG-FENTRADA1", null, null);
+		Atributo atributo2_0 = new Atributo(TipoAtributo.COBOL_DDNAME, "E2DQ9730", null, "ARTEFATO");
+		Atributo atributo2_1 = new Atributo(TipoAtributo.RECORDING_MODE, "F", null, "ARTEFATO");
+		Atributo atributo2_2 = new Atributo(TipoAtributo.BLOCK_CONTAINS, "0", null, "ARTEFATO");
+		Atributo atributo2_3 = new Atributo(TipoAtributo.RECORD_CONTAINS, "160 CHARACTERS.", null, "ARTEFATO");
+		Atributo atributo2_4 = new Atributo(TipoAtributo.OPTIONAL, "FALSE", null, "ARTEFATO");
+		Atributo atributo2_5 = new Atributo(TipoAtributo.DATA_RECORD, "RG-FENTRADA1", null, "ARTEFATO");
 
 		artefato02.adicionarAtributo(atributo2_0);
 		artefato02.adicionarAtributo(atributo2_1);
@@ -91,11 +91,11 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato03 = new Artefato("SALIDA1", null, null, TipoArtefato.FILE_DESCRIPTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo3_0 = new Atributo(TipoAtributo.COBOL_DDNAME, "S1DQ9730", null, null);
-		Atributo atributo3_1 = new Atributo(TipoAtributo.RECORDING_MODE, "F", null, null);
-		Atributo atributo3_2 = new Atributo(TipoAtributo.BLOCK_CONTAINS, "0", null, null);
-		Atributo atributo3_3 = new Atributo(TipoAtributo.RECORD_CONTAINS, "395 CHARACTERS.", null, null);
-		Atributo atributo3_4 = new Atributo(TipoAtributo.OPTIONAL, "FALSE", null, null);
+		Atributo atributo3_0 = new Atributo(TipoAtributo.COBOL_DDNAME, "S1DQ9730", null, "ARTEFATO");
+		Atributo atributo3_1 = new Atributo(TipoAtributo.RECORDING_MODE, "F", null, "ARTEFATO");
+		Atributo atributo3_2 = new Atributo(TipoAtributo.BLOCK_CONTAINS, "0", null, "ARTEFATO");
+		Atributo atributo3_3 = new Atributo(TipoAtributo.RECORD_CONTAINS, "395 CHARACTERS.", null, "ARTEFATO");
+		Atributo atributo3_4 = new Atributo(TipoAtributo.OPTIONAL, "FALSE", null, "ARTEFATO");
 
 		artefato03.adicionarAtributo(atributo3_0);
 		artefato03.adicionarAtributo(atributo3_1);
@@ -134,81 +134,81 @@ public class TEST_ProgramaCobol {
 		Artefato artefato01 = new Artefato("DECLARACAO-SQL-1", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo01_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA, "EXEC SQL INCLUDE SQLCA END-EXEC.", null,
-				null);
+				"ARTEFATO");
 		artefato01.adicionarAtributo(atributo01_0);
 		// ***
 		Artefato artefato02 = new Artefato("DECLARACAO-SQL-2", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo02_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA, "EXEC SQL INCLUDE PCSTBH02 END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato02.adicionarAtributo(atributo02_0);
 		// ***
 		Artefato artefato03 = new Artefato("DECLARACAO-SQL-3", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo03_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA, "EXEC SQL INCLUDE MPDT083 END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato03.adicionarAtributo(atributo03_0);
 		// ***
 		Artefato artefato04 = new Artefato("DECLARACAO-SQL-4", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo04_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"EXEC SQL UPDATE MPDT083 SET NUMSEC = :DCLMPDT083.NUMSEC, INDICA = :DCLMPDT083.INDICA, PROGRAMA = :DCLMPDT083.PROGRAMA, CADENA = :DCLMPDT083.CADENA, DATOS = :DCLMPDT083.DATOS WHERE (NUMSEC = :DCLMPDT083.NUMSEC) AND (INDICA = :DCLMPDT083.INDICA) AND (PROGRAMA = :DCLMPDT083.PROGRAMA) AND (CADENA = :DCLMPDT083.CADENA) END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato04.adicionarAtributo(atributo04_0);
 		// ***
 		Artefato artefato05 = new Artefato("DECLARACAO-SQL-5", null, null, TipoArtefato.DECLARACAO_SQL,
-				TipoAmbiente.PRD, "SIPCS", null, null);
+				TipoAmbiente.PRD, "SIPCS", null, "ARTEFATO");
 		Atributo atributo05_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"EXEC SQL SELECT CO_ENTIDADE , CO_EMPSA_PARCEIRA , CO_PRDTO_EMPRESA , NO_PRDTO_PARCEIRA , IC_SITUACAO , CO_CODENTUMO , CO_CODOFIUMO , CO_USUARIOUMO , CO_CODTERMUMO , TS_CONTCUR INTO :PCSTBH02.CO-ENTIDADE , :PCSTBH02.CO-EMPSA-PARCEIRA , :PCSTBH02.CO-PRDTO-EMPRESA , :PCSTBH02.NO-PRDTO-PARCEIRA , :PCSTBH02.IC-SITUACAO , :PCSTBH02.CO-CODENTUMO , :PCSTBH02.CO-CODOFIUMO , :PCSTBH02.CO-USUARIOUMO , :PCSTBH02.CO-CODTERMUMO , :PCSTBH02.TS-CONTCUR FROM PCSTBH02_PRDO_PRCA WHERE CO_ENTIDADE = :CT-0104 AND CO_EMPSA_PARCEIRA = :WS-PARCEI-PAG AND CO_PRDTO_EMPRESA = :WS-PRODU-PAG END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato05.adicionarAtributo(atributo05_0);
 		// ***
 		Artefato artefato06 = new Artefato("DECLARACAO-SQL-6", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo06_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
-				"EXEC SQL SELECT CURRENT TIMESTAMP INTO :WS-FECHA-CURR FROM SYSIBM.SYSDUMMY1 END-EXEC.", null, null);
+				"EXEC SQL SELECT CURRENT TIMESTAMP INTO :WS-FECHA-CURR FROM SYSIBM.SYSDUMMY1 END-EXEC.", null, "ARTEFATO");
 		artefato06.adicionarAtributo(atributo06_0);
 		// ***
 		Artefato artefato07 = new Artefato("DECLARACAO-SQL-7", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo07_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"EXEC SQL SELECT T743.CODPORIEMI INTO :DCLMPDT743.CODPORIEMI FROM PCS.MPDT743 T743 INNER JOIN PCS.MPDT007 T007 ON T743.CODENT = T007.CODENT AND T743.PRODUCTO = T007.PRODUCTO AND T743.SUBPRODU = T007.SUBPRODU AND T743.CODCOSIF = 3 INNER JOIN PCS.MPDT013 T013 ON T007.CODENT = T013.CODENT AND T007.CENTALTA = T013.CENTALTA AND T007.CUENTA = T013.CUENTA INNER JOIN PCS.MPDT414 T414 ON T013.CODENT = T414.CODENT AND T013.IDENTCLI = T414.IDENTCLI WHERE T007.CODENT = :WS-CODENT-GDA AND T007.CENTALTA = :WS-CENTALTA-GDA AND T007.CUENTA = :WS-CUENTA-GDA AND T013.CALPART = 'TI' WITH UR END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato07.adicionarAtributo(atributo07_0);
 		// ***
 		Artefato artefato08 = new Artefato("DECLARACAO-SQL-8", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo08_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"EXEC SQL SELECT MAX(A.FECFAC) INTO :DCLMPDT251.FECFAC FROM PCS.MPDT251 A JOIN PCS.MPDT044 B ON A.TIPOFAC = B.TIPOFAC AND A.INDNORCOR = B.INDNORCOR WHERE A.CODENT = :DCLMPDT251.CODENT AND A.CENTALTA = :DCLMPDT251.CENTALTA AND A.CUENTA = :DCLMPDT251.CUENTA AND A.CLAMON = :DCLMPDT251.CLAMON AND B.TIPOFACSIST = 67 AND B.SIGNO = '-' AND B.INDFACINF = 'N' WITH UR END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato08.adicionarAtributo(atributo08_0);
 		// ***
 		Artefato artefato09 = new Artefato("DECLARACAO-SQL-9", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo09_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"EXEC SQL SELECT T9.PAN, T178.CODBLQ, T178.TEXBLQ INTO :DCLMPDT009.PAN, :DCLMPDT178.CODBLQ :WS-CODBLQ-NULO , :DCLMPDT178.TEXBLQ :WS-TEXBLQ-NULO FROM MPDT009 T9 LEFT OUTER JOIN MPDT178 T178 ON T9.CODENT = T178.CODENT AND T9.CENTALTA = T178.CENTALTA AND T9.CUENTA = T178.CUENTA WHERE T9.CODENT = :DCLMPDT009.CODENT AND T9.CENTALTA = :DCLMPDT009.CENTALTA AND T9.CUENTA = :DCLMPDT009.CUENTA AND T9.INDULTTAR = 'S' AND T9.NUMBENCTA = 1 END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato09.adicionarAtributo(atributo09_0);
 		// ***
 		Artefato artefato10 = new Artefato("DECLARACAO-SQL-10", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo10_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"EXEC SQL DECLARE CUR_402_013 CURSOR FOR SELECT B.CODENT, B.CENTALTA, B.CUENTA, B.NUMBENCTA, B.CALPART, B.FECBAJA FROM MPDT402 A JOIN MPDT013 B ON A.CODENT = B.CODENT AND A.IDENTCLI = B.IDENTCLI AND A.CENTALTA = B.CENTALTA AND A.CUENTA = B.CUENTA WHERE A.CODENT = :DCLMPDT402.CODENT AND A.IDENTCLI = :DCLMPDT402.IDENTCLI AND A.TIPCONT = :DCLMPDT402.TIPCONT AND B.FECBAJA = :CT-FECINI ORDER BY B.CODENT,B.CENTALTA,B.CUENTA,B.NUMBENCTA FETCH FIRST 16 ROWS ONLY OPTIMIZE FOR 1 ROW END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato10.adicionarAtributo(atributo10_0);
 		// ***
 		Artefato artefato11 = new Artefato("DECLARACAO-SQL-11", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo11_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"EXEC SQL DELETE FROM PCSTBH02_PRDO_PRCA WHERE CO_ENTIDADE = :CT-0104 AND CO_EMPSA_PARCEIRA = :WS-PARCEI-PAG AND CO_PRDTO_EMPRESA = :WS-PRODU-PAG END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato11.adicionarAtributo(atributo11_0);
 		// ***
 		Artefato artefato12 = new Artefato("DECLARACAO-SQL-12", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo12_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"EXEC SQL INSERT INTO MPDT083 (NUMSEC, INDICA, PROGRAMA, CADENA, DATOS) VALUES (:TB-083NUMSEC, :TB-083INDICA, :TB-083PROGRAMA, :TB-083CADENA, :TB-083DATOS) FOR :IND-TB083 ROWS END-EXEC.",
-				null, null);
+				null, "ARTEFATO");
 		artefato12.adicionarAtributo(atributo12_0);
 
 		listaArtefato.add(artefato01);
@@ -405,19 +405,19 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato02 = new Artefato("ASKTIME", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo2_0 = new Atributo(TipoAtributo.CICS_ABSTIME, "WS-ABSTIME", null, null);
+		Atributo atributo2_0 = new Atributo(TipoAtributo.CICS_ABSTIME, "WS-ABSTIME", null, "RELACIONAMENTO_ARTEFATO");
 		artefato02.adicionarAtributo(atributo2_0);
 		// ***
 		Artefato artefato03 = new Artefato("FORMATTIME", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo3_0 = new Atributo(TipoAtributo.CICS_ABSTIME, "WS-ABSTIME", null, null);
-		Atributo atributo3_1 = new Atributo(TipoAtributo.CICS_TIME, "WS-HORA-EDI", null, null);
+		Atributo atributo3_0 = new Atributo(TipoAtributo.CICS_ABSTIME, "WS-ABSTIME", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo3_1 = new Atributo(TipoAtributo.CICS_TIME, "WS-HORA-EDI", null, "RELACIONAMENTO_ARTEFATO");
 		artefato03.adicionarAtributo(atributo3_0);
 		artefato03.adicionarAtributo(atributo3_1);
 		// ***
 		Artefato artefato04 = new Artefato("RETRIEVE", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo4_0 = new Atributo(TipoAtributo.CICS_INTO, "MQM-TRIGGER-MESSAGE", null, null);
+		Atributo atributo4_0 = new Atributo(TipoAtributo.CICS_INTO, "MQM-TRIGGER-MESSAGE", null, "RELACIONAMENTO_ARTEFATO");
 		artefato04.adicionarAtributo(atributo4_0);
 		// ***
 		Artefato artefato05 = new Artefato("RETURN", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
@@ -425,20 +425,20 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato06 = new Artefato("START", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo6_0 = new Atributo(TipoAtributo.CICS_TRANSACTION_ID, "CT-PCX5", null, null);
-		Atributo atributo6_1 = new Atributo(TipoAtributo.CICS_FROM, "WS-MENSAJE", null, null);
-		Atributo atributo6_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-MENSAJE", null, null);
+		Atributo atributo6_0 = new Atributo(TipoAtributo.CICS_TRANSACTION_ID, "CT-PCX5", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo6_1 = new Atributo(TipoAtributo.CICS_FROM, "WS-MENSAJE", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo6_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-MENSAJE", null, "RELACIONAMENTO_ARTEFATO");
 		artefato06.adicionarAtributo(atributo6_0);
 		artefato06.adicionarAtributo(atributo6_1);
 		artefato06.adicionarAtributo(atributo6_2);
 		// ***
 		Artefato artefato07 = new Artefato("READQ", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo7_0 = new Atributo(TipoAtributo.CICS_QNAME, "WS-TS-ALTERACAO", null, null);
-		Atributo atributo7_1 = new Atributo(TipoAtributo.CICS_INTO, "WS-CONTEUDO-TS", null, null);
-		Atributo atributo7_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-CONTEUDO-TS", null, null);
-		Atributo atributo7_3 = new Atributo(TipoAtributo.CICS_ITEM, "WS-ITEM-TS", null, null);
-		Atributo atributo7_4 = new Atributo(TipoAtributo.CICS_NUMITEMS, "WS-NUM-ITENS-TS", null, null);
+		Atributo atributo7_0 = new Atributo(TipoAtributo.CICS_QNAME, "WS-TS-ALTERACAO", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo7_1 = new Atributo(TipoAtributo.CICS_INTO, "WS-CONTEUDO-TS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo7_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-CONTEUDO-TS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo7_3 = new Atributo(TipoAtributo.CICS_ITEM, "WS-ITEM-TS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo7_4 = new Atributo(TipoAtributo.CICS_NUMITEMS, "WS-NUM-ITENS-TS", null, "RELACIONAMENTO_ARTEFATO");
 
 		artefato07.adicionarAtributo(atributo7_0);
 		artefato07.adicionarAtributo(atributo7_1);
@@ -448,10 +448,10 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato08 = new Artefato("WRITEQ", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo8_0 = new Atributo(TipoAtributo.CICS_QNAME, "WS-TS-ALTERACAO", null, null);
-		Atributo atributo8_1 = new Atributo(TipoAtributo.CICS_FROM, "WS-CONTEUDO-TS", null, null);
-		Atributo atributo8_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-CONTEUDO-TS", null, null);
-		Atributo atributo8_3 = new Atributo(TipoAtributo.CICS_NUMITEMS, "WS-NUM-ITENS-TS", null, null);
+		Atributo atributo8_0 = new Atributo(TipoAtributo.CICS_QNAME, "WS-TS-ALTERACAO", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo8_1 = new Atributo(TipoAtributo.CICS_FROM, "WS-CONTEUDO-TS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo8_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-CONTEUDO-TS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo8_3 = new Atributo(TipoAtributo.CICS_NUMITEMS, "WS-NUM-ITENS-TS", null, "RELACIONAMENTO_ARTEFATO");
 
 		artefato08.adicionarAtributo(atributo8_0);
 		artefato08.adicionarAtributo(atributo8_1);
@@ -460,28 +460,28 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato09 = new Artefato("CT-ATE790", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo9_0 = new Atributo(TipoAtributo.CICS_COMMAREA, "WS-DATOS", null, null);
-		Atributo atributo9_1 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-DATOS", null, null);
+		Atributo atributo9_0 = new Atributo(TipoAtributo.CICS_COMMAREA, "WS-DATOS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo9_1 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-DATOS", null, "RELACIONAMENTO_ARTEFATO");
 		artefato09.adicionarAtributo(atributo9_0);
 		artefato09.adicionarAtributo(atributo9_1);
 		// ***
 		Artefato artefato10 = new Artefato("WS-PCSPOS10", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo10_0 = new Atributo(TipoAtributo.CICS_COMMAREA, "WS-COMMAREA-PCSPOS10", null, null);
-		Atributo atributo10_1 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-COMMAREA-PCSPOS10", null, null);
+		Atributo atributo10_0 = new Atributo(TipoAtributo.CICS_COMMAREA, "WS-COMMAREA-PCSPOS10", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo10_1 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-COMMAREA-PCSPOS10", null, "RELACIONAMENTO_ARTEFATO");
 		artefato10.adicionarAtributo(atributo10_0);
 		artefato10.adicionarAtributo(atributo10_1);
 		// ***
 		Artefato artefato11 = new Artefato("CONDITION", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo11_0 = new Atributo(TipoAtributo.CICS_ENDDATA, "9999-ERROR-CICS", null, null);
-		Atributo atributo11_1 = new Atributo(TipoAtributo.CICS_ERROR, "9999-ERROR-CICS", null, null);
+		Atributo atributo11_0 = new Atributo(TipoAtributo.CICS_ENDDATA, "9999-ERROR-CICS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo11_1 = new Atributo(TipoAtributo.CICS_ERROR, "9999-ERROR-CICS", null, "RELACIONAMENTO_ARTEFATO");
 		artefato11.adicionarAtributo(atributo11_0);
 		artefato11.adicionarAtributo(atributo11_1);
 		// ***
 		Artefato artefato12 = new Artefato("ABEND", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo12_0 = new Atributo(TipoAtributo.CICS_LABEL, "9999-ERROR-CICS", null, null);
+		Atributo atributo12_0 = new Atributo(TipoAtributo.CICS_LABEL, "9999-ERROR-CICS", null, "RELACIONAMENTO_ARTEFATO");
 		artefato12.adicionarAtributo(atributo12_0);
 		// ***
 		listaArtefato.add(artefato01);

@@ -1,18 +1,19 @@
 package br.gov.caixa.discovery.ejb.dao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Subgraph;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -23,6 +24,9 @@ import javax.persistence.criteria.Root;
 
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.TipoRelacionamentoPersistence;
+import br.gov.caixa.discovery.ejb.view.ArtefatoView;
+import br.gov.caixa.discovery.ejb.view.RelacionamentoView;
 
 @Stateless
 public class ArtefatoDao {
@@ -39,13 +43,14 @@ public class ArtefatoDao {
 		this.em = em;
 	}
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		Dao dao = new Dao();
 		dao.abrirConexao();
 		EntityManager em = dao.getEmFactory().createEntityManager();
 		ArtefatoDao artefatoDao = new ArtefatoDao(em);
 
-		ArtefatoPersistence artefato = artefatoDao.pesquisarArtefatoRelacionamento(46790L);
+		ArtefatoPersistence artefato = artefatoDao.pesquisarArtefatoRelacionamento(926L);
 
 		em.close();
 		dao.fecharConexao();
@@ -55,12 +60,107 @@ public class ArtefatoDao {
 		// System.out.println(artefato.getListaArtefato().get(1).getListaAtributos().toArray());
 		// System.out.println(artefato.getListaArtefato().get(2).getListaAtributos().toArray());
 
-		if (artefato.getListaArtefato() != null) {
-			artefato.getListaArtefato().forEach((rel) -> {
-				System.out.println(rel.getCoRelacionamento());
-				System.out.println(rel.getArtefato().getNoNomeArtefato());
-			});
+//		if (artefato.getListaArtefato() != null) {
+//			artefato.getListaArtefato().forEach((rel) -> {
+//				System.out.println(rel.getCoRelacionamento());
+//				System.out.println(rel.getArtefato().getNoNomeArtefato());
+//			});
+//		}
+
+	}
+
+	public Collection<ArtefatoView> pesquisaAvancada(String expNome, String expDescricao, String[] listaTipoArtefato,
+			Boolean icProcessoCritico, Boolean icInterface, int offset, int limit) {
+
+		LOGGER.log(Level.FINE,
+				"Pesquisa Avançada." + " expNome (" + expNome + ")" + " expDescricao (" + expDescricao + ")"
+						+ " listaTipoArtefato (" + listaTipoArtefato + ")" + " icProcessoCritico (" + icProcessoCritico
+						+ ")" + " icInterface (" + icInterface + ")");
+
+		Collection<ArtefatoView> output = null;
+		List<Predicate> listaPredicadosAnd = new ArrayList<>();
+
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaQuery<ArtefatoView> cq = cb.createQuery(ArtefatoView.class);
+		Root<ArtefatoView> artefatoRoot = cq.from(ArtefatoView.class);
+
+		if (expNome != null && !"".equals(expNome.trim())) {
+			Predicate pNoNomeExibicao = cb.like(cb.upper(artefatoRoot.get("noNomeExibicao")),
+					"%" + expNome.toUpperCase() + "%");
+			Predicate pNoNomeInterno = cb.like(cb.upper(artefatoRoot.get("noNomeInterno")),
+					"%" + expNome.toUpperCase() + "%");
+
+			listaPredicadosAnd.add(cb.or(pNoNomeExibicao, pNoNomeInterno));
 		}
+		if (expDescricao != null && !"".equals(expDescricao.trim())) {
+			Predicate pDeDescricaoArtefato = cb.like(cb.upper(artefatoRoot.get("deDescricaoArtefato")),
+					"%" + expDescricao.toUpperCase() + "%");
+			Predicate pDeDescricaoUsuario = cb.like(cb.upper(artefatoRoot.get("deDescricaoUsuario")),
+					"%" + expDescricao.toUpperCase() + "%");
+			listaPredicadosAnd.add(cb.or(pDeDescricaoArtefato, pDeDescricaoUsuario));
+		}
+
+		if (icProcessoCritico != null && icProcessoCritico == true) {
+			Predicate pIcProcessoCritico = cb.equal(artefatoRoot.get("icProcessoCritico"), true);
+			listaPredicadosAnd.add(pIcProcessoCritico);
+		}
+
+		if (icInterface != null && icInterface == true) {
+			Predicate pCoTipoRelacionamento = cb.equal(artefatoRoot.get("coTipoRelacionamento"), "INTERFACE");
+			listaPredicadosAnd.add(pCoTipoRelacionamento);
+		}
+
+		Predicate pCoTipArtefato = artefatoRoot.get("coTipoArtefato").in(Arrays.asList(listaTipoArtefato));
+		listaPredicadosAnd.add(pCoTipArtefato);
+
+		if (listaPredicadosAnd.size() > 0) {
+			cq.select(artefatoRoot).where(listaPredicadosAnd.toArray(new Predicate[] {}));
+		} else {
+			cq.select(artefatoRoot);
+		}
+
+		try {
+			cq.orderBy(cb.asc(artefatoRoot.get("coArtefato")));
+			TypedQuery<ArtefatoView> query = em.createQuery(cq).setFirstResult(offset).setMaxResults(limit);
+			
+			output = query.getResultList();
+//			List<ArtefatoView> resultList = query.getResultList();
+//			System.out.println("Size resultList : " + resultList.size());
+//
+//			HashMap<Long, ArtefatoView> mapArtefatoView = new HashMap<>();
+//
+//			for (ArtefatoView artefatoView : resultList) {
+//				if (!mapArtefatoView.containsKey(artefatoView.getCoArtefato())) {
+//					mapArtefatoView.put(artefatoView.getCoArtefato(), artefatoView);
+//					System.out.println("Incluindo  : " + artefatoView.getNoNomeArtefato());
+//				}
+//
+//				if (artefatoView.getCoTipoRelacionamento() != null) {
+//					ArtefatoView mapEntry = mapArtefatoView.get(artefatoView.getCoArtefato());
+//					mapEntry.adicionarTransientCountRelacionamento(1);
+//					if ("INTERFACE".equals(artefatoView.getCoTipoRelacionamento())) {
+//						mapEntry.adicionarTransientCountRelacionamentoInterface(1);
+//					}
+//					if ("CONTROL-M".equals(artefatoView.getCoTipoRelacionamento())) {
+//						mapEntry.adicionarTransientCountRelacionamentoControlM(1);
+//					}
+//					if ("NORMAL".equals(artefatoView.getCoTipoRelacionamento())) {
+//						mapEntry.adicionarTransientCountRelacionamentoNormal(1);
+//					}
+//				}
+//			}
+//			output = mapArtefatoView.values();
+//			System.out.println("Size output  : " + output.size());
+
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE,
+					"Erro ao tentar pesquisar artefato viw. " + " expNome (" + expNome + ")" + " expDescricao ("
+							+ expDescricao + ")" + " listaTipoArtefato (" + listaTipoArtefato + ")"
+							+ " icProcessoCritico (" + icProcessoCritico + ")" + " icInterface (" + icInterface + ")",
+					e);
+		}
+
+		return output;
 
 	}
 
@@ -85,7 +185,6 @@ public class ArtefatoDao {
 		try {
 			TypedQuery<ArtefatoPersistence> query = em.createQuery(cq);
 			output = query.getSingleResult();
-
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar pesquisar artefato. " + "CoArtefato (" + coArtefato + ")", e);
 		}
@@ -98,35 +197,45 @@ public class ArtefatoDao {
 
 		ArtefatoPersistence output = null;
 
-		EntityGraph<ArtefatoPersistence> graph = this.em.createEntityGraph(ArtefatoPersistence.class);
-		graph.addAttributeNodes("tipoArtefato");
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaQuery<RelacionamentoView> cq = cb.createQuery(RelacionamentoView.class);
+		Root<RelacionamentoView> relacionamentoRoot = cq.from(RelacionamentoView.class);
 
-		// Subgraph<RelacionamentoPersistence> atributosartefatoGraph =
-		// graph.addSubgraph("listaAtributos");
+		Predicate pCoArtefatoDesc = cb.equal(relacionamentoRoot.get("coArtefatoDesc"), coArtefato);
+		Predicate pCoArtefatoAsc = cb.equal(relacionamentoRoot.get("coArtefatoAsc"), coArtefato);
 
-		Subgraph<RelacionamentoPersistence> relacionamentoGraph = graph.addSubgraph("listaArtefato");
-		relacionamentoGraph.addAttributeNodes("artefato");
-		relacionamentoGraph.addAttributeNodes("artefatoPai");
-		relacionamentoGraph.addAttributeNodes("artefatoPrimeiro");
-		relacionamentoGraph.addAttributeNodes("artefatoUltimo");
-		relacionamentoGraph.addAttributeNodes("artefatoAnterior");
-		relacionamentoGraph.addAttributeNodes("artefatoPosterior");
-
-		Subgraph<RelacionamentoPersistence> atributosRelacionamentoGraph = relacionamentoGraph
-				.addSubgraph("listaAtributos");
-
-		// relacionamentoGraph.addAttributeNodes("coExterno");
-
-		Map<String, Object> hints = new HashMap<String, Object>();
-		hints.put("javax.persistence.loadgraph", graph);
+		cq.select(relacionamentoRoot).where(cb.or(pCoArtefatoDesc, pCoArtefatoAsc));
 
 		try {
-			output = this.em.find(ArtefatoPersistence.class, coArtefato, hints);
+			TypedQuery<RelacionamentoView> query = em.createQuery(cq);
+			List<RelacionamentoView> lista = query.getResultList();
+
+			for (RelacionamentoView entry : lista) {
+				RelacionamentoPersistence relacionamento = entry.getTransientRelacionamento();
+
+				if (output == null) {
+					if (coArtefato.equals(entry.getCoArtefatoAsc())) {
+						output = entry.getTransientArtefatoAsc();
+					} else if (coArtefato.equals(entry.getCoArtefatoDesc())) {
+						output = entry.getTransientArtefatoDesc();
+					}
+				}
+
+				if (coArtefato.equals(entry.getCoArtefatoAsc())) {
+					output.adicionarRelacionamento(relacionamento);
+				} else if (coArtefato.equals(entry.getCoArtefatoDesc())) {
+					output.adicionarRelacionamentoPai(relacionamento);
+
+				}
+
+			}
+
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar pesquisar artefato. " + "CoArtefato (" + coArtefato + ")", e);
 		}
 
 		return output;
+
 	}
 
 	public List<ArtefatoPersistence> pesquisarRapida(String coNome) {
@@ -208,7 +317,14 @@ public class ArtefatoDao {
 			listaAnd.add(pTsFimVigencia);
 		}
 
-		cq.select(artefatoRoot).where(listaAnd.toArray(new Predicate[] {}));
+		cq.multiselect(artefatoRoot.get("coArtefato"), artefatoRoot.get("noNomeArtefato"),
+				artefatoRoot.get("noNomeExibicao"), artefatoRoot.get("noNomeInterno"), artefatoRoot.get("coAmbiente"),
+				artefatoRoot.get("coSistema"), artefatoRoot.get("coTipoArtefato"), artefatoRoot.get("deIdentificador"),
+				artefatoRoot.get("deHash"), artefatoRoot.get("deDescricaoUsuario"),
+				artefatoRoot.get("deDescricaoArtefato"), artefatoRoot.get("icInclusaoManual"),
+				artefatoRoot.get("tsInicioVigencia"), artefatoRoot.get("tsUltimaModificacao"),
+				artefatoRoot.get("tsFimVigencia"), artefatoRoot.get("icProcessoCritico"))
+				.where(listaAnd.toArray(new Predicate[] {}));
 
 		try {
 			TypedQuery<ArtefatoPersistence> query = em.createQuery(cq);

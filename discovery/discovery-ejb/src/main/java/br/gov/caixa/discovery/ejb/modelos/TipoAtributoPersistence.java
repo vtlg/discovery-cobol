@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
-@Entity()
+@Entity(name="TBL_TIPO_ATRIBUTO")
 @DiscriminatorValue("ATRIBUTO")
 public class TipoAtributoPersistence extends TipoPersistence {
 

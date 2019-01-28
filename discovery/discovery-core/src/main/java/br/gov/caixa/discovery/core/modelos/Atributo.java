@@ -45,6 +45,17 @@ public class Atributo {
 
 		return true;
 	}
+	
+	@Override
+	public int hashCode() {
+		StringBuilder sb1 = new StringBuilder();
+		sb1.append(this.tipoAtributo);
+		sb1.append(this.valor);
+		sb1.append(this.descricao);
+		sb1.append(this.tipo);
+		
+		return sb1.toString().hashCode();
+	}
 
 	@Override
 	public String toString() {

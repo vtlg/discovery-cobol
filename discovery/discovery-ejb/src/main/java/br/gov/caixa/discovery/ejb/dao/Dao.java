@@ -44,8 +44,8 @@ public class Dao {
 		properties.put("hibernate.jdbc.batch_size", 25);
 		properties.put("hibernate.order_inserts", true);
 		properties.put("hibernate.order_updates", true);
-		properties.put("hibernate.show_sql", true);
-		properties.put("hibernate.format_sql", true);
+		properties.put("hibernate.show_sql", false);
+		properties.put("hibernate.format_sql", false);
 		// properties.put("", true);
 		properties.put("hibernate.hbm2ddl.auto", "validate");
 		properties.put("hibernate.connection.useUnicode", true);

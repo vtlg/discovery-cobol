@@ -227,14 +227,14 @@ public class TEST_Jcl {
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo01_1 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"SELECT CO_ENTIDADE, CO_AGENCIA_INCLUSAO, CO_CONTA_CONTRATO, NU_ANO_EXTRATO FROM PCS.PCSTBD58_EXTRATO_ANUAL;",
-				null, null);
+				null, "ARTEFATO");
 		artefato01.adicionarAtributo(atributo01_1);
 		// ***
 		Artefato artefato02 = new Artefato("DECLARACAO-SQL-2", null, null, TipoArtefato.DECLARACAO_SQL,
 				TipoAmbiente.PRD, "SIPCS", null, null);
 		Atributo atributo02_1 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
 				"SELECT CODENT , CENTALTA , CUENTA , NUMSECHIS , PAN , CODCOM , CHAR(FECHAMOD,ISO) , HORAMOD , TIPACCES , PROCESO , DESPROCESO , DATOMOD , MOTIVO , CANALMOD , CODENTUMO , CODOFIUMO , USUARIOUMO , CODTERMUMO , CONTCUR , TABLA , REGANT , REGACT FROM PCS.MPDT068 WHERE MOTIVO IN ('RO','RM', 'MB' ,'MM','MO') AND TABLA IN ('174') ORDER BY CODENT, CENTALTA, CUENTA, NUMSECHIS WITH UR;",
-				null, null);
+				null, "ARTEFATO");
 		artefato02.adicionarAtributo(atributo02_1);
 		// ***
 		listaArtefato.add(artefato01);

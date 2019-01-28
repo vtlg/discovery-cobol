@@ -2,6 +2,7 @@ package br.gov.caixa.discovery.ejb.modelos;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,6 +26,19 @@ import javax.persistence.UniqueConstraint;
 @Entity(name = "TBL_ARTEFATO")
 @Table(schema = "public", uniqueConstraints = { @UniqueConstraint(columnNames = { "NO_NOME_ARTEFATO", "CO_AMBIENTE",
 		"CO_SISTEMA", "CO_TIPO_ARTEFATO", "TS_FIM_VIGENCIA" }) })
+@NamedQueries(
+		{
+			@NamedQuery(
+					name="pesquisarArtefatoRelacionamento",
+					query = "SELECT t1.noNomeArtefato, tRelPai FROM TBL_ARTEFATO t1 "
+							+ " LEFT JOIN TBL_RELACIONAMENTO_ARTEFATO tRelPai "
+							+ "       ON t1.coArtefato = tRelPai.coArtefatoPai and tRelPai.tsFimVigencia is null "
+							+ " LEFT JOIN TBL_RELACIONAMENTO_ARTEFATO tRelPai "
+							+ "       ON t1.coArtefato = tRelPai.coArtefatoPai and tRelPai.tsFimVigencia is null "
+							+ " where t1.coArtefato = :coArtefato "
+							+ "   and t1.tsFimVigencia is null "
+		     )
+		})
 public class ArtefatoPersistence {
 
 	@Id
@@ -112,18 +128,31 @@ public class ArtefatoPersistence {
 	@Transient
 	private List<RelacionamentoPersistence> transientListaRelacionamentos = new ArrayList<>();
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Código : (" + this.coArtefato + ") ");
-		sb.append("Nome Artefato : (" + this.noNomeArtefato + ") ");
-		sb.append("Nome Interno : (" + this.noNomeInterno + ") ");
-		sb.append("Nome Exibição  : (" + this.noNomeExibicao + ") ");
-		sb.append("Tipo de Artefato : (" + this.coTipoArtefato + ") ");
-		sb.append("Ambiente : (" + this.coAmbiente + ") ");
-		sb.append("Sistema : (" + this.coSistema + ") ");
+	@Transient
+	private List<RelacionamentoPersistence> transientRelacionamentosDesativados = new ArrayList<>();
 
-		return sb.toString();
+	public void adicionarRelacionamento(RelacionamentoPersistence entry) {
+		if (this.listaArtefato == null) {
+			this.listaArtefato = new HashSet<>();
+		}
+
+		this.listaArtefato.add(entry);
+	}
+
+	public void adicionarRelacionamentoPai(RelacionamentoPersistence entry) {
+		if (this.listaArtefatoPai == null) {
+			this.listaArtefatoPai = new HashSet<>();
+		}
+
+		this.listaArtefatoPai.add(entry);
+	}
+
+	public void adicionarRelacionamentoDesativadoTransient(RelacionamentoPersistence entry) {
+		if (this.transientRelacionamentosDesativados == null) {
+			this.transientRelacionamentosDesativados = new ArrayList<>();
+		}
+
+		this.transientRelacionamentosDesativados.add(entry);
 	}
 
 	public void adicionarRelacionamentoTransient(RelacionamentoPersistence entry) {
@@ -358,6 +387,15 @@ public class ArtefatoPersistence {
 		this.transientAtualizarRelacionamentos = transientAtualizarRelacionamentos;
 	}
 
+	public List<RelacionamentoPersistence> getTransientRelacionamentosDesativados() {
+		return transientRelacionamentosDesativados;
+	}
+
+	public void setTransientRelacionamentosDesativados(
+			List<RelacionamentoPersistence> transientRelacionamentosDesativados) {
+		this.transientRelacionamentosDesativados = transientRelacionamentosDesativados;
+	}
+
 	public ArtefatoPersistence() {
 		super();
 	}
@@ -480,6 +518,40 @@ public class ArtefatoPersistence {
 		this.icProcessoCritico = icProcessoCritico;
 	}
 
+	public ArtefatoPersistence(Object[] copyOfRange) {
+
+		this.coArtefato = (Long) copyOfRange[0];
+		this.noNomeArtefato = (String) copyOfRange[1];
+		this.noNomeExibicao = (String) copyOfRange[2];
+		this.noNomeInterno = (String) copyOfRange[3];
+		this.coTipoArtefato = (String) copyOfRange[4];
+		this.icInclusaoManual = (Boolean) copyOfRange[5];
+		this.icProcessoCritico = (Boolean) copyOfRange[6];
+
+//		artefatoRoot.get("coArtefato"), 
+//		artefatoRoot.get("noNomeArtefato"), 
+//		artefatoRoot.get("noNomeExibicao"),
+//		artefatoRoot.get("noNomeInterno"),
+//		artefatoRoot.get("coTipoArtefato"),
+//		artefatoRoot.get("icInclusaoManual"),
+//		artefatoRoot.get("icProcessoCritico"),
+
+	}
+
 	// ****
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Código : (" + this.coArtefato + ") ");
+		sb.append("Nome Artefato : (" + this.noNomeArtefato + ") ");
+		sb.append("Nome Interno : (" + this.noNomeInterno + ") ");
+		sb.append("Nome Exibição  : (" + this.noNomeExibicao + ") ");
+		sb.append("Tipo de Artefato : (" + this.coTipoArtefato + ") ");
+		sb.append("Ambiente : (" + this.coAmbiente + ") ");
+		sb.append("Sistema : (" + this.coSistema + ") ");
+
+		return sb.toString();
+	}
 
 }

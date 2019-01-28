@@ -1,6 +1,7 @@
 package br.gov.caixa.discovery.ejb.modelos;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
@@ -54,31 +57,39 @@ public class RelacionamentoPersistence {
 	@Column(name = "IC_INCLUSAO_MALHA", columnDefinition = "boolean NOT NULL DEFAULT false")
 	private boolean icInclusaoMalha = false;
 
+	@Column(name = "TS_INICIO_VIGENCIA", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Calendar tsInicioVigencia;
+
+	@Column(name = "TS_FIM_VIGENCIA", columnDefinition = "TIMESTAMP DEFAULT null")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Calendar tsFimVigencia;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CO_TIPO_RELACIONAMENTO", referencedColumnName = "CO_TIPO", insertable = false, updatable = false)
 	private TipoRelacionamentoPersistence tipoRelacionamento;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CO_ARTEFATO", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
 	private ArtefatoPersistence artefato;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CO_ARTEFATO_PAI", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
 	private ArtefatoPersistence artefatoPai;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CO_ARTEFATO_ANTERIOR", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
 	private ArtefatoPersistence artefatoAnterior;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CO_ARTEFATO_POSTERIOR", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
 	private ArtefatoPersistence artefatoPosterior;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CO_ARTEFATO_PRIMEIRO", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
 	private ArtefatoPersistence artefatoPrimeiro;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CO_ARTEFATO_ULTIMO", referencedColumnName = "CO_ARTEFATO", insertable = false, updatable = false)
 	private ArtefatoPersistence artefatoUltimo;
 
@@ -246,6 +257,45 @@ public class RelacionamentoPersistence {
 
 	public void setTipoRelacionamento(TipoRelacionamentoPersistence tipoRelacionamento) {
 		this.tipoRelacionamento = tipoRelacionamento;
+	}
+
+	public Calendar getTsInicioVigencia() {
+		return tsInicioVigencia;
+	}
+
+	public void setTsInicioVigencia(Calendar tsInicioVigencia) {
+		this.tsInicioVigencia = tsInicioVigencia;
+	}
+
+	public Calendar getTsFimVigencia() {
+		return tsFimVigencia;
+	}
+
+	public void setTsFimVigencia(Calendar tsFimVigencia) {
+		this.tsFimVigencia = tsFimVigencia;
+	}
+
+	public RelacionamentoPersistence() {
+		super();
+	}
+
+	public RelacionamentoPersistence(Long coRelacionamento, Long coArtefato, Long coArtefatoPai,
+			Long coArtefatoAnterior, Long coArtefatoPosterior, Long coArtefatoPrimeiro, Long coArtefatoUltimo,
+			String coTipoRelacionamento, boolean icInclusaoManual, boolean icInclusaoMalha, Calendar tsInicioVigencia,
+			Calendar tsFimVigencia) {
+		super();
+		this.coRelacionamento = coRelacionamento;
+		this.coArtefato = coArtefato;
+		this.coArtefatoPai = coArtefatoPai;
+		this.coArtefatoAnterior = coArtefatoAnterior;
+		this.coArtefatoPosterior = coArtefatoPosterior;
+		this.coArtefatoPrimeiro = coArtefatoPrimeiro;
+		this.coArtefatoUltimo = coArtefatoUltimo;
+		this.coTipoRelacionamento = coTipoRelacionamento;
+		this.icInclusaoManual = icInclusaoManual;
+		this.icInclusaoMalha = icInclusaoMalha;
+		this.tsInicioVigencia = tsInicioVigencia;
+		this.tsFimVigencia = tsFimVigencia;
 	}
 
 }

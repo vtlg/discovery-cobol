@@ -15,6 +15,7 @@ import br.gov.caixa.discovery.core.utils.ArtefatoHandler;
 import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.core.utils.Patterns;
 import br.gov.caixa.discovery.core.utils.UtilsHandler;
+import br.gov.caixa.discovery.ejb.tipos.Tabelas;
 
 public class ExtratorProgramaCobol {
 
@@ -965,7 +966,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_LABEL);
 				atributo.setValor(label);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -975,7 +976,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_ENDDATA);
 				atributo.setValor(enddata);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -985,7 +986,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_ERROR);
 				atributo.setValor(error);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -995,7 +996,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_QNAME);
 				atributo.setValor(qname);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1005,7 +1006,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_ITEM);
 				atributo.setValor(item);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1015,7 +1016,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_NUMITEMS);
 				atributo.setValor(numitems);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1025,7 +1026,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_INTO);
 				atributo.setValor(into);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1035,7 +1036,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_TRANSACTION_ID);
 				atributo.setValor(transId);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TRANSACTION-ID", transId);
 			}
@@ -1044,7 +1045,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_FROM);
 				atributo.setValor(from);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("FROM", from);
 			}
@@ -1053,7 +1054,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_TERMINAL_ID);
 				atributo.setValor(termId);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TERMINAL-ID", termId);
 			}
@@ -1062,7 +1063,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.REQ_ID);
 				atributo.setValor(reqId);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("REQ-ID", reqId);
 			}
@@ -1070,8 +1071,7 @@ public class ExtratorProgramaCobol {
 				Atributo atributo = new Atributo();
 				atributo.setTipoAtributo(TipoAtributo.CICS_LENGTH);
 				atributo.setValor(length);
-				// atributo.setTipo("STRING");
-				atributo.setTipo("ARTEFATO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("LENGTH", length);
 			}
@@ -1080,7 +1080,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_ABSTIME);
 				atributo.setValor(abstime);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TIME", time);
 			}
@@ -1088,7 +1088,7 @@ public class ExtratorProgramaCobol {
 				Atributo atributo = new Atributo();
 				atributo.setTipoAtributo(TipoAtributo.CICS_TIME);
 				atributo.setValor(time);
-				// atributo.setTipo("STRING");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("TIME", time);
 			}
@@ -1097,7 +1097,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_QUEUE);
 				atributo.setValor(queue);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("QUEUE", queue);
 			}
@@ -1106,7 +1106,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_R_TERMINAL_ID);
 				atributo.setValor(rtermId);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("R-TERMINAL-ID", rtermId);
 			}
@@ -1115,7 +1115,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_R_TRANSACTION_ID);
 				atributo.setValor(rtransId);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("R-TRANSACTION-ID", rtransId);
 			}
@@ -1124,7 +1124,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_SYSTEM_ID);
 				atributo.setValor(sysid);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("SYSTEM-ID", sysid);
 			}
@@ -1133,7 +1133,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_USER_ID);
 				atributo.setValor(userid);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("USER-ID", userid);
 			}
@@ -1142,7 +1142,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_PROGRAM);
 				atributo.setValor(program);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("PROGRAM", program);
 			}
@@ -1152,7 +1152,7 @@ public class ExtratorProgramaCobol {
 				atributo.setTipoAtributo(TipoAtributo.CICS_COMMAREA);
 				atributo.setValor(commarea);
 				// atributo.setTipo("STRING");
-				atributo.setTipo("RELACIONAMENTO");
+				atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 				artefatoTransaction.adicionarAtributo(atributo);
 				// transaction.getParametros().put("COMMAREA", commarea);
 			}
