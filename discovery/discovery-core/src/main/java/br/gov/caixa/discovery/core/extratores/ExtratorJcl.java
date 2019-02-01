@@ -301,7 +301,8 @@ public class ExtratorJcl {
 					identificador = m_identificador.group("identificador").trim();
 
 					artefatoDdname = new Artefato();
-					artefatoDdname.setNome(_tratarNomeDsn(identificador));
+					//artefatoDdname.setNome(_tratarNomeDsn(identificador));
+					artefatoDdname.setNome(identificador);
 					artefatoDdname.setTipoArtefato(TipoArtefato.DDNAME);
 					artefatoDdname.setPosicao(artefato.getPosicao() + posicaoLinha);
 					artefatoDdname.setSistema(artefato.getSistema());
@@ -511,7 +512,6 @@ public class ExtratorJcl {
 
 				// artefato.adicionarArtefatosRelacionados(artefatoDsn);
 				artefatoDdname.adicionarArtefatosRelacionados(artefatoDsn);
-
 			}
 		}
 

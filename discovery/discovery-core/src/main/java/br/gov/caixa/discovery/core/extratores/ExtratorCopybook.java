@@ -12,6 +12,7 @@ import br.gov.caixa.discovery.core.modelos.Atributo;
 import br.gov.caixa.discovery.core.tipos.TipoAmbiente;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.tipos.TipoAtributo;
+import br.gov.caixa.discovery.core.utils.ArtefatoHandler;
 import br.gov.caixa.discovery.core.utils.Patterns;
 
 public class ExtratorCopybook {
@@ -66,12 +67,20 @@ public class ExtratorCopybook {
 			}
 
 			// ATRIBUTI NOME DO ARTEFATO
-			String nomeArquivo = Paths.get(this.artefato.getCaminhoArquivo()).getFileName().toString();
+			// String nomeArquivo =
+			// Paths.get(this.artefato.getCaminhoArquivo()).getFileName().toString();
+			String nomeArtefato = Paths.get(this.artefato.getCaminhoArquivo()).getFileName().toString();
 
-			if (nomeArquivo.contains(".")) {
-				nomeArquivo = nomeArquivo.split("\\.")[0].trim().toUpperCase();
+			Matcher m_extrator_p_nome_artefato = Patterns.EXTRATOR_P_NOME_ARTEFATO
+					.matcher(Paths.get(this.artefato.getCaminhoArquivo()).getFileName().toString());
+			if (m_extrator_p_nome_artefato.matches()) {
+				nomeArtefato = m_extrator_p_nome_artefato.group("parametro");
 			}
-			this.artefato.setNome(nomeArquivo);
+			if (nomeArtefato.contains(".")) {
+				nomeArtefato = nomeArtefato.split("\\.")[0].trim().toUpperCase();
+			}
+
+			artefato.setNome(ArtefatoHandler.tratarNomeArtefato(nomeArtefato));
 
 			this.artefato = processarCodigoCompleto(this.artefato);
 			this.artefato = relacionarVariavel(this.artefato, this.deslocamento, this.sistema, this.ambiente);

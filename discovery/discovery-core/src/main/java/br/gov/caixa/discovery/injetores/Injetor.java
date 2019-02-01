@@ -24,6 +24,7 @@ public class Injetor {
 
 	private static EntityManager em = null;
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		LOGGER.log(Level.INFO, "Carregando parâmetros");
 		Configuracao.carregar(args);
@@ -31,7 +32,7 @@ public class Injetor {
 		List<ArtefatoPersistence> listaArtefatosControlMPersistence = Conversor.executar(true);
 
 		executar(listaArtefatosPersistence, false);
-		// executar(listaArtefatosControlMPersistence, true);
+		executar(listaArtefatosControlMPersistence, true);
 	}
 
 	private static void executar(List<ArtefatoPersistence> listaEntrada, boolean controlM) {
@@ -94,8 +95,8 @@ public class Injetor {
 
 		ArtefatoPersistence artefatoPesquisa = null;
 
-		List<ArtefatoPersistence> resultListaArtefatoPesquisa = artefatoDao.pesquisarArtefato(coNome, coTipoArtefato,
-				null, null, true);
+		List<ArtefatoPersistence> resultListaArtefatoPesquisa = artefatoDao.getArtefato(coNome, coTipoArtefato, null,
+				null, true);
 
 		if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() >= 2) {
 			LOGGER.log(Level.WARNING, "Verificar pois não deveria retornar mais de um artefato. Nome (" + coNome
@@ -235,6 +236,7 @@ public class Injetor {
 		return atualizarTabelaArtefato(artefato, false);
 	}
 
+	@SuppressWarnings("unused")
 	private static ArtefatoPersistence atualizarTabelaArtefato(ArtefatoPersistence artefato,
 			boolean marcaDesativarPai) {
 
@@ -251,8 +253,8 @@ public class Injetor {
 
 		ArtefatoPersistence artefatoPesquisa = null;
 		if (!TipoArtefato.DESCONHECIDO.get().equals(artefato.getCoTipoArtefato())) {
-			resultListaArtefatoPesquisa = artefatoDao.pesquisarArtefato(coNome, artefato.getCoTipoArtefato(), null,
-					null, true);
+			resultListaArtefatoPesquisa = artefatoDao.getArtefato(coNome, artefato.getCoTipoArtefato(), null, null,
+					true);
 			if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() >= 2) {
 				LOGGER.log(Level.WARNING,
 						"Verificar pois não deveria retornar mais de um artefato. Nome (" + coNome + ")");
@@ -266,9 +268,9 @@ public class Injetor {
 			//
 			// caso o tipo do artefato seja DESCONHECIDO
 			//
-			resultListaArtefatoPesquisa = artefatoDao.pesquisarArtefato(coNome, null, null, null, true);
+			resultListaArtefatoPesquisa = artefatoDao.getArtefato(coNome, null, null, null, true);
 
-			boolean isAribuido = false;
+			// boolean isAribuido = false;
 			boolean hasCobol = false;
 			boolean hasJcl = false;
 

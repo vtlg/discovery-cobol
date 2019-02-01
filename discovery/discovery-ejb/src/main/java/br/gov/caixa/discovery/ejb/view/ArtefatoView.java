@@ -5,7 +5,6 @@ import java.util.Calendar;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Transient;
 
 @Entity(name = "VW_ARTEFATO")
 public class ArtefatoView {
@@ -257,6 +256,20 @@ public class ArtefatoView {
 		this.countRelacionamentoControlM = countRelacionamentoControlM;
 	}
 
-	
+	public ArtefatoView() {
+		super();
+	}
+
+	public ArtefatoView(Long coArtefato, String noNomeArtefato, String noNomeExibicao, String noNomeInterno,
+			String coTipoArtefato, String coAmbiente, String coSistema) {
+		super();
+		this.coArtefato = coArtefato;
+		this.noNomeArtefato = noNomeArtefato;
+		this.noNomeExibicao = noNomeExibicao;
+		this.noNomeInterno = noNomeInterno;
+		this.coTipoArtefato = coTipoArtefato;
+		this.coAmbiente = coAmbiente;
+		this.coSistema = coSistema;
+	}
 
 }

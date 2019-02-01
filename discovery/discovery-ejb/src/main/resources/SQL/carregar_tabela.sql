@@ -87,4 +87,12 @@ INSERT INTO public.tbl_tipo(
 ('RELACIONAMENTO_ARTEFATO','NORMAL','Normal',false,true,true,'none','#cecece', 0.8),
 ('RELACIONAMENTO_ARTEFATO','INTERFACE','Interface',false,true,true,'none','#000000', 2),
 ('RELACIONAMENTO_ARTEFATO','CONTROL-M','Control-M',false,true,true,'none','#e57373', 2),
-('RELACIONAMENTO_ARTEFATO','DESATIVADO','Desativado',false,false,false,'none','#e57373', 1)
+('RELACIONAMENTO_ARTEFATO','DESATIVADO','Desativado',false,false,false,'none','#e57373', 1);
+
+
+INSERT INTO public.tbl_sistema(
+	co_sistema, de_sistema)
+	VALUES 
+	('SIPCS', 'SIPCS'),
+	('SIFDL', 'SIFDL'),
+	('DESCONHECIDO', 'Desconhecido');

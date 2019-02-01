@@ -83,6 +83,10 @@ public class ArtefatoPersistence {
 	@JoinColumn(name = "CO_TIPO_ARTEFATO", referencedColumnName = "CO_TIPO", insertable = false, updatable = false)
 	private TipoArtefatoPersistence tipoArtefato;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CO_SISTEMA", referencedColumnName = "CO_SISTEMA", insertable = false, updatable = false)
+	private SistemaPersistence sistema;
+
 	@OneToMany(mappedBy = "artefatoPai", fetch = FetchType.LAZY)
 	private Set<RelacionamentoPersistence> listaArtefato;
 
@@ -147,7 +151,7 @@ public class ArtefatoPersistence {
 
 		this.transientListaRelacionamentos.addAll(entry);
 	}
-	
+
 	public void adicionarRelacionamentoTransient(RelacionamentoPersistence entry) {
 		if (this.transientListaRelacionamentos == null) {
 			this.transientListaRelacionamentos = new ArrayList<>();

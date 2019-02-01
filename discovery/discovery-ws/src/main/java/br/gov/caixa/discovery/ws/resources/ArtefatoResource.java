@@ -10,7 +10,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import br.gov.caixa.discovery.ejb.dao.ArtefatoDao;
+import br.gov.caixa.discovery.ejb.dao.ArtefatoViewDao;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
+import br.gov.caixa.discovery.ejb.view.ArtefatoView;
 import br.gov.caixa.discovery.ws.modelos.ArtefatoDomain;
 import br.gov.caixa.discovery.ws.utils.Conversores;
 
@@ -20,10 +22,13 @@ public class ArtefatoResource implements ArtefatoResourceI {
 	@EJB
 	ArtefatoDao artefatoDao;
 
+	@EJB
+	ArtefatoViewDao artefatoViewDao;
+
 	@Override
 	public Response getArtefato(Long coArtefato) {
 		ResponseBuilder response = Response.status(Status.OK);
-		ArtefatoPersistence persistence = artefatoDao.pesquisarArtefato(coArtefato);
+		ArtefatoPersistence persistence = artefatoDao.getArtefato(coArtefato);
 
 		ArtefatoDomain domain = Conversores.converter(persistence, true, false);
 
@@ -39,7 +44,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 	@Override
 	public Response getRelacionamentos(Long coArtefato) {
 		ResponseBuilder response = Response.status(Status.OK);
-		ArtefatoPersistence persistence = artefatoDao.pesquisarArtefatoRelacionamento(coArtefato);
+		ArtefatoPersistence persistence = artefatoViewDao.getArtefatoRelacionamento(coArtefato);
 
 		ArtefatoDomain domain = Conversores.converter(persistence, true, true);
 
@@ -51,7 +56,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 	@Override
 	public Response atualizarArtefato(Long coArtefato, ArtefatoDomain domain) {
 		ResponseBuilder response = Response.status(Status.OK);
-		ArtefatoPersistence persistence = artefatoDao.pesquisarArtefato(coArtefato);
+		ArtefatoPersistence persistence = artefatoDao.getArtefato(coArtefato);
 
 		if (persistence == null) {
 			// ERRO : ARTEFATO NÃO ENCONTRADO
@@ -77,12 +82,12 @@ public class ArtefatoResource implements ArtefatoResourceI {
 	public Response pesquisar(String termo) {
 		ResponseBuilder response = Response.status(Status.OK);
 
-		List<ArtefatoPersistence> listaPersistence = artefatoDao.pesquisarRapida(termo);
+		List<ArtefatoView> listaPersistence = artefatoViewDao.getArtefato(termo);
 
 		if (listaPersistence == null || listaPersistence.size() == 0) {
 			response.status(Status.NOT_FOUND);
 		} else {
-			response.entity(Conversores.converterListaArtefato(listaPersistence));
+			response.entity(Conversores.converterListaArtefatoView(listaPersistence));
 		}
 
 		return response.build();

@@ -95,19 +95,28 @@ public class ExtratorControlM {
 	}
 
 	private void ajustarArtefatos() {
+		List<Artefato> tempLista = new ArrayList<>();
+		boolean isIncluir = true;
 		for (Artefato artefato : listaArtefatos) {
 			Artefato artefatoFilho = artefato.getArtefatosRelacionados().get(0);
-
+			isIncluir = true;
 			if (artefato.getNome().equals(artefatoFilho.getNome())) {
 				if (!artefatoFilho.getNome().equals(artefatoFilho.getNomeInterno())) {
 					artefatoFilho.setNome(artefatoFilho.getNomeInterno());
 				} else if (!artefato.getNome().equals(artefato.getNomeInterno())) {
 					artefato.setNome(artefato.getNomeInterno());
 				} else {
-					throw new RuntimeException("Erro conversão control-m. Auto-relacionamento");
+					isIncluir = false;
+					// throw new RuntimeException("Erro conversão control-m. Auto-relacionamento");
 				}
 			}
+
+			if (isIncluir) {
+				tempLista.add(artefato);
+			}
 		}
+		
+		listaArtefatos = tempLista;
 	}
 
 	private void extrairRelacionamento(HashMap<String, List<String>> mapListaArquivo) {

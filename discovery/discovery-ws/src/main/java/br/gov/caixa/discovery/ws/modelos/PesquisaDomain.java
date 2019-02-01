@@ -21,6 +21,9 @@ public class PesquisaDomain {
 	@JsonProperty("listaTipoArtefato")
 	private String[] listaTipoArtefato;
 
+	@JsonProperty("listaSistema")
+	private String[] listaSistema;
+
 	@JsonProperty("icProcessoCritico")
 	private Boolean icProcessoCritico;
 
@@ -65,6 +68,14 @@ public class PesquisaDomain {
 
 	public void setIcInterface(Boolean icInterface) {
 		this.icInterface = icInterface;
+	}
+
+	public String[] getListaSistema() {
+		return listaSistema;
+	}
+
+	public void setListaSistema(String[] listaSistema) {
+		this.listaSistema = listaSistema;
 	}
 
 }

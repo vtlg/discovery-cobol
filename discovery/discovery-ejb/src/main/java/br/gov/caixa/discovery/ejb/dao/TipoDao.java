@@ -31,24 +31,6 @@ public class TipoDao {
 		this.em = em;
 	}
 
-	public static void main(String[] args) {
-		Dao dao = new Dao();
-		dao.abrirConexao();
-		EntityManager em = dao.getEmFactory().createEntityManager();
-		TipoDao tipoDao = new TipoDao(em);
-
-		List<TipoPersistence> persistence = tipoDao.listar("");
-		TipoPersistence persistence2 = tipoDao.getTipo("");
-
-		em.close();
-		dao.fecharConexao();
-
-		// System.out.println(artefato.getNoNomeArtefato());
-		// System.out.println(artefato.getListaArtefato().get(0).getListaAtributos().toArray());
-		// System.out.println(artefato.getListaArtefato().get(1).getListaAtributos().toArray());
-		// System.out.println(artefato.getListaArtefato().get(2).getListaAtributos().toArray());
-	}
-
 	public TipoPersistence getTipo(String coTipo) {
 		LOGGER.log(Level.FINE, "Pesquisar Tipo " + "CoTipo (" + coTipo + ")");
 
@@ -102,5 +84,7 @@ public class TipoDao {
 		}
 		return listaOutput;
 	}
+	
+
 
 }

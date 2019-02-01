@@ -7,17 +7,16 @@ public class Patterns {
 
 	//("^.*[\\s]{1,}PROGRAM-ID[\\.]{1,1}[\\s]{1,}(?<nomePrograma>[\\S]{1,})[\\s]{0,}[\\.]{1,}[\\s]{0,}$")
 	
-	public static final Pattern INJETOR_P_DSN_CARDLIB = Pattern.compile("^.*\\((?<cardlib>[\\S]{1,}?)\\).*$");
-	
-	public static final Pattern EXTRATOR_P_NOME_ARTEFATO = Pattern.compile("^.*\\((?<parametro>[\\S]{1,}?)\\).*$");
 
+
+	public static final Pattern JCL_P_IDENTIFICADOR = Pattern.compile("^[/]{2,2}(?<identificador>.*?)[\\s]{1,}DD[\\s]{1,}.*$");
 	
 
 	public static void main(String[] args) {
-		Matcher m = INJETOR_P_DSN_CARDLIB.matcher(
-				"'DES.PCS.V00.C083347.FONTES.COBLE(PCSPRO11)'");
+		Matcher m = JCL_P_IDENTIFICADOR.matcher(
+				"//DD1 DD DSN=%%ALIAS%%.PCS.MZ.BZX0.IP.P3GX.IP605.WDATE.D%%ODATE, // DISP=(MOD,DELETE,DELETE), // SPACE=(TRK,(1,1),RLSE), // UNIT=3390, // DCB=(RECFM=VBS,LRECL=32760,BLKSIZE=27998) ");
 		if (m.matches()) {
-			System.out.println(m.group("cardlib"));
+			System.out.println(m.group("identificador"));
 			System.out.println("Aqui");
 		} else {
 			System.out.println("Não");
@@ -57,7 +56,7 @@ public class Patterns {
 	public static final Pattern JCL_P_DSN_LISTC_ENTRIES = Pattern
 			.compile("^.*[\\s]{1,}(LISTC|LISTCAT)[\\s]{1,}(ENTRIES|ENT|LVL|LEVEL)\\((?<dsn>[\\S&&[^,]]{1,})[)]{1,}.*$");
 
-	public static final Pattern JCL_P_IDENTIFICADOR = Pattern.compile("^[/]{0,2}(?<identificador>.*?)DD.*$");
+	
 
 	public static final Pattern JCL_P_NOME_TIRA_DATA_FIXA = Pattern.compile("^(?<nome>[\\S]{1,}).D[0-9]{4,8}.*$");
 	public static final Pattern JCL_P_NOME_TIRA_AMBIENTE_FIXO = Pattern
@@ -438,5 +437,9 @@ public class Patterns {
 	
 	
 	public static Pattern COBOL_P_JOIN = Pattern.compile("[\\s]{1,}JOIN[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}");
+	
+	public static final Pattern INJETOR_P_DSN_CARDLIB = Pattern.compile("^.*\\((?<cardlib>[\\S]{1,}?)\\).*$");
+	
+	public static final Pattern EXTRATOR_P_NOME_ARTEFATO = Pattern.compile("^.*\\((?<parametro>[\\S]{1,}?)\\).*$");
 
 }

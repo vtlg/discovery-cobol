@@ -141,8 +141,12 @@ public class Extrator {
 			try {
 				tempCodigoCompleto = Files.readAllLines(path, Charset.forName("Cp1252"));
 			} catch (IOException e1) {
-				LOGGER.log(Level.SEVERE, "Charset do arquivo " + path.toAbsolutePath().toString() + " não localizado.");
-				return null;
+				try {
+					tempCodigoCompleto = Files.readAllLines(path, Charset.forName("ISO-8859-1"));
+				} catch (IOException e2) {
+					LOGGER.log(Level.SEVERE, "Charset do arquivo " + path.toAbsolutePath().toString() + " não localizado.", e2);
+					return null;
+				}
 			}
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Erro ao abrir o arquivo " + path.toAbsolutePath().toString() + ".");

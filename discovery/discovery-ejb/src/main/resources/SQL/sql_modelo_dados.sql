@@ -233,3 +233,21 @@ CREATE OR REPLACE VIEW public.vw_relacionamento AS
 ALTER TABLE public.vw_relacionamento
     OWNER TO postgres;
 
+
+-- Table: public.tbl_sistema
+
+-- DROP TABLE public.tbl_sistema;
+
+CREATE TABLE public.tbl_sistema
+(
+    co_sistema character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    de_sistema character varying(500) COLLATE pg_catalog."default",
+    CONSTRAINT tbl_sistema_pkey PRIMARY KEY (co_sistema)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.tbl_sistema
+    OWNER to postgres;

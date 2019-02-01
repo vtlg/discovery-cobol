@@ -10,12 +10,14 @@ import br.gov.caixa.discovery.ejb.modelos.AtributoArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.AtributoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.AtributoRelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.SistemaPersistence;
 import br.gov.caixa.discovery.ejb.modelos.TipoPersistence;
 import br.gov.caixa.discovery.ejb.view.ArtefatoView;
 import br.gov.caixa.discovery.ws.modelos.ArtefatoDomain;
 import br.gov.caixa.discovery.ws.modelos.ArtefatoViewDomain;
 import br.gov.caixa.discovery.ws.modelos.AtributoDomain;
 import br.gov.caixa.discovery.ws.modelos.RelacionamentoDomain;
+import br.gov.caixa.discovery.ws.modelos.SistemaDomain;
 import br.gov.caixa.discovery.ws.modelos.TipoDomain;
 
 public class Conversores {
@@ -172,6 +174,19 @@ public class Conversores {
 		return saida;
 	}
 
+	public static SistemaDomain converter(SistemaPersistence entrada) {
+		if (entrada == null) {
+			return null;
+		}
+
+		SistemaDomain saida = new SistemaDomain();
+
+		saida.setCoSistema(entrada.getCoSistema());
+		saida.setDeSistema(entrada.getDeSistema());
+
+		return saida;
+	}
+
 	public static List<ArtefatoDomain> converterListaArtefato(List<ArtefatoPersistence> entrada) {
 		if (entrada == null || entrada.size() == 0) {
 			return null;
@@ -251,6 +266,20 @@ public class Conversores {
 		List<TipoDomain> saida = new ArrayList<>();
 
 		for (TipoPersistence entry : entrada) {
+			saida.add(converter(entry));
+		}
+
+		return saida;
+	}
+
+	public static List<SistemaDomain> converterListaSistema(List<SistemaPersistence> entrada) {
+		if (entrada == null || entrada.size() == 0) {
+			return null;
+		}
+
+		List<SistemaDomain> saida = new ArrayList<>();
+
+		for (SistemaPersistence entry : entrada) {
 			saida.add(converter(entry));
 		}
 

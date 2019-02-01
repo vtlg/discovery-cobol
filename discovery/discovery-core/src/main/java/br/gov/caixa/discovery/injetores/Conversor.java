@@ -12,12 +12,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 
+import javax.swing.text.DefaultStyledDocument.AttributeUndoableEdit;
+
 import br.gov.caixa.discovery.core.extratores.Extrator;
 import br.gov.caixa.discovery.core.modelos.ArquivoConfiguracao;
 import br.gov.caixa.discovery.core.modelos.Artefato;
 import br.gov.caixa.discovery.core.modelos.ArtefatoSorted;
 import br.gov.caixa.discovery.core.modelos.Atributo;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
+import br.gov.caixa.discovery.core.tipos.TipoAtributo;
 import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.core.utils.Patterns;
@@ -43,7 +46,7 @@ public class Conversor {
 
 		List<Callable<List<ArtefatoPersistence>>> listaThread = new ArrayList<>();
 
-		if (!controlM) {
+		if (!controlM && true) {
 			List<Callable<List<ArtefatoPersistence>>> threadsCopybook = _criarThreads(
 					Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0);
 			List<Callable<List<ArtefatoPersistence>>> threadsProgramaCobol = _criarThreads(
@@ -54,7 +57,7 @@ public class Conversor {
 			listaThread.addAll(threadsCopybook);
 			listaThread.addAll(threadsProgramaCobol);
 			listaThread.addAll(threadsJcl);
-		} else if (controlM) {
+		} else if (controlM && true) {
 			List<Path> listaArquivos = UtilsHandler.recuperarListaArquivo(
 					Configuracao.getConfiguracao(TipoArtefato.CONTROL_M).getCaminhoPasta(), false);
 			Extrator extrator = new Extrator();
@@ -91,17 +94,6 @@ public class Conversor {
 		executor.shutdown();
 
 		return listaOutput;
-	}
-
-	private static ArtefatoPersistence converterArtefato(Artefato artefato) {
-		ArtefatoPersistence artefatoPersistence = converterArtefato(artefato, null, null, null);
-		List<ArtefatoPersistence> listaArtefatos = getListaArtefatos(new ArrayList<>(), artefatoPersistence);
-
-		if (artefato.isMalhaControlm() == false) {
-			artefatoPersistence = substituirArtefatos(listaArtefatos, artefatoPersistence);
-		}
-
-		return artefatoPersistence;
 	}
 
 	private static List<ArtefatoPersistence> getListaArtefatos(List<ArtefatoPersistence> lista,
@@ -261,6 +253,17 @@ public class Conversor {
 		return listaThreads;
 	}
 
+	private static ArtefatoPersistence converterArtefato(Artefato artefato) {
+		ArtefatoPersistence artefatoPersistence = converterArtefato(artefato, null, null, null);
+		List<ArtefatoPersistence> listaArtefatos = getListaArtefatos(new ArrayList<>(), artefatoPersistence);
+
+		if (artefato.isMalhaControlm() == false) {
+			artefatoPersistence = substituirArtefatos(listaArtefatos, artefatoPersistence);
+		}
+
+		return artefatoPersistence;
+	}
+
 	private static ArtefatoPersistence converterArtefato(Artefato artefato, ArtefatoPersistence artefatoPaiEntrada,
 			ArtefatoPersistence artefatoAnteriorEntrada, ArtefatoPersistence artefatoPosteriorEntrada) {
 		if (artefato == null) {
@@ -345,6 +348,7 @@ public class Conversor {
 
 				if (TipoArtefato.DSN.get().equals(artefatoRelacionado.getCoTipoArtefato())
 						&& !artefatoRelacionado.getNoNomeExibicao().substring(0, 3).equals("CND")
+						&& !artefatoRelacionado.getNoNomeExibicao().substring(0, 3).equals("DB2")
 						&& !artefatoRelacionado.getNoNomeExibicao().substring(0, 3).equals("V01")
 						&& !artefatoRelacionado.getNoNomeExibicao().startsWith("&&")
 						&& !artefatoRelacionado.getNoNomeExibicao().startsWith("%%")
@@ -362,6 +366,10 @@ public class Conversor {
 						|| "DESCONHECIDO".equals(artefatoPersistence.getCoSistema()))) {
 					relacionamento.setCoTipoRelacionamento(TipoRelacionamento.NORMAL.get());
 				}
+
+				Atributo entryAtributo = new Atributo(TipoAtributo.POSICAO, Long.toString(entry.getPosicao()), "",
+						"RELACIONAMENTO");
+				entry.adicionarAtributo(entryAtributo);
 
 				relacionamento.setTransientListaAtributos(
 						converterAtributoRelacionamento(entry.getAtributos(), Tabelas.TBL_RELACIONAMENTO_ARTEFATO));
