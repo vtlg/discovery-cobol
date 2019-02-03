@@ -34,4 +34,13 @@ public class SistemaDomain {
 		this.deSistema = deSistema;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("coSistema : (" + this.coSistema + "), ");
+		sb.append("deSistema : (" + this.deSistema + "), ");
+
+		return sb.toString();
+	}
+	
 }

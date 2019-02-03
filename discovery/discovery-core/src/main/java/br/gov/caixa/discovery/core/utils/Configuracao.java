@@ -25,6 +25,7 @@ import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 
 public class Configuracao {
 
+	public static boolean CARGA_FULL = false;
 	public static boolean MOVER_ARQUIVOS = false;
 	public static String SISTEMA;
 	public static TipoAmbiente AMBIENTE;
@@ -65,11 +66,19 @@ public class Configuracao {
 		Pattern P_SISTEMA = Pattern.compile("^.*--sistema[\\s]{1,}(?<parametro>[\\S]{1,}).*$");
 		Pattern P_DATA_ATUALIZACAO = Pattern.compile("^.*--data[\\s]{1,}(?<parametro>[\\S]{1,}).*$");
 		Pattern P_MOVER_ARQUIVOS = Pattern.compile("^.*--mover-arquivos.*$");
+		Pattern P_CARGA_FULL = Pattern.compile("^.*--carga-full.*$");
 
+		Matcher m_carga_full = P_CARGA_FULL.matcher(parametros);
 		Matcher m_mover_arquivos = P_MOVER_ARQUIVOS.matcher(parametros);
 		Matcher m_ambiente = P_AMBIENTE.matcher(parametros);
 		Matcher m_sistema = P_SISTEMA.matcher(parametros);
 		Matcher m_data = P_DATA_ATUALIZACAO.matcher(parametros);
+
+		if (m_carga_full.matches()) {
+			CARGA_FULL = true;
+		} else {
+			CARGA_FULL = false;
+		}
 
 		if (m_mover_arquivos.matches()) {
 			MOVER_ARQUIVOS = true;

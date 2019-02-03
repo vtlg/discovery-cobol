@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -82,6 +81,10 @@ public class RelacionamentoDao {
 
 		Predicate pCoArtefato = cb.equal(relacionamentoRoot.get("coArtefato"), coArtefato);
 		Predicate pCoArtefatoPai = cb.equal(relacionamentoRoot.get("coArtefatoPai"), coArtefato);
+		Predicate pCoArtefatoAnterior = cb.equal(relacionamentoRoot.get("coArtefatoAnterior"), coArtefato);
+		Predicate pCoArtefatoPosterior = cb.equal(relacionamentoRoot.get("coArtefatoPosterior"), coArtefato);
+		Predicate pCoArtefatoPrimeiro = cb.equal(relacionamentoRoot.get("coArtefatoPrimeiro"), coArtefato);
+		Predicate pCoArtefatoUltimo = cb.equal(relacionamentoRoot.get("coArtefatoUltimo"), coArtefato);
 
 		Expression<Calendar> exTsFimVigencia = relacionamentoRoot.get("tsFimVigencia");
 		Predicate pTsFimVigencia = cb.isNull(exTsFimVigencia);
@@ -92,7 +95,8 @@ public class RelacionamentoDao {
 				relacionamentoRoot.get("coArtefatoUltimo"), relacionamentoRoot.get("coTipoRelacionamento"),
 				relacionamentoRoot.get("icInclusaoManual"), relacionamentoRoot.get("icInclusaoMalha"),
 				relacionamentoRoot.get("tsInicioVigencia"), relacionamentoRoot.get("tsFimVigencia"))
-				.where(cb.and(cb.or(pCoArtefato, pCoArtefatoPai), pTsFimVigencia));
+				.where(cb.and(cb.or(pCoArtefato, pCoArtefatoPai, pCoArtefatoAnterior, pCoArtefatoPosterior,
+						pCoArtefatoPrimeiro, pCoArtefatoUltimo), pTsFimVigencia));
 
 		try {
 			output = em.createQuery(cq).getResultList();

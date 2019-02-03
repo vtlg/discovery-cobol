@@ -12,7 +12,6 @@ import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.ejb.dao.ArtefatoDao;
 import br.gov.caixa.discovery.ejb.dao.AtributoDao;
-import br.gov.caixa.discovery.ejb.dao.Dao;
 import br.gov.caixa.discovery.ejb.dao.RelacionamentoDao;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.AtributoPersistence;
@@ -22,52 +21,27 @@ public class Injetor {
 
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-	private static EntityManager em = null;
-
-	@SuppressWarnings("unused")
-	public static void main(String[] args) {
-		LOGGER.log(Level.INFO, "Carregando parâmetros");
-		Configuracao.carregar(args);
-		List<ArtefatoPersistence> listaArtefatosPersistence = Conversor.executar();
-		List<ArtefatoPersistence> listaArtefatosControlMPersistence = Conversor.executar(true);
-
-		executar(listaArtefatosPersistence, false);
-		executar(listaArtefatosControlMPersistence, true);
-	}
-
-	private static void executar(List<ArtefatoPersistence> listaEntrada, boolean controlM) {
-		if (listaEntrada != null) {
-			Dao dao = new Dao();
-			dao.abrirConexao();
-			em = dao.getEmFactory().createEntityManager();
-			// EntityTransaction transaction = em.getTransaction();
-
-			for (ArtefatoPersistence artefato : listaEntrada) {
-
-				if (controlM == false) {
-					em.getTransaction().begin();
-					atualizarTabelaArtefato(artefato);
-					atribuirCoArtefato(artefato);
-					unificarListasRelacionamento(artefato);
-					verificarTipoListasRelacionamento(artefato);
-					atualizarTabelaRelacionamento(artefato);
-					em.getTransaction().commit();
-				} else {
-					em.getTransaction().begin();
-					atualizarTabelaArtefatoControlM(artefato, true);
-					atribuirCoArtefato(artefato);
-					ajustarRelacionamentoParaInclusao(artefato);
-					atualizarTabelaRelacionamento(artefato);
-					em.getTransaction().commit();
-
-				}
-				// atualizarRelacionamento(artefato);
-			}
-			dao.fecharConexao();
+	public static void executar(EntityManager em, ArtefatoPersistence artefato, boolean controlM) {
+		if (controlM == false) {
+			em.getTransaction().begin();
+			atualizarTabelaArtefato(em, artefato);
+			atribuirCoArtefato(em, artefato);
+			unificarListasRelacionamento(em, artefato);
+			verificarTipoListasRelacionamento(em, artefato);
+			atualizarTabelaRelacionamento(em, artefato);
+			em.getTransaction().commit();
+		} else {
+			em.getTransaction().begin();
+			atualizarTabelaArtefatoControlM(em, artefato, true);
+			atribuirCoArtefato(em, artefato);
+			ajustarRelacionamentoParaInclusao(em, artefato);
+			atualizarTabelaRelacionamento(em, artefato);
+			em.getTransaction().commit();
 		}
 	}
 
-	private static ArtefatoPersistence ajustarRelacionamentoParaInclusao(ArtefatoPersistence artefato) {
+	private static ArtefatoPersistence ajustarRelacionamentoParaInclusao(EntityManager em,
+			ArtefatoPersistence artefato) {
 
 		for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
 
@@ -75,14 +49,14 @@ public class Injetor {
 			relacionamento.setArtefatoPai(null);
 
 			if (relacionamento.getArtefatoPai() != null) {
-				ajustarRelacionamentoParaInclusao(relacionamento.getArtefato());
+				ajustarRelacionamentoParaInclusao(em, relacionamento.getArtefato());
 			}
 		}
 
 		return artefato;
 	}
 
-	private static ArtefatoPersistence atualizarTabelaArtefatoControlM(ArtefatoPersistence artefato,
+	private static ArtefatoPersistence atualizarTabelaArtefatoControlM(EntityManager em, ArtefatoPersistence artefato,
 			boolean desativarPai) {
 
 		boolean incluirArtefato = false;
@@ -123,7 +97,7 @@ public class Injetor {
 				&& artefato.getTransientListaRelacionamentos().size() > 0) {
 			for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
 				if (relacionamento.getArtefatoPai() != null) {
-					atualizarTabelaArtefatoControlM(relacionamento.getArtefato(), false);
+					atualizarTabelaArtefatoControlM(em, relacionamento.getArtefato(), false);
 				}
 			}
 		}
@@ -132,7 +106,8 @@ public class Injetor {
 	}
 
 	@SuppressWarnings("unused")
-	private static ArtefatoPersistence verificarTipoListasRelacionamento(ArtefatoPersistence artefato) {
+	private static ArtefatoPersistence verificarTipoListasRelacionamento(EntityManager em,
+			ArtefatoPersistence artefato) {
 		if (artefato.getTransientListaRelacionamentos() != null) {
 			for (RelacionamentoPersistence entry : artefato.getTransientListaRelacionamentos()) {
 				ArtefatoPersistence artefatoPai = entry.getArtefatoPai();
@@ -145,7 +120,7 @@ public class Injetor {
 				}
 
 				if (entry.getArtefatoPai() != null) {
-					verificarTipoListasRelacionamento(entry.getArtefato());
+					verificarTipoListasRelacionamento(em, entry.getArtefato());
 				}
 
 			}
@@ -154,7 +129,7 @@ public class Injetor {
 		return artefato;
 	}
 
-	private static ArtefatoPersistence unificarListasRelacionamento(ArtefatoPersistence artefato) {
+	private static ArtefatoPersistence unificarListasRelacionamento(EntityManager em, ArtefatoPersistence artefato) {
 		List<RelacionamentoPersistence> tempLista = new ArrayList<>();
 
 		if (artefato.getTransientRelacionamentosDesativados() != null) {
@@ -163,6 +138,10 @@ public class Injetor {
 
 				newEntry.setCoArtefato(entry.getCoArtefato());
 				newEntry.setCoArtefatoPai(entry.getCoArtefatoPai());
+				newEntry.setCoArtefatoAnterior(entry.getCoArtefatoAnterior());
+				newEntry.setCoArtefatoPosterior(entry.getCoArtefatoPosterior());
+				newEntry.setCoArtefatoPrimeiro(entry.getCoArtefatoPrimeiro());
+				newEntry.setCoArtefatoUltimo(entry.getCoArtefatoUltimo());
 				newEntry.setCoTipoRelacionamento(entry.getCoTipoRelacionamento());
 				newEntry.setIcInclusaoMalha(entry.isIcInclusaoMalha());
 				newEntry.setIcInclusaoManual(entry.isIcInclusaoManual());
@@ -209,7 +188,7 @@ public class Injetor {
 		return false;
 	}
 
-	private static ArtefatoPersistence atualizarTabelaRelacionamento(ArtefatoPersistence artefato) {
+	private static ArtefatoPersistence atualizarTabelaRelacionamento(EntityManager em, ArtefatoPersistence artefato) {
 
 		RelacionamentoDao relacionamentoDao = new RelacionamentoDao(em);
 		AtributoDao atributoDao = new AtributoDao(em);
@@ -225,19 +204,19 @@ public class Injetor {
 			}
 
 			if (relacionamento.getArtefatoPai() != null) {
-				atualizarTabelaRelacionamento(relacionamento.getArtefato());
+				atualizarTabelaRelacionamento(em, relacionamento.getArtefato());
 			}
 		}
 
 		return artefato;
 	}
 
-	private static ArtefatoPersistence atualizarTabelaArtefato(ArtefatoPersistence artefato) {
-		return atualizarTabelaArtefato(artefato, false);
+	private static ArtefatoPersistence atualizarTabelaArtefato(EntityManager em, ArtefatoPersistence artefato) {
+		return atualizarTabelaArtefato(em, artefato, false);
 	}
 
 	@SuppressWarnings("unused")
-	private static ArtefatoPersistence atualizarTabelaArtefato(ArtefatoPersistence artefato,
+	private static ArtefatoPersistence atualizarTabelaArtefato(EntityManager em, ArtefatoPersistence artefato,
 			boolean marcaDesativarPai) {
 
 		boolean incluirArtefato = false;
@@ -398,16 +377,46 @@ public class Injetor {
 
 			if (tempLista != null) {
 				for (RelacionamentoPersistence entry : tempLista) {
-					if ((entry.getCoArtefato() != null
-							&& entry.getCoArtefato().equals(artefatoPesquisa.getCoArtefato()))
+					if (
+
+					(entry.getCoArtefato() != null && entry.getCoArtefato().equals(artefatoPesquisa.getCoArtefato()))
+							|| (entry.getCoArtefatoAnterior() != null
+									&& entry.getCoArtefatoAnterior().equals(artefatoPesquisa.getCoArtefato()))
+							|| (entry.getCoArtefatoPosterior() != null
+									&& entry.getCoArtefatoPosterior().equals(artefatoPesquisa.getCoArtefato()))
+							|| (entry.getCoArtefatoPrimeiro() != null
+									&& entry.getCoArtefatoPrimeiro().equals(artefatoPesquisa.getCoArtefato()))
+							|| (entry.getCoArtefatoUltimo() != null
+									&& entry.getCoArtefatoUltimo().equals(artefatoPesquisa.getCoArtefato()))
 							|| entry.isIcInclusaoMalha() || entry.isIcInclusaoManual()) {
 
 						if (entry.getCoArtefato().equals(artefatoPesquisa.getCoArtefato())) {
 							entry.setCoArtefato(artefato.getCoArtefato());
 						}
+
+						if (entry.getCoArtefatoAnterior() != null
+								&& entry.getCoArtefatoAnterior().equals(artefatoPesquisa.getCoArtefato())) {
+							entry.setCoArtefatoAnterior(artefatoPesquisa.getCoArtefato());
+						}
+
+						if (entry.getCoArtefatoPosterior() != null
+								&& entry.getCoArtefatoPosterior().equals(artefatoPesquisa.getCoArtefato())) {
+							entry.setCoArtefatoPosterior(artefatoPesquisa.getCoArtefato());
+						}
+
+						if (entry.getCoArtefatoPrimeiro() != null
+								&& entry.getCoArtefatoPrimeiro().equals(artefatoPesquisa.getCoArtefato())) {
+							entry.setCoArtefatoPrimeiro(artefatoPesquisa.getCoArtefato());
+						}
+
+						if (entry.getCoArtefatoUltimo() != null
+								&& entry.getCoArtefatoUltimo().equals(artefatoPesquisa.getCoArtefato())) {
+							entry.setCoArtefatoUltimo(artefatoPesquisa.getCoArtefato());
+						}
+
 						if (entry.getCoArtefatoPai() != null
 								&& entry.getCoArtefatoPai().equals(artefatoPesquisa.getCoArtefato())) {
-							entry.setCoArtefatoPai(artefato.getCoArtefato());
+							entry.setCoArtefatoPai(artefatoPesquisa.getCoArtefato());
 						}
 
 						artefato.adicionarRelacionamentoDesativadoTransient(entry);
@@ -433,7 +442,7 @@ public class Injetor {
 				&& artefato.getTransientListaRelacionamentos().size() > 0) {
 			for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
 				if (relacionamento.getArtefatoPai() != null) {
-					atualizarTabelaArtefato(relacionamento.getArtefato(), marcaDesativarPai);
+					atualizarTabelaArtefato(em, relacionamento.getArtefato(), marcaDesativarPai);
 				}
 			}
 		}
@@ -480,8 +489,7 @@ public class Injetor {
 		return artefato;
 	}
 
-	private static ArtefatoPersistence atribuirCoArtefato(ArtefatoPersistence artefatoEntrada) {
-
+	private static ArtefatoPersistence atribuirCoArtefato(EntityManager em, ArtefatoPersistence artefatoEntrada) {
 		for (RelacionamentoPersistence relacionamento : artefatoEntrada.getTransientListaRelacionamentos()) {
 			ArtefatoPersistence artefato = relacionamento.getArtefato();
 			ArtefatoPersistence artefatoPai = relacionamento.getArtefatoPai();
@@ -508,7 +516,7 @@ public class Injetor {
 
 			if (artefatoPai != null) {
 				relacionamento.setCoArtefatoPai(artefatoPai.getCoArtefato());
-				artefato = atribuirCoArtefato(artefato);
+				artefato = atribuirCoArtefato(em, artefato);
 			}
 		}
 

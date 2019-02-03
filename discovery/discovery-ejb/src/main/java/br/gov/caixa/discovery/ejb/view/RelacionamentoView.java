@@ -1,5 +1,6 @@
 package br.gov.caixa.discovery.ejb.view;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +14,12 @@ import br.gov.caixa.discovery.ejb.modelos.AtributoRelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
 
 @Entity(name = "VW_RELACIONAMENTO")
-public class RelacionamentoView {
+public class RelacionamentoView implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3899073995401404585L;
 
 	@Id
 	@Column(name = "REL_CO_RELACIONAMENTO")
@@ -28,6 +34,7 @@ public class RelacionamentoView {
 	@Column(name = "REL_IC_INCLUSAO_MALHA")
 	private Boolean icInclusaoMalhaRel;
 
+	@Id
 	@Column(name = "atr_nu_sequencial")
 	private Long coNuSequencialAtr;
 
@@ -49,6 +56,7 @@ public class RelacionamentoView {
 	@Column(name = "atr_ic_opcional")
 	private Boolean icOpcionalAtr;
 
+	@Id
 	@Column(name = "ASC_CO_ARTEFATO")
 	private Long coArtefatoAsc;
 
@@ -79,6 +87,7 @@ public class RelacionamentoView {
 	@Column(name = "ASC_IC_PROCESSO_CRITICO")
 	private Boolean icProcessoCriticoAsc;
 
+	@Id
 	@Column(name = "DESC_CO_ARTEFATO")
 	private Long coArtefatoDesc;
 
@@ -155,8 +164,8 @@ public class RelacionamentoView {
 	}
 
 	public AtributoRelacionamentoPersistence getTransientAtributo() {
-		if (this.transientAtributo != null || this.coNuSequencialAtr == null) {
-			return this.transientAtributo;
+		if (this.coNuSequencialAtr == null) {
+			return null;
 		}
 
 		transientAtributo = new AtributoRelacionamentoPersistence();
@@ -479,6 +488,10 @@ public class RelacionamentoView {
 
 	public void setTransientListaAtributos(Set<AtributoRelacionamentoPersistence> transientListaAtributos) {
 		this.transientListaAtributos = transientListaAtributos;
+	}
+
+	public RelacionamentoView() {
+		super();
 	}
 
 }

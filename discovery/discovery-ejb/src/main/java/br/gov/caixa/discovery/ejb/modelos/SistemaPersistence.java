@@ -55,4 +55,8 @@ public class SistemaPersistence {
 		this.deSistema = deSistema;
 	}
 
+	public SistemaPersistence() {
+		super();
+	}
+
 }

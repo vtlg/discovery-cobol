@@ -16,32 +16,6 @@ public class RelacionamentoResource implements RelacionamentoResourceI {
 	@EJB
 	RelacionamentoDao relacionamentoDao;
 
-//
-//	@Override
-//	public Response atualizar(Long coArtefato, RelacionamentoDomain domain) {
-//		ResponseBuilder response = Response.status(Status.OK);
-//		ArtefatoPersistence persistence = relacionamentoDao.atualizar(artefato)
-//
-//		if (persistence == null) {
-//			// ERRO : ARTEFATO NÃO ENCONTRADO
-//		}
-//
-//		persistence.setCoSistema(domain.getCoSistema());
-//		persistence.setCoAmbiente(domain.getCoAmbiente());
-//		persistence.setDeDescricaoUsuario(domain.getDeDescricaoUsuario());
-//		persistence.setNoNomeExibicao(domain.getNoNomeExibicao());
-//		persistence.setIcProcessoCritico(domain.isIcProcessoCritico());
-//		persistence.setTsUltimaModificacao(Calendar.getInstance());
-//
-//		artefatoDao.atualizar(persistence);
-//
-//		domain = Conversores.converter(persistence, false, false);
-//
-//		response.entity(domain);
-//
-//		return response.build();
-//	}
-
 	@Override
 	public Response atualizar(String coRelacionamento, RelacionamentoDomain domain) {
 		ResponseBuilder response = Response.status(Status.OK);

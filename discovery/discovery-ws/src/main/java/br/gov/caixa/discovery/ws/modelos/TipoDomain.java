@@ -121,4 +121,20 @@ public class TipoDomain {
 		this.nuLarguraBorda = nuLarguraBorda;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("coTipo : (" + this.coTipo + "), ");
+		sb.append("deTipo : (" + this.deTipo + "), ");
+		sb.append("coTabela : (" + this.coTabela + "), ");
+		sb.append("icExibirAtributo : (" + this.icExibirAtributo + "), ");
+		sb.append("icExibirGrafo : (" + this.icExibirGrafo + "), ");
+		sb.append("icPesquisavel : (" + this.icPesquisavel + "), ");
+		sb.append("coCor : (" + this.coCor + "), ");
+		sb.append("corBorda : (" + this.coCorBorda + "), ");
+		sb.append("nuLarguraBorda : (" + this.nuLarguraBorda + ") ");
+
+		return sb.toString();
+	}
+
 }

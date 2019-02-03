@@ -1,7 +1,6 @@
 package br.gov.caixa.discovery.ws.resources;
 
 import java.util.Calendar;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -12,7 +11,6 @@ import javax.ws.rs.core.Response.Status;
 import br.gov.caixa.discovery.ejb.dao.ArtefatoDao;
 import br.gov.caixa.discovery.ejb.dao.ArtefatoViewDao;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
-import br.gov.caixa.discovery.ejb.view.ArtefatoView;
 import br.gov.caixa.discovery.ws.modelos.ArtefatoDomain;
 import br.gov.caixa.discovery.ws.utils.Conversores;
 
@@ -78,19 +76,19 @@ public class ArtefatoResource implements ArtefatoResourceI {
 		return response.build();
 	}
 
-	@Override
-	public Response pesquisar(String termo) {
-		ResponseBuilder response = Response.status(Status.OK);
-
-		List<ArtefatoView> listaPersistence = artefatoViewDao.getArtefato(termo);
-
-		if (listaPersistence == null || listaPersistence.size() == 0) {
-			response.status(Status.NOT_FOUND);
-		} else {
-			response.entity(Conversores.converterListaArtefatoView(listaPersistence));
-		}
-
-		return response.build();
-	}
+//	@Override
+//	public Response pesquisar(String termo) {
+//		ResponseBuilder response = Response.status(Status.OK);
+//
+//		List<ArtefatoView> listaPersistence = artefatoViewDao.getArtefato(termo);
+//
+//		if (listaPersistence == null || listaPersistence.size() == 0) {
+//			response.status(Status.NOT_FOUND);
+//		} else {
+//			response.entity(Conversores.converterListaArtefatoView(listaPersistence));
+//		}
+//
+//		return response.build();
+//	}
 
 }

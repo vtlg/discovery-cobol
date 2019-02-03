@@ -405,19 +405,19 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato02 = new Artefato("ASKTIME", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo2_0 = new Atributo(TipoAtributo.CICS_ABSTIME, "WS-ABSTIME", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo2_0 = new Atributo(TipoAtributo.CICS_ABSTIME, "WS-ABSTIME", null, "RELACIONAMENTO");
 		artefato02.adicionarAtributo(atributo2_0);
 		// ***
 		Artefato artefato03 = new Artefato("FORMATTIME", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo3_0 = new Atributo(TipoAtributo.CICS_ABSTIME, "WS-ABSTIME", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo3_1 = new Atributo(TipoAtributo.CICS_TIME, "WS-HORA-EDI", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo3_0 = new Atributo(TipoAtributo.CICS_ABSTIME, "WS-ABSTIME", null, "RELACIONAMENTO");
+		Atributo atributo3_1 = new Atributo(TipoAtributo.CICS_TIME, "WS-HORA-EDI", null, "RELACIONAMENTO");
 		artefato03.adicionarAtributo(atributo3_0);
 		artefato03.adicionarAtributo(atributo3_1);
 		// ***
 		Artefato artefato04 = new Artefato("RETRIEVE", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo4_0 = new Atributo(TipoAtributo.CICS_INTO, "MQM-TRIGGER-MESSAGE", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo4_0 = new Atributo(TipoAtributo.CICS_INTO, "MQM-TRIGGER-MESSAGE", null, "RELACIONAMENTO");
 		artefato04.adicionarAtributo(atributo4_0);
 		// ***
 		Artefato artefato05 = new Artefato("RETURN", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
@@ -425,20 +425,20 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato06 = new Artefato("START", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo6_0 = new Atributo(TipoAtributo.CICS_TRANSACTION_ID, "CT-PCX5", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo6_1 = new Atributo(TipoAtributo.CICS_FROM, "WS-MENSAJE", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo6_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-MENSAJE", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo6_0 = new Atributo(TipoAtributo.CICS_TRANSACTION_ID, "CT-PCX5", null, "RELACIONAMENTO");
+		Atributo atributo6_1 = new Atributo(TipoAtributo.CICS_FROM, "WS-MENSAJE", null, "RELACIONAMENTO");
+		Atributo atributo6_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-MENSAJE", null, "RELACIONAMENTO");
 		artefato06.adicionarAtributo(atributo6_0);
 		artefato06.adicionarAtributo(atributo6_1);
 		artefato06.adicionarAtributo(atributo6_2);
 		// ***
 		Artefato artefato07 = new Artefato("READQ", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo7_0 = new Atributo(TipoAtributo.CICS_QNAME, "WS-TS-ALTERACAO", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo7_1 = new Atributo(TipoAtributo.CICS_INTO, "WS-CONTEUDO-TS", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo7_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-CONTEUDO-TS", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo7_3 = new Atributo(TipoAtributo.CICS_ITEM, "WS-ITEM-TS", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo7_4 = new Atributo(TipoAtributo.CICS_NUMITEMS, "WS-NUM-ITENS-TS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo7_0 = new Atributo(TipoAtributo.CICS_QNAME, "WS-TS-ALTERACAO", null, "RELACIONAMENTO");
+		Atributo atributo7_1 = new Atributo(TipoAtributo.CICS_INTO, "WS-CONTEUDO-TS", null, "RELACIONAMENTO");
+		Atributo atributo7_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-CONTEUDO-TS", null, "RELACIONAMENTO");
+		Atributo atributo7_3 = new Atributo(TipoAtributo.CICS_ITEM, "WS-ITEM-TS", null, "RELACIONAMENTO");
+		Atributo atributo7_4 = new Atributo(TipoAtributo.CICS_NUMITEMS, "WS-NUM-ITENS-TS", null, "RELACIONAMENTO");
 
 		artefato07.adicionarAtributo(atributo7_0);
 		artefato07.adicionarAtributo(atributo7_1);
@@ -448,10 +448,10 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato08 = new Artefato("WRITEQ", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo8_0 = new Atributo(TipoAtributo.CICS_QNAME, "WS-TS-ALTERACAO", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo8_1 = new Atributo(TipoAtributo.CICS_FROM, "WS-CONTEUDO-TS", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo8_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-CONTEUDO-TS", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo8_3 = new Atributo(TipoAtributo.CICS_NUMITEMS, "WS-NUM-ITENS-TS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo8_0 = new Atributo(TipoAtributo.CICS_QNAME, "WS-TS-ALTERACAO", null, "RELACIONAMENTO");
+		Atributo atributo8_1 = new Atributo(TipoAtributo.CICS_FROM, "WS-CONTEUDO-TS", null, "RELACIONAMENTO");
+		Atributo atributo8_2 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-CONTEUDO-TS", null, "RELACIONAMENTO");
+		Atributo atributo8_3 = new Atributo(TipoAtributo.CICS_NUMITEMS, "WS-NUM-ITENS-TS", null, "RELACIONAMENTO");
 
 		artefato08.adicionarAtributo(atributo8_0);
 		artefato08.adicionarAtributo(atributo8_1);
@@ -460,28 +460,28 @@ public class TEST_ProgramaCobol {
 		// ***
 		Artefato artefato09 = new Artefato("CT-ATE790", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo9_0 = new Atributo(TipoAtributo.CICS_COMMAREA, "WS-DATOS", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo9_1 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-DATOS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo9_0 = new Atributo(TipoAtributo.CICS_COMMAREA, "WS-DATOS", null, "RELACIONAMENTO");
+		Atributo atributo9_1 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-DATOS", null, "RELACIONAMENTO");
 		artefato09.adicionarAtributo(atributo9_0);
 		artefato09.adicionarAtributo(atributo9_1);
 		// ***
 		Artefato artefato10 = new Artefato("WS-PCSPOS10", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo10_0 = new Atributo(TipoAtributo.CICS_COMMAREA, "WS-COMMAREA-PCSPOS10", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo10_1 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-COMMAREA-PCSPOS10", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo10_0 = new Atributo(TipoAtributo.CICS_COMMAREA, "WS-COMMAREA-PCSPOS10", null, "RELACIONAMENTO");
+		Atributo atributo10_1 = new Atributo(TipoAtributo.CICS_LENGTH, "LENGTH OF WS-COMMAREA-PCSPOS10", null, "RELACIONAMENTO");
 		artefato10.adicionarAtributo(atributo10_0);
 		artefato10.adicionarAtributo(atributo10_1);
 		// ***
 		Artefato artefato11 = new Artefato("CONDITION", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo11_0 = new Atributo(TipoAtributo.CICS_ENDDATA, "9999-ERROR-CICS", null, "RELACIONAMENTO_ARTEFATO");
-		Atributo atributo11_1 = new Atributo(TipoAtributo.CICS_ERROR, "9999-ERROR-CICS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo11_0 = new Atributo(TipoAtributo.CICS_ENDDATA, "9999-ERROR-CICS", null, "RELACIONAMENTO");
+		Atributo atributo11_1 = new Atributo(TipoAtributo.CICS_ERROR, "9999-ERROR-CICS", null, "RELACIONAMENTO");
 		artefato11.adicionarAtributo(atributo11_0);
 		artefato11.adicionarAtributo(atributo11_1);
 		// ***
 		Artefato artefato12 = new Artefato("ABEND", null, null, TipoArtefato.CICS_TRANSACTION, TipoAmbiente.PRD,
 				"SIPCS", null, null);
-		Atributo atributo12_0 = new Atributo(TipoAtributo.CICS_LABEL, "9999-ERROR-CICS", null, "RELACIONAMENTO_ARTEFATO");
+		Atributo atributo12_0 = new Atributo(TipoAtributo.CICS_LABEL, "9999-ERROR-CICS", null, "RELACIONAMENTO");
 		artefato12.adicionarAtributo(atributo12_0);
 		// ***
 		listaArtefato.add(artefato01);

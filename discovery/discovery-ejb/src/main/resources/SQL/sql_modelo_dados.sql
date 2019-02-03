@@ -118,7 +118,7 @@ CREATE TABLE public.tbl_relacionamento_artefato
     ts_inicio_vigencia timestamp without time zone NOT NULL DEFAULT now(),
     ts_fim_vigencia timestamp without time zone,
     CONSTRAINT tbl_relacionamento_artefato_pkey PRIMARY KEY (co_relacionamento),
-    CONSTRAINT unique_tbl_relacionamento_artefato UNIQUE (co_artefato, co_artefato_pai, co_artefato_anterior, co_artefato_posterior, co_artefato_primeiro, co_artefato_ultimo)
+    CONSTRAINT unique_tbl_relacionamento_artefato UNIQUE (co_artefato, co_artefato_pai, co_artefato_anterior, co_artefato_posterior, co_artefato_primeiro, co_artefato_ultimo, ts_fim_vigencia)
 
 )
 WITH (

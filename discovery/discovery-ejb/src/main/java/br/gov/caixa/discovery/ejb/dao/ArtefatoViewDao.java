@@ -29,6 +29,120 @@ public class ArtefatoViewDao {
 	@PersistenceContext(name = "discovery-postgresql-jta", unitName = "discovery-postgresql-jta")
 	private EntityManager em;
 
+	@SuppressWarnings("unused")
+	public static void main(String[] args) {
+		Dao dao = new Dao();
+		dao.abrirConexao();
+		EntityManager em = dao.getEmFactory().createEntityManager();
+		ArtefatoViewDao artefatoDao = new ArtefatoViewDao(em);
+
+		ArtefatoPersistence artefato = artefatoDao.getArtefatoRelacionamento(379L);
+
+		em.close();
+		dao.fecharConexao();
+
+		System.out.println(artefato.getNoNomeArtefato());
+		// System.out.println(artefato.getListaArtefato().get(0).getListaAtributos().toArray());
+		// System.out.println(artefato.getListaArtefato().get(1).getListaAtributos().toArray());
+		// System.out.println(artefato.getListaArtefato().get(2).getListaAtributos().toArray());
+
+		if (artefato.getListaArtefato() != null) {
+			artefato.getListaArtefato().forEach((rel) -> {
+				System.out.println(rel.getCoRelacionamento());
+				System.out.println(rel.getArtefato().getNoNomeArtefato());
+			});
+		}
+
+	}
+
+	public ArtefatoPersistence getArtefatoRelacionamento(Long coArtefato) {
+		LOGGER.log(Level.FINE, "Pesquisar artefato-relacionamento " + "CoArtefato (" + coArtefato + ")");
+
+		ArtefatoPersistence output = null;
+
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaQuery<RelacionamentoView> cq = cb.createQuery(RelacionamentoView.class);
+		Root<RelacionamentoView> relacionamentoRoot = cq.from(RelacionamentoView.class);
+
+		Predicate pCoArtefatoDesc = cb.equal(relacionamentoRoot.get("coArtefatoDesc"), coArtefato);
+		Predicate pCoArtefatoAsc = cb.equal(relacionamentoRoot.get("coArtefatoAsc"), coArtefato);
+		cq.select(relacionamentoRoot).where(cb.or(pCoArtefatoDesc, pCoArtefatoAsc)).distinct(true);
+
+//		cq.multiselect(relacionamentoRoot.get("coTipoRelacionamentoRel"),
+//				relacionamentoRoot.get("icInclusaoManualRel"),
+//				relacionamentoRoot.get("icInclusaoMalhaRel"),
+//				relacionamentoRoot.get("coNuSequencialAtr"),
+//				relacionamentoRoot.get("coTipoAtributoAtr"),
+//				relacionamentoRoot.get("coTabelaAtr"),
+//				relacionamentoRoot.get("coExternoAtr"),
+//				relacionamentoRoot.get("deValorAtr"),
+//				relacionamentoRoot.get("icEditavelAtr"),
+//				relacionamentoRoot.get("icOpcionalAtr"),
+//				relacionamentoRoot.get("coArtefatoAsc"),
+//				relacionamentoRoot.get("noNomeArtefatoAsc"),
+//				relacionamentoRoot.get("noNomeExibicaoAsc"),
+//				relacionamentoRoot.get("noNomeInternoAsc"),
+//				relacionamentoRoot.get("coAmbienteAsc"),
+//				relacionamentoRoot.get("coSistemaAsc"),
+//				relacionamentoRoot.get("coTipoArtefatoAsc"),
+//				relacionamentoRoot.get("deIdentificadorAsc"),
+//				relacionamentoRoot.get("icInclusaoManualAsc"),
+//				relacionamentoRoot.get("icProcessoCriticoAsc"),
+//				relacionamentoRoot.get("coArtefatoDesc"),
+//				relacionamentoRoot.get("noNomeArtefatoDesc"),
+//				relacionamentoRoot.get("noNomeExibicaoDesc"),
+//				relacionamentoRoot.get("noNomeInternoDesc"),
+//				relacionamentoRoot.get("coAmbienteDesc"),
+//				relacionamentoRoot.get("coSistemaDesc"),
+//				relacionamentoRoot.get("coTipoArtefatoDesc"),
+//				relacionamentoRoot.get("deIdentificadorDesc"),
+//				relacionamentoRoot.get("icInclusaoManualDesc"),
+//				relacionamentoRoot.get("icProcessoCriticoDesc")).where(cb.or(pCoArtefatoDesc, pCoArtefatoAsc)).distinct(true);
+
+		try {
+			TypedQuery<RelacionamentoView> query = em.createQuery(cq);
+			Collection<RelacionamentoView> lista = query.getResultList();
+
+			HashMap<Long, RelacionamentoView> map = new HashMap<>();
+			for (RelacionamentoView entry : lista) {
+
+				if (map.containsKey(entry.getCoRelacionamentoRel())) {
+					if (entry.getCoNuSequencialAtr() != null) {
+						map.get(entry.getCoRelacionamentoRel()).adicionarAtributo(entry.getTransientAtributo());
+					}
+				} else {
+					map.put(entry.getCoRelacionamentoRel(), entry);
+					if (entry.getCoNuSequencialAtr() != null) {
+						map.get(entry.getCoRelacionamentoRel()).adicionarAtributo(entry.getTransientAtributo());
+					}
+				}
+
+			}
+			lista = map.values();
+			for (RelacionamentoView entry : lista) {
+				RelacionamentoPersistence relacionamento = entry.getTransientRelacionamento();
+
+				relacionamento.setListaAtributos(entry.getTransientListaAtributos());
+				if (output == null) {
+					if (coArtefato.equals(entry.getCoArtefatoAsc())) {
+						output = entry.getTransientArtefatoAsc();
+					} else if (coArtefato.equals(entry.getCoArtefatoDesc())) {
+						output = entry.getTransientArtefatoDesc();
+					}
+				}
+
+				if (coArtefato.equals(entry.getCoArtefatoAsc())) {
+					output.adicionarRelacionamento(relacionamento);
+				} else if (coArtefato.equals(entry.getCoArtefatoDesc())) {
+					output.adicionarRelacionamentoPai(relacionamento);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, "Erro ao tentar pesquisar artefato. " + "CoArtefato (" + coArtefato + ")", e);
+		}
+		return output;
+	}
+
 	public ArtefatoViewDao() {
 	}
 
@@ -70,72 +184,13 @@ public class ArtefatoViewDao {
 		return listaOutput;
 	}
 
-	public ArtefatoPersistence getArtefatoRelacionamento(Long coArtefato) {
-		LOGGER.log(Level.FINE, "Pesquisar artefato-relacionamento " + "CoArtefato (" + coArtefato + ")");
-
-		ArtefatoPersistence output = null;
-
-		CriteriaBuilder cb = this.em.getCriteriaBuilder();
-		CriteriaQuery<RelacionamentoView> cq = cb.createQuery(RelacionamentoView.class);
-		Root<RelacionamentoView> relacionamentoRoot = cq.from(RelacionamentoView.class);
-
-		Predicate pCoArtefatoDesc = cb.equal(relacionamentoRoot.get("coArtefatoDesc"), coArtefato);
-		Predicate pCoArtefatoAsc = cb.equal(relacionamentoRoot.get("coArtefatoAsc"), coArtefato);
-
-		cq.select(relacionamentoRoot).where(cb.or(pCoArtefatoDesc, pCoArtefatoAsc));
-
-		try {
-			TypedQuery<RelacionamentoView> query = em.createQuery(cq);
-			Collection<RelacionamentoView> lista = query.getResultList();
-
-			HashMap<Long, RelacionamentoView> map = new HashMap<>();
-			for (RelacionamentoView entry : lista) {
-
-				if (map.containsKey(entry.getCoRelacionamentoRel())) {
-
-					if (entry.getCoNuSequencialAtr() != null) {
-						map.get(entry.getCoRelacionamentoRel()).adicionarAtributo(entry.getTransientAtributo());
-					}
-				} else {
-					map.put(entry.getCoRelacionamentoRel(), entry);
-					if (entry.getCoNuSequencialAtr() != null) {
-						map.get(entry.getCoRelacionamentoRel()).adicionarAtributo(entry.getTransientAtributo());
-					}
-				}
-
-			}
-			lista = map.values();
-			for (RelacionamentoView entry : lista) {
-				RelacionamentoPersistence relacionamento = entry.getTransientRelacionamento();
-
-				relacionamento.setListaAtributos(entry.getTransientListaAtributos());
-				if (output == null) {
-					if (coArtefato.equals(entry.getCoArtefatoAsc())) {
-						output = entry.getTransientArtefatoAsc();
-					} else if (coArtefato.equals(entry.getCoArtefatoDesc())) {
-						output = entry.getTransientArtefatoDesc();
-					}
-				}
-
-				if (coArtefato.equals(entry.getCoArtefatoAsc())) {
-					output.adicionarRelacionamento(relacionamento);
-				} else if (coArtefato.equals(entry.getCoArtefatoDesc())) {
-					output.adicionarRelacionamentoPai(relacionamento);
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Erro ao tentar pesquisar artefato. " + "CoArtefato (" + coArtefato + ")", e);
-		}
-		return output;
-	}
-
-	public Collection<ArtefatoView> getArtefato(String expNome, String expDescricao, String[] listaTipoArtefato, String[] listaSistema,
-			Boolean icProcessoCritico, Boolean icInterface, int offset, int limit) {
+	public Collection<ArtefatoView> getArtefato(String expNome, String expDescricao, String[] listaTipoArtefato,
+			String[] listaSistema, Boolean icProcessoCritico, Boolean icInterface, int offset, int limit) {
 
 		LOGGER.log(Level.FINE,
 				"Pesquisa Avançada." + " expNome (" + expNome + ")" + " expDescricao (" + expDescricao + ")"
-						+ " listaTipoArtefato (" + listaTipoArtefato + ")" + " listaSistema (" + listaSistema + ")" + " icProcessoCritico (" + icProcessoCritico
-						+ ")" + " icInterface (" + icInterface + ")");
+						+ " listaTipoArtefato (" + listaTipoArtefato + ")" + " listaSistema (" + listaSistema + ")"
+						+ " icProcessoCritico (" + icProcessoCritico + ")" + " icInterface (" + icInterface + ")");
 
 		Collection<ArtefatoView> output = null;
 		List<Predicate> listaPredicadosAnd = new ArrayList<>();
@@ -176,7 +231,7 @@ public class ArtefatoViewDao {
 		} else {
 			return null;
 		}
-		
+
 		if (listaSistema != null && listaSistema.length > 0) {
 			Predicate pCoSistema = artefatoRoot.get("coSistema").in(Arrays.asList(listaSistema));
 			listaPredicadosAnd.add(pCoSistema);

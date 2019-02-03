@@ -19,6 +19,7 @@ import br.gov.caixa.discovery.core.modelos.Atributo;
 import br.gov.caixa.discovery.core.tipos.TipoAmbiente;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.tipos.TipoAtributo;
+import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.ejb.tipos.Tabelas;
 
 public class ExtratorControlM {
@@ -70,6 +71,7 @@ public class ExtratorControlM {
 		traduzir();
 		removerDuplicidade();
 		ajustarArtefatos();
+		ajustarRelacionamentos();
 
 		/*
 		 * for (Artefato artefato : listaArtefatos) { exibir(artefato, ""); }
@@ -80,6 +82,7 @@ public class ExtratorControlM {
 		return listaArtefatos;
 	}
 
+	@SuppressWarnings("unused")
 	private static void exibir(Artefato artefato, String pad) {
 		//
 
@@ -90,6 +93,20 @@ public class ExtratorControlM {
 		if (artefato.getArtefatosRelacionados() != null && artefato.getArtefatosRelacionados().size() > 0) {
 			for (Artefato entry : artefato.getArtefatosRelacionados()) {
 				exibir(entry, pad.concat("--"));
+			}
+		}
+	}
+
+	private void ajustarRelacionamentos() {
+		for (Artefato artefato : this.listaArtefatos) {
+			ajustarRelacionamentos(artefato);
+		}
+	}
+
+	private void ajustarRelacionamentos(Artefato artefato) {
+		if (artefato.getArtefatosRelacionados() != null && artefato.getArtefatosRelacionados().size() > 0) {
+			for (Artefato entry : artefato.getArtefatosRelacionados()) {
+				entry.setTipoRelacionamento(TipoRelacionamento.CONTROL_M);
 			}
 		}
 	}
@@ -115,7 +132,7 @@ public class ExtratorControlM {
 				tempLista.add(artefato);
 			}
 		}
-		
+
 		listaArtefatos = tempLista;
 	}
 
@@ -438,8 +455,6 @@ public class ExtratorControlM {
 
 	private void removerDuplicidade() {
 		List<Artefato> listaTemporaria = new ArrayList<>();
-		StringBuilder sb1 = new StringBuilder();
-		StringBuilder sb2 = new StringBuilder();
 
 		for (Artefato artefato : this.listaArtefatos) {
 			boolean jaIncluido = false;

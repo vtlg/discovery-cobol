@@ -6,6 +6,7 @@ import java.util.List;
 import br.gov.caixa.discovery.core.tipos.TipoAmbiente;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.tipos.TipoAtributo;
+import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.UtilsHandler;
 
 public class Artefato {
@@ -14,6 +15,7 @@ public class Artefato {
 	private String identificador;
 	private TipoArtefato tipoArtefato;
 	private TipoAmbiente ambiente;
+	private TipoRelacionamento tipoRelacionamento = TipoRelacionamento.NORMAL;
 	private String sistema;
 	private StringBuilder representacaoTextual = new StringBuilder();
 	private List<String> roteiroCodigo = new ArrayList<>();
@@ -51,6 +53,21 @@ public class Artefato {
 		this.nomeArquivo = nomeArquivo;
 	}
 
+	public Artefato(String nome, String nomeInterno, String identificador, TipoArtefato tipoArtefato,
+			TipoAmbiente ambiente, String sistema, String caminhoArquivo, String nomeArquivo,
+			TipoRelacionamento tipoRelacionamento) {
+		super();
+		this.nome = nome;
+		this.nomeInterno = nomeInterno;
+		this.identificador = identificador;
+		this.tipoArtefato = tipoArtefato;
+		this.ambiente = ambiente;
+		this.sistema = sistema;
+		this.caminhoArquivo = caminhoArquivo;
+		this.nomeArquivo = nomeArquivo;
+		this.tipoRelacionamento = tipoRelacionamento;
+	}
+
 	public void adicionarRepresentacaoTextual(String entry) {
 		if (this.representacaoTextual == null) {
 			this.representacaoTextual = new StringBuilder();
@@ -73,6 +90,7 @@ public class Artefato {
 		sb1.append(entry.tipoArtefato);
 		sb1.append(entry.ambiente);
 		sb1.append(entry.sistema);
+		sb1.append(entry.tipoRelacionamento.get());
 
 		StringBuilder sb2 = new StringBuilder();
 		sb2.append(this.nome);
@@ -81,6 +99,7 @@ public class Artefato {
 		sb2.append(this.tipoArtefato);
 		sb2.append(this.ambiente);
 		sb2.append(this.sistema);
+		sb2.append(this.tipoRelacionamento.get());
 
 		if (!sb2.toString().equals(sb1.toString())) {
 			return false;
@@ -97,8 +116,38 @@ public class Artefato {
 		sb.append("Tipo Artefato : (" + this.tipoArtefato + ") ");
 		sb.append("Ambiente : (" + this.ambiente + ") ");
 		sb.append("Sistema : (" + this.sistema + ") ");
+		sb.append("Tipo Relacionamento : (" + this.tipoRelacionamento.get() + ") ");
 
 		return sb.toString();
+	}
+
+	public Artefato copiar() {
+		Artefato novoArtefato = new Artefato();
+		novoArtefato.setAmbiente(this.getAmbiente());
+		novoArtefato.setArquivo(this.getArquivo());
+		novoArtefato.setArtefatosRelacionados(this.getArtefatosRelacionados());
+		novoArtefato.setAtributos(this.getAtributos());
+		novoArtefato.setCaminhoArquivo(this.getCaminhoArquivo());
+		novoArtefato.setCodigoCompleto(this.getCodigoCompleto());
+		novoArtefato.setCodigoFonte(this.getCodigoFonte());
+		novoArtefato.setCodigoFonteTratado(this.getCodigoFonteTratado());
+		novoArtefato.setComentarios(this.getComentarios());
+		novoArtefato.setDescricao(this.getDescricao());
+		novoArtefato.setIdentificador(this.getIdentificador());
+		novoArtefato.setMalhaControlm(this.isMalhaControlm());
+		novoArtefato.setNome(this.getNome());
+		novoArtefato.setNomeArquivo(this.getNomeArquivo());
+		novoArtefato.setNomeInterno(this.getNomeInterno());
+		novoArtefato.setObservacao(this.getObservacao());
+		novoArtefato.setPosicao(this.getPosicao());
+		novoArtefato.setRepresentacaoTextual(this.getRepresentacaoTextual());
+		novoArtefato.setRoteiroCodigo(this.getRoteiroCodigo());
+		novoArtefato.setRoteiroVariavel(this.getRoteiroVariavel());
+		novoArtefato.setSistema(this.getSistema());
+		novoArtefato.setTipoArtefato(this.getTipoArtefato());
+		novoArtefato.setTipoRelacionamento(this.getTipoRelacionamento());
+
+		return novoArtefato;
 	}
 
 	public Atributo buscaAtributo(TipoAtributo tipo) {
@@ -388,6 +437,14 @@ public class Artefato {
 
 	public void setMalhaControlm(boolean isMalhaControlm) {
 		this.isMalhaControlm = isMalhaControlm;
+	}
+
+	public TipoRelacionamento getTipoRelacionamento() {
+		return tipoRelacionamento;
+	}
+
+	public void setTipoRelacionamento(TipoRelacionamento tipoRelacionamento) {
+		this.tipoRelacionamento = tipoRelacionamento;
 	}
 
 }

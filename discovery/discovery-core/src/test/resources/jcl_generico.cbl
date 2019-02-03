@@ -36,7 +36,11 @@
 //         DD  DISP=SHR,                                                
 //             DSN=%%LOAD2                                              
 //*                                                                     
-//* %%LIBSYM %%SIMBL %%MEMSYM NACIONAL                                  
+//* %%LIBSYM %%SIMBL %%MEMSYM NACIONAL  
+//*
+//* %%SET %%VCNDC = IBM.CND.SDGALINK
+//* %%SET %%CNT = PRD.V01.PROCESS.CNT.PLEX02
+//* %%SET %%VCNDP = CND.P6                                
 //*                                                                     
 //STEP01   EXEC PGM=IDCAMS,                                             
 //             COND=(4,LT)                                              
@@ -151,6 +155,8 @@
 //*====>          SUREG-UNID-DTAMOV  -SIS-RELAT.-PAGINA                 
 //ECED1032 DD  DISP=SHR,                                                
 //             DSN=%%ALIAS%%.PCS.MZ.BDD2.MDA1BD5D.C761.S02.D%%ODATE     
+//ECED1041 DD  DISP=SHR,                                                
+//             DSN=%%ALIAS%%.FDL.MZ.BDD2.MDA1BD5D.C761.S02.D%%ODATE     
 //ECED1901 DD  DISP=(NEW,CATLG,DELETE),                                 
 //             DSN=%%ALIAS%%.PCS.MZ.BHX0.PBD5D.RELAT.D%%ODATE,          
 //             UNIT=3390,                                               
@@ -192,6 +198,8 @@
 //             DSN=%%VCNDP%%..MSG                                       
 //DMNETMAP DD  DISP=SHR,                                                
 //             DSN=%%VCNDP%%..NETMAP                                    
+//DMNETMAP DD  DISP=SHR,                                                
+//             DSN=%%VCNDT%%..NETMAP                                    
 //DMPRINT  DD  SYSOUT=*                                                 
 //NDMCMDS  DD  SYSOUT=*                                                 
 //SYSPRINT DD  SYSOUT=*                                                 

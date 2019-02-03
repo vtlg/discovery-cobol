@@ -5,24 +5,24 @@ import java.util.regex.Pattern;
 
 public class Patterns {
 
-	//("^.*[\\s]{1,}PROGRAM-ID[\\.]{1,1}[\\s]{1,}(?<nomePrograma>[\\S]{1,})[\\s]{0,}[\\.]{1,}[\\s]{0,}$")
-	
+	// ("^.*[\\s]{1,}PROGRAM-ID[\\.]{1,1}[\\s]{1,}(?<nomePrograma>[\\S]{1,})[\\s]{0,}[\\.]{1,}[\\s]{0,}$")
 
-
-	public static final Pattern JCL_P_IDENTIFICADOR = Pattern.compile("^[/]{2,2}(?<identificador>.*?)[\\s]{1,}DD[\\s]{1,}.*$");
-	
+	public static final Pattern JCL_P_VARIAVEL = Pattern
+			.compile("^[/]{2,2}\\*[\\s]{1,}%%SET[\\s]{1,}(?<variavel>.*?)[\\s]{0,}=[\\s]{0,}(?<valor>.*?)$");
 
 	public static void main(String[] args) {
-		Matcher m = JCL_P_IDENTIFICADOR.matcher(
-				"//DD1 DD DSN=%%ALIAS%%.PCS.MZ.BZX0.IP.P3GX.IP605.WDATE.D%%ODATE, // DISP=(MOD,DELETE,DELETE), // SPACE=(TRK,(1,1),RLSE), // UNIT=3390, // DCB=(RECFM=VBS,LRECL=32760,BLKSIZE=27998) ");
+		String texto = "//* %%SET %%VCNDC = IBM.CND.SDGALINK";
+		
+		Matcher m = JCL_P_VARIAVEL.matcher(texto);
 		if (m.matches()) {
-			System.out.println(m.group("identificador"));
+			System.out.println(m.group("variavel"));
+			System.out.println(m.group("valor"));
 			System.out.println("Aqui");
 		} else {
 			System.out.println("Não");
 		}
 	}
-	
+
 	public static final Pattern JCL_P_JOBNAME = Pattern.compile("^.*[/]{2,2}(?<jobName>[\\S]{1,})[\\s]{1,}JOB.*$");
 
 	public static final Pattern JCL_P_DSN_DELETE = Pattern
@@ -55,8 +55,6 @@ public class Patterns {
 
 	public static final Pattern JCL_P_DSN_LISTC_ENTRIES = Pattern
 			.compile("^.*[\\s]{1,}(LISTC|LISTCAT)[\\s]{1,}(ENTRIES|ENT|LVL|LEVEL)\\((?<dsn>[\\S&&[^,]]{1,})[)]{1,}.*$");
-
-	
 
 	public static final Pattern JCL_P_NOME_TIRA_DATA_FIXA = Pattern.compile("^(?<nome>[\\S]{1,}).D[0-9]{4,8}.*$");
 	public static final Pattern JCL_P_NOME_TIRA_AMBIENTE_FIXO = Pattern
@@ -434,12 +432,14 @@ public class Patterns {
 	// Pattern P_VAR_LINHA_MEIO = Pattern.compile("^.{0,}[^\\.]{1,}[\\s]{0,}$");
 	public static final Pattern COPYBOOK_P_VAR_LINHA_MEIO = Pattern.compile("^[.&&[^\\.]]{1,}[\\s]{0,}$");
 	public static final Pattern COPYBOOK_P_VAR_LINHA_FIM = Pattern.compile("^.{0,}[\\.]{1,}[\\s]{0,}$");
-	
-	
+
 	public static Pattern COBOL_P_JOIN = Pattern.compile("[\\s]{1,}JOIN[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}");
-	
-	public static final Pattern INJETOR_P_DSN_CARDLIB = Pattern.compile("^.*\\((?<cardlib>[\\S]{1,}?)\\).*$");
-	
+
+	public static final Pattern JCL_P_DSN_CARDLIB = Pattern.compile("^.*\\((?<cardlib>[\\S]{1,}?)\\).*$");
+
 	public static final Pattern EXTRATOR_P_NOME_ARTEFATO = Pattern.compile("^.*\\((?<parametro>[\\S]{1,}?)\\).*$");
+
+	public static final Pattern JCL_P_IDENTIFICADOR = Pattern
+			.compile("^[/]{2,2}(?<identificador>.*?)[\\s]{1,}DD[\\s]{1,}.*$");
 
 }

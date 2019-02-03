@@ -297,5 +297,29 @@ public class RelacionamentoPersistence {
 		this.tsInicioVigencia = tsInicioVigencia;
 		this.tsFimVigencia = tsFimVigencia;
 	}
+	
+	
+	
+	
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("coRelacionamento : (" + this.coRelacionamento + ") ");
+
+		sb.append("Nome Artefato : (" + this.artefato.getNoNomeArtefato() + ") ");
+		
+		if (this.artefatoPai != null)
+			sb.append("Nome Artefato Pai : (" + this.artefatoPai.getNoNomeArtefato() + ") ");
+		
+		if (this.artefatoAnterior != null)
+			sb.append("Nome Artefato Anterior : (" + this.artefatoAnterior.getNoNomeArtefato() + ") ");
+		
+		if (this.artefatoPosterior != null)
+			sb.append("Nome Artefato Posterior : (" + this.artefatoPosterior.getNoNomeArtefato() + ") ");
+
+		return sb.toString();
+	}
+
 
 }
