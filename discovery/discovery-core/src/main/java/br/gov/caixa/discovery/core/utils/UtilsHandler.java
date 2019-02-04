@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
@@ -216,6 +217,17 @@ public class UtilsHandler {
 			e.printStackTrace();
 		}
 		return listaOutput;
+	}
+	
+	public static String getTempoExecucao(long startTime) {
+		long endTime = System.currentTimeMillis();
+
+		String elapsedTime = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(endTime - startTime),
+				TimeUnit.MILLISECONDS.toMinutes(endTime - startTime),
+				TimeUnit.MILLISECONDS.toSeconds(endTime - startTime)
+						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(endTime - startTime)));
+
+		return elapsedTime;
 	}
 
 }

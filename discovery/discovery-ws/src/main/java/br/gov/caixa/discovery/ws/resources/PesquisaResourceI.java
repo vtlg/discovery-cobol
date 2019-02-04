@@ -19,9 +19,9 @@ public interface PesquisaResourceI {
 	@Path("avancada")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response pesquisaAvancada(
+	public Response pesquisaAvancada ( 
 			@QueryParam("offset") @DefaultValue("0") int offset,
-			@QueryParam("limit") @DefaultValue("20") int limit, PesquisaDomain pesquisaDomain);
+			@QueryParam("limit") @DefaultValue("20") int limit, PesquisaDomain pesquisaDomain) throws Exception;
 
 	@GET
 	@Path("rapida")

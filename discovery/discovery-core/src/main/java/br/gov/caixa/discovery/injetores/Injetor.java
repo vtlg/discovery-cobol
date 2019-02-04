@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.EJBException;
 import javax.persistence.EntityManager;
 
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
@@ -22,21 +23,19 @@ public class Injetor {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	public static void executar(EntityManager em, ArtefatoPersistence artefato, boolean controlM) {
-		if (controlM == false) {
-			em.getTransaction().begin();
+		if (Configuracao.CARGA_INICIAL == true) {
+			atualizarTabelaArtefato(em, artefato);
+		} else if (controlM == false) {
 			atualizarTabelaArtefato(em, artefato);
 			atribuirCoArtefato(em, artefato);
 			unificarListasRelacionamento(em, artefato);
 			verificarTipoListasRelacionamento(em, artefato);
 			atualizarTabelaRelacionamento(em, artefato);
-			em.getTransaction().commit();
 		} else {
-			em.getTransaction().begin();
 			atualizarTabelaArtefatoControlM(em, artefato, true);
 			atribuirCoArtefato(em, artefato);
 			ajustarRelacionamentoParaInclusao(em, artefato);
 			atualizarTabelaRelacionamento(em, artefato);
-			em.getTransaction().commit();
 		}
 	}
 
@@ -57,7 +56,7 @@ public class Injetor {
 	}
 
 	private static ArtefatoPersistence atualizarTabelaArtefatoControlM(EntityManager em, ArtefatoPersistence artefato,
-			boolean desativarPai) {
+			boolean desativarPai)  {
 
 		boolean incluirArtefato = false;
 
@@ -68,9 +67,13 @@ public class Injetor {
 		String coTipoArtefato = artefato.getCoTipoArtefato();
 
 		ArtefatoPersistence artefatoPesquisa = null;
+		List<ArtefatoPersistence> resultListaArtefatoPesquisa = null;
 
-		List<ArtefatoPersistence> resultListaArtefatoPesquisa = artefatoDao.getArtefato(coNome, coTipoArtefato, null,
-				null, true);
+		try {
+			resultListaArtefatoPesquisa = artefatoDao.getListaArtefato(coNome, coTipoArtefato, null, null, true);
+		} catch (EJBException e) {
+			LOGGER.log(Level.SEVERE, "Erro ao pesquisar artefatos", e);
+		}
 
 		if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() >= 2) {
 			LOGGER.log(Level.WARNING, "Verificar pois não deveria retornar mais de um artefato. Nome (" + coNome
@@ -88,7 +91,11 @@ public class Injetor {
 		}
 
 		if (incluirArtefato) {
-			artefatoDao.incluir(artefato);
+			try {
+				artefatoDao.incluir(artefato);
+			} catch (EJBException e) {
+				LOGGER.log(Level.SEVERE, "Erro a tentar incluir artefato", e);
+			}
 		} else if (desativarPai) {
 			relacionamentoDao.desativarControlM(artefatoPesquisa.getCoArtefato(), Configuracao.TS_ATUAL);
 		}
@@ -232,8 +239,13 @@ public class Injetor {
 
 		ArtefatoPersistence artefatoPesquisa = null;
 		if (!TipoArtefato.DESCONHECIDO.get().equals(artefato.getCoTipoArtefato())) {
-			resultListaArtefatoPesquisa = artefatoDao.getArtefato(coNome, artefato.getCoTipoArtefato(), null, null,
-					true);
+			try {
+				resultListaArtefatoPesquisa = artefatoDao.getListaArtefato(coNome, artefato.getCoTipoArtefato(), null,
+						null, true);
+			} catch (EJBException e) {
+				LOGGER.log(Level.SEVERE, "Erro ao pesquisar artefatos", e);
+			}
+
 			if (resultListaArtefatoPesquisa != null && resultListaArtefatoPesquisa.size() >= 2) {
 				LOGGER.log(Level.WARNING,
 						"Verificar pois não deveria retornar mais de um artefato. Nome (" + coNome + ")");
@@ -247,7 +259,14 @@ public class Injetor {
 			//
 			// caso o tipo do artefato seja DESCONHECIDO
 			//
-			resultListaArtefatoPesquisa = artefatoDao.getArtefato(coNome, null, null, null, true);
+
+			if (Configuracao.CARGA_INICIAL == false) {
+				try {
+					resultListaArtefatoPesquisa = artefatoDao.getListaArtefato(coNome, null, null, null, true);
+				} catch (EJBException e) {
+					LOGGER.log(Level.SEVERE, "Erro ao pesquisar artefatos", e);
+				}
+			}
 
 			// boolean isAribuido = false;
 			boolean hasCobol = false;
@@ -359,21 +378,36 @@ public class Injetor {
 		}
 
 		if (incluirArtefato && artefato.getCoArtefato() == null) {
-			artefatoDao.incluir(artefato);
-
-			for (AtributoPersistence atributo : artefato.getTransientListaAtributos()) {
-				atributo.setCoExterno(artefato.getCoArtefato());
-				atributoDao.incluir(atributo);
+			try {
+				artefatoDao.incluir(artefato);
+			} catch (EJBException e) {
+				LOGGER.log(Level.SEVERE, "Erro a tentar incluir artefato", e);
 			}
 
-		} else if (atualizarArtefato && desativarArtefato) {
+			if (artefato.getTransientListaAtributos() != null) {
+				for (AtributoPersistence atributo : artefato.getTransientListaAtributos()) {
+					atributo.setCoExterno(artefato.getCoArtefato());
+					atributoDao.incluir(atributo);
+				}
+			}
+
+		} else if (atualizarArtefato == true && desativarArtefato == true && Configuracao.CARGA_INICIAL == false) {
 			// DESATIVAR ARTEFATO E RELACIONAMENTOS
 
 			List<RelacionamentoPersistence> tempLista = relacionamentoDao.desativar(artefatoPesquisa.getCoArtefato(),
 					artefatoPesquisa.getTsFimVigencia());
 
-			artefatoDao.desativar(artefatoPesquisa);
-			artefatoDao.incluir(artefato);
+			try {
+				artefatoDao.desativar(artefatoPesquisa);
+			} catch (EJBException e) {
+				LOGGER.log(Level.SEVERE, "Erro a tentar desativar artefato", e);
+			}
+
+			try {
+				artefatoDao.incluir(artefato);
+			} catch (EJBException e) {
+				LOGGER.log(Level.SEVERE, "Erro a tentar incluir artefato", e);
+			}
 
 			if (tempLista != null) {
 				for (RelacionamentoPersistence entry : tempLista) {
@@ -429,8 +463,13 @@ public class Injetor {
 				atributo.setCoExterno(artefato.getCoArtefato());
 				atributoDao.incluir(atributo);
 			}
-		} else if (atualizarArtefato && !desativarArtefato) {
-			artefatoDao.atualizar(artefatoPesquisa);
+		} else if (atualizarArtefato && !desativarArtefato && Configuracao.CARGA_INICIAL == false) {
+
+			try {
+				artefatoDao.atualizar(artefatoPesquisa);
+			} catch (EJBException e) {
+				LOGGER.log(Level.SEVERE, "Erro a tentar atualizar artefato", e);
+			}
 
 			for (AtributoPersistence atributo : artefato.getTransientListaAtributos()) {
 				atributo.setCoExterno(artefatoPesquisa.getCoArtefato());

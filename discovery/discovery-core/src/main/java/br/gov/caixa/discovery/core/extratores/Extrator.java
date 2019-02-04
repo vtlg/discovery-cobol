@@ -66,7 +66,7 @@ public class Extrator {
 
 		List<Artefato> listaArtefato = new ArrayList<>();
 
-		if (TipoArtefato.CONTROL_M.equals(this.tipoArtefato)) {
+		if (TipoArtefato.CONTROL_M.equals(this.tipoArtefato) && Configuracao.CARGA_INICIAL == false) {
 			ExtratorControlM extrator = new ExtratorControlM();
 			extrator.inicializar(listaCaminhoArquivos);
 			listaArtefato = extrator.executa();
@@ -81,8 +81,11 @@ public class Extrator {
 				artefato.setAmbiente(Configuracao.AMBIENTE);
 				artefato.setSistema(Configuracao.SISTEMA);
 				artefato.setTipoArtefato(this.tipoArtefato);
-				artefato.setCodigoCompleto(codigoCompleto);
 				artefato.setCaminhoArquivo(path.toAbsolutePath().toString());
+				
+				if (Configuracao.CARGA_INICIAL == false) {
+					artefato.setCodigoCompleto(codigoCompleto);
+				}
 				// artefato.setNomeArquivo(ArtefatoHandler.tratarNomeArtefato(); //
 
 				String nomeArtefato = path.getFileName().toString();
@@ -95,19 +98,22 @@ public class Extrator {
 
 				artefato.setNome(ArtefatoHandler.tratarNomeArtefato(nomeArtefato));
 
-				if (TipoArtefato.PROGRAMA_COBOL.equals(tipoArtefato)) { // ExtratorCobol
+				if (TipoArtefato.PROGRAMA_COBOL.equals(tipoArtefato) && Configuracao.CARGA_INICIAL == false) { // ExtratorCobol
 					ExtratorProgramaCobol extrator = new ExtratorProgramaCobol(artefato, deslocamento);
 					artefato = extrator.executa();
 					listaArtefato.add(artefato);
 				}
-				if (TipoArtefato.COPYBOOK.equals(tipoArtefato)) { // ExtratorCopybook
+				if (TipoArtefato.COPYBOOK.equals(tipoArtefato) && Configuracao.CARGA_INICIAL == false) { // ExtratorCopybook
 					ExtratorCopybook extrator = new ExtratorCopybook(artefato, deslocamento);
 					artefato = extrator.executa();
 					listaArtefato.add(artefato);
 				}
-				if (TipoArtefato.JCL.equals(tipoArtefato)) { // ExtratorJcl
+				if (TipoArtefato.JCL.equals(tipoArtefato) && Configuracao.CARGA_INICIAL == false) { // ExtratorJcl
 					ExtratorJcl extrator = new ExtratorJcl(artefato, deslocamento);
 					artefato = extrator.executa();
+					listaArtefato.add(artefato);
+				}
+				if (Configuracao.CARGA_INICIAL) {
 					listaArtefato.add(artefato);
 				}
 			}

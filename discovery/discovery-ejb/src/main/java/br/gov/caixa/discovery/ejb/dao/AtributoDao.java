@@ -3,6 +3,7 @@ package br.gov.caixa.discovery.ejb.dao;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,7 +25,7 @@ public class AtributoDao {
 		this.em = em;
 	}
 
-	public AtributoPersistence incluir(AtributoPersistence atributo) {
+	public AtributoPersistence incluir(AtributoPersistence atributo) throws EJBException {
 		try {
 			em.persist(atributo);
 		} catch (Exception e) {

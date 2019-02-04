@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -34,33 +36,7 @@ public class ArtefatoDao {
 		this.em = em;
 	}
 
-//	@SuppressWarnings("unused")
-//	public static void main(String[] args) {
-//		Dao dao = new Dao();
-//		dao.abrirConexao();
-//		EntityManager em = dao.getEmFactory().createEntityManager();
-//		ArtefatoDao artefatoDao = new ArtefatoDao(em);
-//
-//		ArtefatoPersistence artefato = artefatoDao.pesquisarArtefatoRelacionamento(25351L);
-//
-//		em.close();
-//		dao.fecharConexao();
-//
-//		System.out.println(artefato.getNoNomeArtefato());
-//		// System.out.println(artefato.getListaArtefato().get(0).getListaAtributos().toArray());
-//		// System.out.println(artefato.getListaArtefato().get(1).getListaAtributos().toArray());
-//		// System.out.println(artefato.getListaArtefato().get(2).getListaAtributos().toArray());
-//
-////		if (artefato.getListaArtefato() != null) {
-////			artefato.getListaArtefato().forEach((rel) -> {
-////				System.out.println(rel.getCoRelacionamento());
-////				System.out.println(rel.getArtefato().getNoNomeArtefato());
-////			});
-////		}
-//
-//	}
-
-	public ArtefatoPersistence getArtefato(Long coArtefato) {
+	public ArtefatoPersistence getArtefato(Long coArtefato) throws EJBException {
 		LOGGER.log(Level.FINE, "Pesquisar artefato " + "CoArtefato (" + coArtefato + ")");
 
 		ArtefatoPersistence output = null;
@@ -81,15 +57,19 @@ public class ArtefatoDao {
 		try {
 			TypedQuery<ArtefatoPersistence> query = em.createQuery(cq);
 			output = query.getSingleResult();
+		} catch (NoResultException e) {
+			LOGGER.log(Level.SEVERE, "Nenhum resultado para pesquisa.", e);
+			throw new EJBException("ME0002");
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar pesquisar artefato. " + "CoArtefato (" + coArtefato + ")", e);
+			throw new EJBException("ME0001");
 		}
 
 		return output;
 	}
 
-	public List<ArtefatoPersistence> getArtefato(String coNome, String coTipoArtefato, String coAmbiente,
-			String coSistema, boolean somenteVigente) {
+	public List<ArtefatoPersistence> getListaArtefato(String coNome, String coTipoArtefato, String coAmbiente,
+			String coSistema, boolean somenteVigente) throws EJBException {
 		LOGGER.log(Level.FINE,
 				"Pesquisar artefato " + "Nome (" + coNome + ")" + "Tipo Artefato (" + coTipoArtefato + ")"
 						+ "Ambiente (" + coAmbiente + ")" + "Sistema (" + coSistema + ")" + "Somente Vigente ("
@@ -154,7 +134,7 @@ public class ArtefatoDao {
 		return listaOutput;
 	}
 
-	public ArtefatoPersistence incluir(ArtefatoPersistence artefato) {
+	public ArtefatoPersistence incluir(ArtefatoPersistence artefato) throws EJBException {
 
 		try {
 			em.persist(artefato);
@@ -169,7 +149,7 @@ public class ArtefatoDao {
 		return artefato;
 	}
 
-	public ArtefatoPersistence atualizar(ArtefatoPersistence artefato) {
+	public ArtefatoPersistence atualizar(ArtefatoPersistence artefato) throws EJBException {
 
 		try {
 			em.merge(artefato);
@@ -184,7 +164,7 @@ public class ArtefatoDao {
 		return artefato;
 	}
 
-	public ArtefatoPersistence desativar(ArtefatoPersistence artefato) {
+	public ArtefatoPersistence desativar(ArtefatoPersistence artefato) throws EJBException {
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();
 		CriteriaUpdate<ArtefatoPersistence> cq = cb.createCriteriaUpdate(ArtefatoPersistence.class);
 		Root<ArtefatoPersistence> artefatoRoot = cq.from(ArtefatoPersistence.class);

@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -29,8 +31,7 @@ public class ArtefatoViewDao {
 	@PersistenceContext(name = "discovery-postgresql-jta", unitName = "discovery-postgresql-jta")
 	private EntityManager em;
 
-	@SuppressWarnings("unused")
-	public static void main(String[] args) {
+	public static void main(String[] args) throws EJBException {
 		Dao dao = new Dao();
 		dao.abrirConexao();
 		EntityManager em = dao.getEmFactory().createEntityManager();
@@ -55,7 +56,7 @@ public class ArtefatoViewDao {
 
 	}
 
-	public ArtefatoPersistence getArtefatoRelacionamento(Long coArtefato) {
+	public ArtefatoPersistence getArtefatoRelacionamento(Long coArtefato) throws EJBException {
 		LOGGER.log(Level.FINE, "Pesquisar artefato-relacionamento " + "CoArtefato (" + coArtefato + ")");
 
 		ArtefatoPersistence output = null;
@@ -67,37 +68,6 @@ public class ArtefatoViewDao {
 		Predicate pCoArtefatoDesc = cb.equal(relacionamentoRoot.get("coArtefatoDesc"), coArtefato);
 		Predicate pCoArtefatoAsc = cb.equal(relacionamentoRoot.get("coArtefatoAsc"), coArtefato);
 		cq.select(relacionamentoRoot).where(cb.or(pCoArtefatoDesc, pCoArtefatoAsc)).distinct(true);
-
-//		cq.multiselect(relacionamentoRoot.get("coTipoRelacionamentoRel"),
-//				relacionamentoRoot.get("icInclusaoManualRel"),
-//				relacionamentoRoot.get("icInclusaoMalhaRel"),
-//				relacionamentoRoot.get("coNuSequencialAtr"),
-//				relacionamentoRoot.get("coTipoAtributoAtr"),
-//				relacionamentoRoot.get("coTabelaAtr"),
-//				relacionamentoRoot.get("coExternoAtr"),
-//				relacionamentoRoot.get("deValorAtr"),
-//				relacionamentoRoot.get("icEditavelAtr"),
-//				relacionamentoRoot.get("icOpcionalAtr"),
-//				relacionamentoRoot.get("coArtefatoAsc"),
-//				relacionamentoRoot.get("noNomeArtefatoAsc"),
-//				relacionamentoRoot.get("noNomeExibicaoAsc"),
-//				relacionamentoRoot.get("noNomeInternoAsc"),
-//				relacionamentoRoot.get("coAmbienteAsc"),
-//				relacionamentoRoot.get("coSistemaAsc"),
-//				relacionamentoRoot.get("coTipoArtefatoAsc"),
-//				relacionamentoRoot.get("deIdentificadorAsc"),
-//				relacionamentoRoot.get("icInclusaoManualAsc"),
-//				relacionamentoRoot.get("icProcessoCriticoAsc"),
-//				relacionamentoRoot.get("coArtefatoDesc"),
-//				relacionamentoRoot.get("noNomeArtefatoDesc"),
-//				relacionamentoRoot.get("noNomeExibicaoDesc"),
-//				relacionamentoRoot.get("noNomeInternoDesc"),
-//				relacionamentoRoot.get("coAmbienteDesc"),
-//				relacionamentoRoot.get("coSistemaDesc"),
-//				relacionamentoRoot.get("coTipoArtefatoDesc"),
-//				relacionamentoRoot.get("deIdentificadorDesc"),
-//				relacionamentoRoot.get("icInclusaoManualDesc"),
-//				relacionamentoRoot.get("icProcessoCriticoDesc")).where(cb.or(pCoArtefatoDesc, pCoArtefatoAsc)).distinct(true);
 
 		try {
 			TypedQuery<RelacionamentoView> query = em.createQuery(cq);
@@ -137,8 +107,10 @@ public class ArtefatoViewDao {
 					output.adicionarRelacionamentoPai(relacionamento);
 				}
 			}
+		} catch (NoResultException e) {
+			throw new EJBException("MA0002");
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Erro ao tentar pesquisar artefato. " + "CoArtefato (" + coArtefato + ")", e);
+			throw new EJBException("MA0001");
 		}
 		return output;
 	}
@@ -185,7 +157,8 @@ public class ArtefatoViewDao {
 	}
 
 	public Collection<ArtefatoView> getArtefato(String expNome, String expDescricao, String[] listaTipoArtefato,
-			String[] listaSistema, Boolean icProcessoCritico, Boolean icInterface, int offset, int limit) {
+			String[] listaSistema, Boolean icProcessoCritico, Boolean icInterface, int offset, int limit)
+			throws Exception {
 
 		LOGGER.log(Level.FINE,
 				"Pesquisa Avançada." + " expNome (" + expNome + ")" + " expDescricao (" + expDescricao + ")"
@@ -248,15 +221,14 @@ public class ArtefatoViewDao {
 		try {
 			cq.orderBy(cb.asc(artefatoRoot.get("coArtefato")));
 			TypedQuery<ArtefatoView> query = em.createQuery(cq).setFirstResult(offset).setMaxResults(limit);
-
 			output = query.getResultList();
-
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE,
-					"Erro ao tentar pesquisar artefato viw. " + " expNome (" + expNome + ")" + " expDescricao ("
+					"Erro ao tentar pesquisar artefato view. " + " expNome (" + expNome + ")" + " expDescricao ("
 							+ expDescricao + ")" + " listaTipoArtefato (" + listaTipoArtefato + ")"
 							+ " icProcessoCritico (" + icProcessoCritico + ")" + " icInterface (" + icInterface + ")",
 					e);
+			throw new Exception("ME0001");
 		}
 
 		return output;

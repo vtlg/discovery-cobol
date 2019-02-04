@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -35,7 +36,7 @@ public class RelacionamentoDao {
 		this.em = em;
 	}
 
-	public RelacionamentoPersistence incluir(RelacionamentoPersistence relacionamento) {
+	public RelacionamentoPersistence incluir(RelacionamentoPersistence relacionamento) throws EJBException {
 		try {
 			em.persist(relacionamento);
 		} catch (Exception e) {
@@ -45,7 +46,7 @@ public class RelacionamentoDao {
 		return relacionamento;
 	}
 
-	public RelacionamentoPersistence getRelacionamento(Long coRelacionamento) {
+	public RelacionamentoPersistence getRelacionamento(Long coRelacionamento) throws EJBException {
 		RelacionamentoPersistence output = null;
 
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -72,7 +73,7 @@ public class RelacionamentoDao {
 		return output;
 	}
 
-	public List<RelacionamentoPersistence> getListaRelacionamento(Long coArtefato) {
+	public List<RelacionamentoPersistence> getListaRelacionamento(Long coArtefato)throws EJBException {
 		List<RelacionamentoPersistence> output = null;
 
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -108,7 +109,7 @@ public class RelacionamentoDao {
 	}
 
 	@SuppressWarnings("unused")
-	public List<RelacionamentoPersistence> desativar(Long coArtefato, Calendar tsFimVigencia) {
+	public List<RelacionamentoPersistence> desativar(Long coArtefato, Calendar tsFimVigencia) throws EJBException {
 
 		List<RelacionamentoPersistence> output = getListaRelacionamento(coArtefato);
 
@@ -140,7 +141,7 @@ public class RelacionamentoDao {
 	}
 
 	@SuppressWarnings("unused")
-	public int desativarControlM(Long coArtefato, Calendar tsFimVigencia) {
+	public int desativarControlM(Long coArtefato, Calendar tsFimVigencia)throws EJBException {
 		int output = 0;
 		List<RelacionamentoPersistence> resultRelacionamento = getListaRelacionamento(coArtefato);
 		List<RelacionamentoPersistence> listaDesativar = new ArrayList<>();
@@ -183,7 +184,7 @@ public class RelacionamentoDao {
 	}
 
 	@SuppressWarnings("unused")
-	public RelacionamentoPersistence atualizar(RelacionamentoPersistence relacionamento) {
+	public RelacionamentoPersistence atualizar(RelacionamentoPersistence relacionamento) throws EJBException {
 
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();
 		CriteriaUpdate<RelacionamentoPersistence> cq = cb.createCriteriaUpdate(RelacionamentoPersistence.class);
@@ -199,8 +200,8 @@ public class RelacionamentoDao {
 		try {
 			int i = this.em.createQuery(cq).executeUpdate();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Erro ao tentar atualizar relacionamento. " + "CoArtefato ("
-					+ relacionamento.getCoRelacionamento() + ")", e);
+			LOGGER.log(Level.SEVERE, "Erro ao tentar atualizar relacionamento. " + "CoArtefato (" + relacionamento.getCoRelacionamento() + ")", e);
+			
 		}
 
 		return relacionamento;

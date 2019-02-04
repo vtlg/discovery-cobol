@@ -17,7 +17,7 @@ import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.tipos.Tabelas;
 
 public class Conversor {
-	
+
 	public static List<ArtefatoPersistence> executar(Artefato artefato, boolean isControlM) throws Exception {
 		List<ArtefatoPersistence> output = new ArrayList<>();
 
@@ -26,10 +26,10 @@ public class Conversor {
 			artefatoPersistence = converterArtefato(artefato);
 			output.add(artefatoPersistence);
 		}
-		
+
 		return output;
 	}
-	
+
 	private static List<ArtefatoPersistence> getListaArtefatos(List<ArtefatoPersistence> lista,
 			ArtefatoPersistence artefato) {
 
@@ -57,21 +57,12 @@ public class Conversor {
 			ArtefatoPersistence artefato = null;
 			ArtefatoPersistence artefatoPai = null;
 
-			// if (entry.isIcInclusaoMalha()) {
 			artefatoPrimeiro = existeArtefato(lista, entry.getArtefatoPrimeiro());
 			artefatoUltimo = existeArtefato(lista, entry.getArtefatoUltimo());
 			artefatoAnterior = existeArtefato(lista, entry.getArtefatoAnterior());
 			artefatoPosterior = existeArtefato(lista, entry.getArtefatoPosterior());
 			artefato = existeArtefato(lista, entry.getArtefato());
 			artefatoPai = existeArtefato(lista, entry.getArtefatoPai());
-//			} else {
-//				artefatoPrimeiro = existeArtefato(lista, entry.getArtefatoPrimeiro());
-//				artefatoUltimo = existeArtefato(lista, entry.getArtefatoUltimo());
-//				artefatoAnterior = existeArtefato(lista, entry.getArtefatoAnterior());
-//				artefatoPosterior = existeArtefato(lista, entry.getArtefatoPosterior());
-//				artefato = existeArtefato(lista, entry.getArtefato());
-//				artefatoPai = existeArtefato(lista, entry.getArtefatoPai());
-//			}
 
 			entry.setArtefatoPrimeiro(artefatoPrimeiro);
 			entry.setArtefatoUltimo(artefatoUltimo);

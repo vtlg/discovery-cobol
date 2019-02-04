@@ -3,6 +3,7 @@ package br.gov.caixa.discovery.ws.resources;
 import java.util.Calendar;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -24,7 +25,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 	ArtefatoViewDao artefatoViewDao;
 
 	@Override
-	public Response getArtefato(Long coArtefato) {
+	public Response getArtefato(Long coArtefato) throws EJBException {
 		ResponseBuilder response = Response.status(Status.OK);
 		ArtefatoPersistence persistence = artefatoDao.getArtefato(coArtefato);
 
@@ -40,7 +41,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 	}
 
 	@Override
-	public Response getRelacionamentos(Long coArtefato) {
+	public Response getRelacionamentos(Long coArtefato) throws EJBException {
 		ResponseBuilder response = Response.status(Status.OK);
 		ArtefatoPersistence persistence = artefatoViewDao.getArtefatoRelacionamento(coArtefato);
 

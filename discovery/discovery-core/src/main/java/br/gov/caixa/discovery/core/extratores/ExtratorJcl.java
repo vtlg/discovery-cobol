@@ -1,6 +1,7 @@
 package br.gov.caixa.discovery.core.extratores;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ import br.gov.caixa.discovery.core.tipos.TipoAtributo;
 import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.ArtefatoHandler;
 import br.gov.caixa.discovery.core.utils.Patterns;
+import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 
 public class ExtratorJcl {
 
@@ -40,6 +42,7 @@ public class ExtratorJcl {
 			this.artefato = separarSteps(this.artefato);
 			this.artefato = tratarCodigo(this.artefato);
 			this.artefato = tratarSteps(this.artefato);
+			this.artefato = atribuirSistemaTipo(this.artefato);
 			this.artefato = atribuirTipoArtefato(this.artefato);
 			this.artefato = atribuirAmbiente(this.artefato);
 			this.artefato = atribuirSistema(this.artefato);
@@ -47,6 +50,7 @@ public class ExtratorJcl {
 			this.artefato = classificarRelacionamento(this.artefato);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar converter " + this.artefato.getCaminhoArquivo(), e);
+			e.printStackTrace();
 		}
 
 		return artefato;
@@ -62,18 +66,23 @@ public class ExtratorJcl {
 					entry = classificarRelacionamento(entry);
 				}
 
-				if (TipoArtefato.DSN.equals(entry.getTipoArtefato())) {
+				if (!TipoArtefato.COPYBOOK_VARIAVEL.equals(entry.getTipoArtefato())
+						|| !TipoArtefato.JCL_VARIAVEL.equals(entry.getTipoArtefato())
+						|| !TipoArtefato.PROGRAMA_COBOL_PARAGRAFO.equals(entry.getTipoArtefato())) {
+					continue;
+				}
+
+				if (!TipoArtefato.DESCONHECIDO.equals(artefato.getTipoArtefato())
+						&& !TipoArtefato.DESCONHECIDO.equals(entry.getTipoArtefato())
+						&& !artefato.getTipoArtefato().equals(entry.getTipoArtefato())) {
+					entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
+				} else if (TipoArtefato.DSN.equals(entry.getTipoArtefato())) {
 					m_dsn_cardlib = Patterns.JCL_P_DSN_CARDLIB.matcher(entry.getNome());
-					if (!entry.getNome().startsWith("CND") 
-							&& !entry.getNome().startsWith("DB2")
-							&& !entry.getNome().startsWith("V01") 
-							&& !entry.getNome().startsWith("&&")
-							&& !entry.getNome().startsWith("%%") 
-							&& !entry.getNome().startsWith("CNT")
-							&& !entry.getNome().startsWith("IBM")
-							&& !entry.getNome().startsWith("PRD")
-							&& !entry.getNome().startsWith("MG3") 
-							&& !m_dsn_cardlib.matches()) {
+					if (!entry.getNome().startsWith("CND") && !entry.getNome().startsWith("DB2")
+							&& !entry.getNome().startsWith("V01") && !entry.getNome().startsWith("&&")
+							&& !entry.getNome().startsWith("%%") && !entry.getNome().startsWith("CNT")
+							&& !entry.getNome().startsWith("IBM") && !entry.getNome().startsWith("PRD")
+							&& !entry.getNome().startsWith("MG3") && !m_dsn_cardlib.matches()) {
 
 						String siglaSistemaDsn = entry.getNome().substring(0, 3);
 						String siglaSistemaPai = this.artefato.getSistema().substring(2);
@@ -117,6 +126,7 @@ public class ExtratorJcl {
 
 			if (!inicioJcl || texto.startsWith("**")) {
 			} else if ((texto != null) && (texto.length() > (deslocamento)) && (!texto.trim().equals("/*"))
+					&& (texto.trim().length() != 2) && (texto.trim().length() != 1)
 					&& (texto.substring(deslocamento, deslocamento + 3).equals("//*")
 							|| texto.substring(deslocamento, deslocamento + 3).equals("/* "))) {
 
@@ -223,6 +233,7 @@ public class ExtratorJcl {
 				artefatoStep.setSistema(artefato.getSistema());
 				artefatoStep.setTipoArtefato(TipoArtefato.JCL_STEP);
 				artefatoStep.setNome(nomeStep);
+				artefatoStep.setNomeInterno(nomeStep);
 				artefatoStep.setPosicao(posicaoLinha);
 
 				// Atributo atributoPosicao = new Atributo();
@@ -379,6 +390,7 @@ public class ExtratorJcl {
 					artefatoDdname = new Artefato();
 					// artefatoDdname.setNome(_tratarNomeDsn(identificador));
 					artefatoDdname.setNome(identificador);
+					artefatoDdname.setNomeInterno(identificador);
 					artefatoDdname.setTipoArtefato(TipoArtefato.DDNAME);
 					artefatoDdname.setPosicao(artefato.getPosicao() + posicaoLinha);
 					artefatoDdname.setSistema(artefato.getSistema());
@@ -398,6 +410,7 @@ public class ExtratorJcl {
 				// artefatoDsn.setSistema(this.artefato.getSistema());
 				// artefatoDsn.setIdentificador(identificador);
 				artefatoDsn.setNome(_tratarNomeDsn(nomeDsn));
+				artefatoDsn.setNomeInterno(_tratarNomeDsn(nomeDsn));
 				artefatoDsn.setTipoArtefato(TipoArtefato.DSN);
 				artefatoDsn.setPosicao(artefato.getPosicao() + posicaoLinha);
 
@@ -424,6 +437,7 @@ public class ExtratorJcl {
 					// artefatoDsn.setSistema(this.artefato.getSistema());
 					// artefatoDsn.setIdentificador(identificador);
 					artefatoDsn.setNome(_tratarNomeDsn(nomeDsn));
+					artefatoDsn.setNomeInterno(_tratarNomeDsn(nomeDsn));
 					artefatoDsn.setTipoArtefato(TipoArtefato.DSN);
 					artefatoDsn.setPosicao(artefato.getPosicao() + posicaoLinha);
 
@@ -447,6 +461,7 @@ public class ExtratorJcl {
 				nomeDsn = _tratarNomeDsn(nomeDsn);
 
 				artefatoDsn.setNome(nomeDsn);
+				artefatoDsn.setNomeInterno(_tratarNomeDsn(nomeDsn));
 				// artefatoDsn.setAmbiente(this.artefato.getAmbiente());
 				// artefatoDsn.setSistema(this.artefato.getSistema());
 				// artefatoDsn.setIdentificador(identificador);
@@ -493,6 +508,7 @@ public class ExtratorJcl {
 					// artefatoDsn.setSistema(this.artefato.getSistema());
 					// artefatoDsn.setIdentificador(identificador);
 					artefatoDsn.setNome(_tratarNomeDsn(nomeDsn));
+					artefatoDsn.setNomeInterno(_tratarNomeDsn(nomeDsn));
 					artefatoDsn.setTipoArtefato(TipoArtefato.DSN);
 					artefatoDsn.setPosicao(artefato.getPosicao() + posicaoLinha);
 
@@ -562,6 +578,7 @@ public class ExtratorJcl {
 				// artefatoDsn.setSistema(this.artefato.getSistema());
 				// artefatoDsn.setIdentificador(identificador);
 				artefatoDsn.setNome(_tratarNomeDsn(nomeDsn));
+				artefatoDsn.setNomeInterno(_tratarNomeDsn(nomeDsn));
 				artefatoDsn.setTipoArtefato(TipoArtefato.DSN);
 				artefatoDsn.setPosicao(artefato.getPosicao() + posicaoLinha);
 
@@ -615,6 +632,7 @@ public class ExtratorJcl {
 				Artefato programa = new Artefato();
 
 				programa.setNome(nomePrograma.trim());
+				programa.setNomeInterno(nomePrograma.trim());
 				// programa.setTipoArtefato(tipoArtefato);
 				// programa.setAmbiente(this.artefato.getAmbiente());
 				// programa.setSistema(ArtefatoHandler.identificarSistema(nomePrograma,
@@ -633,6 +651,7 @@ public class ExtratorJcl {
 				Artefato programa = new Artefato();
 
 				programa.setNome(nomePrograma.trim());
+				programa.setNomeInterno(nomePrograma.trim());
 				// programa.setAmbiente(this.artefato.getAmbiente());
 				// programa.setTipoArtefato(tipoArtefato);
 				// programa.setSistema(ArtefatoHandler.identificarSistema(nomePrograma,
@@ -655,6 +674,7 @@ public class ExtratorJcl {
 
 		Artefato programa = new Artefato();
 		programa.setNome(atributoExcPgmProc.getValor());
+		programa.setNomeInterno(atributoExcPgmProc.getValor());
 		// programa.setTipoArtefato(tipoArtefato);
 		// programa.setAmbiente(this.artefato.getAmbiente());
 		programa.setPosicao(artefato.getPosicao());
@@ -723,6 +743,7 @@ public class ExtratorJcl {
 				artefatoDeclaracaoSql = new Artefato();
 
 				artefatoDeclaracaoSql.setNome("DECLARACAO-SQL-" + countDeclaracaoSql);
+				artefatoDeclaracaoSql.setNomeInterno("DECLARACAO-SQL-" + countDeclaracaoSql);
 				artefatoDeclaracaoSql.setAmbiente(this.artefato.getAmbiente());
 				artefatoDeclaracaoSql.setTipoArtefato(TipoArtefato.DECLARACAO_SQL);
 				artefatoDeclaracaoSql.setAmbiente(this.artefato.getAmbiente());
@@ -781,6 +802,7 @@ public class ExtratorJcl {
 						nomeTabela)) {
 					Artefato artefatoTabela = new Artefato();
 					artefatoTabela.setNome(nomeTabela);
+					artefatoTabela.setNomeInterno(nomeTabela);
 					// artefatoTabela.setAmbiente(this.artefato.getAmbiente());
 					artefatoTabela.setTipoArtefato(TipoArtefato.TABELA);
 					// artefatoTabela.setSistema(ArtefatoHandler.identificarSistema(nomeTabela,
@@ -801,6 +823,7 @@ public class ExtratorJcl {
 						nomeTabela)) {
 					Artefato artefatoTabela = new Artefato();
 					artefatoTabela.setNome(nomeTabela);
+					artefatoTabela.setNomeInterno(nomeTabela);
 					// artefatoTabela.setAmbiente(this.artefato.getAmbiente());
 					artefatoTabela.setTipoArtefato(TipoArtefato.TABELA);
 					// artefatoTabela.setSistema(ArtefatoHandler.identificarSistema(nomeTabela,
@@ -823,6 +846,7 @@ public class ExtratorJcl {
 						nomeTabela)) {
 					Artefato artefatoTabela = new Artefato();
 					artefatoTabela.setNome(nomeTabela);
+					artefatoTabela.setNomeInterno(nomeTabela);
 					// artefatoTabela.setAmbiente(this.artefato.getAmbiente());
 					artefatoTabela.setTipoArtefato(TipoArtefato.TABELA);
 					// artefatoTabela.setSistema(ArtefatoHandler.identificarSistema(nomeTabela,
@@ -842,6 +866,7 @@ public class ExtratorJcl {
 						nomeTabela)) {
 					Artefato artefatoTabela = new Artefato();
 					artefatoTabela.setNome(nomeTabela);
+					artefatoTabela.setNomeInterno(nomeTabela);
 					// artefatoTabela.setAmbiente(this.artefato.getAmbiente());
 					artefatoTabela.setTipoArtefato(TipoArtefato.TABELA);
 					// artefatoTabela.setSistema(ArtefatoHandler.identificarSistema(nomeTabela,
@@ -854,6 +879,44 @@ public class ExtratorJcl {
 		}
 
 		artefato.adicionarArtefatosRelacionados(tempLista);
+
+		return artefato;
+	}
+
+	private Artefato atribuirSistemaTipo(Artefato artefato) throws Exception {
+		if (artefato.getArtefatosRelacionados() == null) {
+			return artefato;
+		}
+
+		for (Artefato entry : artefato.getArtefatosRelacionados()) {
+			atribuirSistemaTipo(entry);
+			if (entry.getTipoArtefato() != null && !TipoArtefato.DESCONHECIDO.equals(entry.getTipoArtefato())
+					&& !"DESCONHECIDO".equals(entry.getSistema())) {
+				continue;
+			}
+			if (TipoArtefato.COPYBOOK_VARIAVEL.equals(entry.getTipoArtefato())
+					|| TipoArtefato.PROGRAMA_COBOL_PARAGRAFO.equals(entry.getTipoArtefato())
+					|| TipoArtefato.JCL_VARIAVEL.equals(entry.getTipoArtefato())) {
+				continue;
+			}
+
+			ArtefatoPersistence artefatoPersquisa = ArtefatoHandler.buscarArtefatoPersistence(entry.getNome(),
+					entry.getTipoArtefato(), entry.getSistema(), this.artefato.getNome(),
+					this.artefato.getTipoArtefato(), this.artefato.getSistema());
+
+			if (artefatoPersquisa != null) {
+				entry.setSistema(artefatoPersquisa.getCoSistema());
+
+				TipoArtefato[] arrTipo = TipoArtefato.values();
+				TipoArtefato tipo = Arrays.asList(arrTipo).stream()
+						.filter(p -> p.get().equals(artefatoPersquisa.getCoTipoArtefato())).findFirst().get();
+
+				entry.setTipoArtefato(tipo);
+			} else if (this.artefato.getNome().equals(entry.getNome())) {
+				entry.setSistema("DESCONHECIDO");
+				entry.setTipoArtefato(TipoArtefato.UTILITARIO);
+			}
+		}
 
 		return artefato;
 	}

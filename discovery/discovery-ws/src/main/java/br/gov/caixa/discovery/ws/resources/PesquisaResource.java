@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -37,7 +38,7 @@ public class PesquisaResource implements PesquisaResourceI {
 	}
 
 	@Override
-	public Response pesquisaAvancada(int offset, int limit, PesquisaDomain pesquisaDomain) {
+	public Response pesquisaAvancada(int offset, int limit, PesquisaDomain pesquisaDomain) throws Exception {
 		ResponseBuilder response = Response.status(Status.OK);
 		Collection<ArtefatoView> listaView = artefatoViewDao.getArtefato(pesquisaDomain.getExpNome(),
 				pesquisaDomain.getExpDescricao(), pesquisaDomain.getListaTipoArtefato(),

@@ -24,7 +24,7 @@ public interface ArtefatoResourceI {
 	@Path("{coArtefato}/relacionamento")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRelacionamentos(@PathParam("coArtefato") Long coArtefato);
+	public Response getRelacionamentos(@PathParam("coArtefato") Long coArtefato) throws Exception;
 	
 //	@GET
 //	@Consumes(MediaType.APPLICATION_JSON)
