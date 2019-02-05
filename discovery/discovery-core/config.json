@@ -1,0 +1,100 @@
+[
+	{
+		"ambiente": "QUALQUER",
+		"sistema": "QUALQUER",
+		"tipo": "UTILITARIO",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\utilitarios_mainframe.txt"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "MODELO_DADOS_CSV",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\ARQUIVOS\\modelo_dados_tabelas.csv",
+		"caminhoPastaAcessoria": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\ARQUIVOS\\modelo_dados_campos.csv"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "PARAMETRO_MPDT304",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\ARQUIVOS\\MPDT304.csv",
+		"caminhoPastaAcessoria": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\ARQUIVOS\\MPDT304.properties"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "CONTROL-M",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\SCHEDULE\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "DOCUMENTO_CASO_DE_USO",
+		"caminhoPasta": "C:\\CEDES\\Artefatos\\SIPCS\\01-Requisitos\\Especificacoes\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "PROGRAMA-COBOL",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\COBOL\\",
+		"caminhoPastaAcessoria": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\copybook\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "COPYBOOK",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\COPYBOOK\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "JCL",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\SIPCS\\CEFPRD\\JCL\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "PROGRAMA-JAVA",
+		"caminhoPasta": "C:\\CEDES\\Artefatos\\SIPCS\\03-Implementacao\\Fontes\\JAVA\\PRD\\SAT\\src\\",
+		"metodosChamadaEaseLiteral": [
+			"setTableAlta",
+			"setTableBaja",
+			"setTableModificacion",
+			"setTableBusqueda",
+			"setTableConsulta",
+			"setTableFiltro",
+			"setTableListado",
+			"setTableComodin"
+		]
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIFDL",
+		"tipo": "PROGRAMA-COBOL",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\mainframe_SIFDL\\CEFPRD\\COBOL\\",
+		"caminhoPastaAcessoria": "C:\\CEDES\\Técnico\\codigos\\mainframe_SIFDL\\CEFPRD\\copybook\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIFDL",
+		"tipo": "COPYBOOK",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\mainframe_SIFDL\\CEFPRD\\copybook\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIFDL",
+		"tipo": "JCL",
+		"caminhoPasta": "C:\\CEDES\\Técnico\\codigos\\mainframe_SIFDL\\CEFPRD\\JCL\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
+		"tipo": "CONEXAO_BANCO",
+		"plataforma": "DB2",
+		"usuario": "c083347",
+		"senha": "",
+		"ipServidor": "10.192.224.76",
+		"porta": "5029",
+		"bancoDados": "CDSB",
+		"urlConexao": "jdbc:db2://10.192.224.76:5029/CSDB"
+	}
+]

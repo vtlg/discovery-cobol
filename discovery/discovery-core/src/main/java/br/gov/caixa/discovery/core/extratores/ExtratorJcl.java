@@ -916,7 +916,7 @@ public class ExtratorJcl {
 				entry.setTipoArtefato(tipo);
 			} else if (this.artefato.getNome().equals(entry.getNome())) {
 				entry.setSistema("DESCONHECIDO");
-				entry.setTipoArtefato(TipoArtefato.UTILITARIO);
+				entry.setTipoArtefato(TipoArtefato.DESCONHECIDO);
 			}
 
 			if ("DESCONHECIDO".equals(entry.getSistema())) {
