@@ -150,7 +150,6 @@ public class ArtefatoDao {
 	}
 
 	public ArtefatoPersistence atualizar(ArtefatoPersistence artefato) throws EJBException {
-
 		try {
 			em.merge(artefato);
 		} catch (Exception e) {
@@ -160,7 +159,6 @@ public class ArtefatoDao {
 							+ artefato.getCoAmbiente() + ")" + "Sistema (" + artefato.getCoSistema() + ")",
 					e);
 		}
-
 		return artefato;
 	}
 

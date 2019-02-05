@@ -36,10 +36,8 @@ public class Discovery {
 			if (Configuracao.CARGA_INICIAL == true) {
 				LOGGER.log(Level.INFO, "Iniciando carga inicial");
 				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
-				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL),
-						TipoArtefato.PROGRAMA_COBOL, 0, false);
-				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0,
-						false);
+				//_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL), TipoArtefato.PROGRAMA_COBOL, 0, false);
+				//_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0, false);
 			}
 
 			if (Configuracao.CARGA_INICIAL == false) {

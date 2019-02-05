@@ -17,6 +17,7 @@ import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.ArtefatoHandler;
 import br.gov.caixa.discovery.core.utils.Patterns;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.SistemaPersistence;
 
 public class ExtratorJcl {
 
@@ -42,11 +43,11 @@ public class ExtratorJcl {
 			this.artefato = separarSteps(this.artefato);
 			this.artefato = tratarCodigo(this.artefato);
 			this.artefato = tratarSteps(this.artefato);
-			this.artefato = atribuirSistemaTipo(this.artefato);
 			this.artefato = atribuirTipoArtefato(this.artefato);
 			this.artefato = atribuirAmbiente(this.artefato);
 			this.artefato = atribuirSistema(this.artefato);
 			this.artefato = substituirReferencias(this.artefato);
+			this.artefato = atribuirSistemaTipo(this.artefato);			
 			this.artefato = classificarRelacionamento(this.artefato);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar converter " + this.artefato.getCaminhoArquivo(), e);
@@ -66,15 +67,16 @@ public class ExtratorJcl {
 					entry = classificarRelacionamento(entry);
 				}
 
-				if (!TipoArtefato.COPYBOOK_VARIAVEL.equals(entry.getTipoArtefato())
-						|| !TipoArtefato.JCL_VARIAVEL.equals(entry.getTipoArtefato())
-						|| !TipoArtefato.PROGRAMA_COBOL_PARAGRAFO.equals(entry.getTipoArtefato())) {
+				if (TipoArtefato.COPYBOOK_VARIAVEL.equals(entry.getTipoArtefato())
+						|| TipoArtefato.JCL_VARIAVEL.equals(entry.getTipoArtefato())
+						|| TipoArtefato.PROGRAMA_COBOL_PARAGRAFO.equals(entry.getTipoArtefato())) {
 					continue;
 				}
 
 				if (!TipoArtefato.DESCONHECIDO.equals(artefato.getTipoArtefato())
 						&& !TipoArtefato.DESCONHECIDO.equals(entry.getTipoArtefato())
-						&& !artefato.getTipoArtefato().equals(entry.getTipoArtefato())) {
+						&& !"DESCONHECIDO".equals(entry.getSistema())
+						&& !artefato.getSistema().equals(entry.getSistema())) {
 					entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
 				} else if (TipoArtefato.DSN.equals(entry.getTipoArtefato())) {
 					m_dsn_cardlib = Patterns.JCL_P_DSN_CARDLIB.matcher(entry.getNome());
@@ -916,6 +918,17 @@ public class ExtratorJcl {
 				entry.setSistema("DESCONHECIDO");
 				entry.setTipoArtefato(TipoArtefato.UTILITARIO);
 			}
+
+			if ("DESCONHECIDO".equals(entry.getSistema())) {
+				String coSistema = "SI" + entry.getNome().substring(0, 3);
+				SistemaPersistence sistemaPersistence = ArtefatoHandler.buscarSistemaPersistence(coSistema);
+
+				if (sistemaPersistence != null) {
+					entry.setSistema(coSistema);
+				}
+
+			}
+
 		}
 
 		return artefato;
@@ -1014,7 +1027,10 @@ public class ExtratorJcl {
 						entry.setExcluir(true);
 						Artefato novoArtefato = entry.copiar();
 						novoArtefato.setNome(nomeArtefato);
-						tempLista.add(novoArtefato);
+
+						if (!_existeArtefato(tempLista, novoArtefato)) {
+							tempLista.add(novoArtefato);
+						}
 					}
 				}
 			}
@@ -1026,6 +1042,18 @@ public class ExtratorJcl {
 
 		}
 		return artefato;
+	}
+
+	private boolean _existeArtefato(List<Artefato> lista, Artefato artefato) {
+
+		for (Artefato entry : lista) {
+			if (entry.getNome().equals(artefato.getNome())
+					&& entry.getTipoArtefato().equals(artefato.getTipoArtefato())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private String _tratarNomeDsn(String nomeDsn) throws Exception {

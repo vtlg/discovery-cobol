@@ -18,6 +18,7 @@ import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.core.utils.Patterns;
 import br.gov.caixa.discovery.core.utils.UtilsHandler;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.SistemaPersistence;
 import br.gov.caixa.discovery.ejb.tipos.Tabelas;
 
 public class ExtratorProgramaCobol {
@@ -1304,6 +1305,15 @@ public class ExtratorProgramaCobol {
 			} else if (this.artefato.getNome().equals(entry.getNome())) {
 				entry.setSistema("DESCONHECIDO");
 				entry.setTipoArtefato(TipoArtefato.DESCONHECIDO);
+			}
+
+			if ("DESCONHECIDO".equals(entry.getSistema())) {
+				String coSistema = "SI" + entry.getNome().substring(0, 3);
+				SistemaPersistence sistemaPersistence = ArtefatoHandler.buscarSistemaPersistence(coSistema);
+
+				if (sistemaPersistence != null) {
+					entry.setSistema(coSistema);
+				}
 			}
 		}
 

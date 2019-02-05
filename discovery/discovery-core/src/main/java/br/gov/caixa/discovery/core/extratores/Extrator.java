@@ -74,15 +74,15 @@ public class Extrator {
 			for (String caminhoArquivo : this.listaCaminhoArquivos) {
 				Path path = Paths.get(caminhoArquivo);
 				_validarArquivo(path);
-				_extrairodigoCompleto(path);
-				List<String> codigoCompleto = _extrairodigoCompleto(path);
+				// _extrairCodigoCompleto(path);
+				List<String> codigoCompleto = _extrairCodigoCompleto(path);
 
 				Artefato artefato = new Artefato();
 				artefato.setAmbiente(Configuracao.AMBIENTE);
 				artefato.setSistema(Configuracao.SISTEMA);
 				artefato.setTipoArtefato(this.tipoArtefato);
 				artefato.setCaminhoArquivo(path.toAbsolutePath().toString());
-				
+
 				if (Configuracao.CARGA_INICIAL == false) {
 					artefato.setCodigoCompleto(codigoCompleto);
 				}
@@ -116,10 +116,36 @@ public class Extrator {
 				if (Configuracao.CARGA_INICIAL) {
 					listaArtefato.add(artefato);
 				}
+
+				listaArtefato = removerArtefatosNaoIncluir(listaArtefato);
+
 			}
 		}
 
 		return listaArtefato;
+	}
+
+	private List<Artefato> removerArtefatosNaoIncluir(List<Artefato> listaEntrada) {
+		if (listaEntrada == null || listaEntrada.size() == 0) {
+			return null;
+		}
+
+		List<Artefato> listaSaida = new ArrayList<>();
+
+		for (Artefato entry : listaEntrada) {
+			entry.setArtefatosRelacionados(removerArtefatosNaoIncluir(entry.getArtefatosRelacionados()));
+
+			if (TipoArtefato.COPYBOOK_VARIAVEL.equals(entry.getTipoArtefato())
+					|| TipoArtefato.JCL_VARIAVEL.equals(entry.getTipoArtefato())
+					|| TipoArtefato.PROGRAMA_COBOL_PARAGRAFO.equals(entry.getTipoArtefato())) {
+				continue;
+			}
+
+			listaSaida.add(entry);
+
+		}
+
+		return listaSaida;
 	}
 
 	private boolean _validarArquivo(Path path) {
@@ -138,7 +164,7 @@ public class Extrator {
 		return true;
 	}
 
-	private List<String> _extrairodigoCompleto(Path path) {
+	private List<String> _extrairCodigoCompleto(Path path) {
 		List<String> tempCodigoCompleto = new ArrayList<>();
 
 		try {
@@ -150,7 +176,8 @@ public class Extrator {
 				try {
 					tempCodigoCompleto = Files.readAllLines(path, Charset.forName("ISO-8859-1"));
 				} catch (IOException e2) {
-					LOGGER.log(Level.SEVERE, "Charset do arquivo " + path.toAbsolutePath().toString() + " não localizado.", e2);
+					LOGGER.log(Level.SEVERE,
+							"Charset do arquivo " + path.toAbsolutePath().toString() + " não localizado.", e2);
 					return null;
 				}
 			}

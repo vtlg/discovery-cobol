@@ -12,7 +12,9 @@ import br.gov.caixa.discovery.core.modelos.Artefato;
 import br.gov.caixa.discovery.core.tipos.TipoAmbiente;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.ejb.dao.ArtefatoDao;
+import br.gov.caixa.discovery.ejb.dao.SistemaDao;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.SistemaPersistence;
 import br.gov.caixa.discovery.injetores.Discovery;
 
 public class ArtefatoHandler {
@@ -33,6 +35,22 @@ public class ArtefatoHandler {
 		}
 		return output;
 	}
+	
+	public static SistemaPersistence buscarSistemaPersistence(String coSistema) {
+		if (Discovery.em == null) {
+			return null;
+		}
+		
+		SistemaDao sistemaDao = new SistemaDao(Discovery.em);
+		SistemaPersistence output = null;
+		try {
+			output = sistemaDao.getSistema(coSistema);	
+		} catch (EJBException e) {
+			LOGGER.log(Level.INFO, "Sistema (" + coSistema + ") não encontrado. ");
+		}
+		return output;
+	}
+			
 
 	public static ArtefatoPersistence buscarArtefatoPersistence(String nomeArtefato, TipoArtefato tipoArtefato,
 			String sistemaArtefato, String nomeArtefatoPai, TipoArtefato tipoArtefatoPai, String sistemaArtefatoPai) {
