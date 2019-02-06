@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Transient;
 
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
@@ -14,6 +15,7 @@ import br.gov.caixa.discovery.ejb.modelos.AtributoRelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
 
 @Entity(name = "VW_RELACIONAMENTO")
+@IdClass(value= RelacionamentoId.class )
 public class RelacionamentoView implements Serializable {
 
 	/**
