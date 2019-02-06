@@ -251,3 +251,65 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.tbl_sistema
     OWNER to postgres;
+    
+    
+-- View: public.vw_artefato_atributo
+
+-- DROP VIEW public.vw_artefato_atributo;
+
+CREATE OR REPLACE VIEW public.vw_artefato_atributo AS
+ WITH relacionamento AS (
+         SELECT DISTINCT t4.co_relacionamento,
+            t4.co_artefato_pai AS rel_co_artefato_pai,
+            t5.co_artefato,
+            t5.no_nome_artefato,
+            t5.no_nome_exibicao,
+            t5.no_nome_interno,
+            t5.co_tipo_artefato,
+            t7.nu_sequencial AS atributo_nu_sequencial,
+            t7.co_tipo_atributo AS atributo_co_tipo,
+            t7.co_tabela AS atributo_co_tabela,
+            t7.co_externo AS atributo_co_externo,
+            t7.de_valor AS atributo_de_valor,
+            t7.ic_editavel AS atributo_ic_editavel,
+            t7.ic_opcional AS atributo_ic_opcional
+           FROM tbl_relacionamento_artefato t4
+             JOIN tbl_artefato t5 ON t4.co_artefato = t5.co_artefato
+             JOIN tbl_tipo t6 ON t6.co_tipo::text = t5.co_tipo_artefato::text AND t6.co_tabela::text = 'ARTEFATO'::text AND t6.ic_exibir_atributo = true
+             LEFT JOIN tbl_atributo t7 ON t7.co_tabela::text = 'ARTEFATO'::text AND t7.co_externo = t5.co_artefato
+          WHERE t4.ts_fim_vigencia IS NULL
+        )
+ SELECT DISTINCT t1.co_artefato AS co_artefato_pai,
+    t1.no_nome_artefato AS no_nome_artefato_pai,
+    t1.no_nome_exibicao AS no_nome_exibicao_pai,
+    t1.no_nome_interno AS no_nome_interno_pai,
+    t1.co_tipo_artefato AS co_tipo_artefato_pai,
+    t2.nu_sequencial AS atributo_nu_sequencial_pai,
+    t2.co_tipo_atributo AS atributo_co_tipo_pai,
+    t2.co_tabela AS atributo_co_tabela_pai,
+    t2.co_externo AS atributo_co_externo_pai,
+    t2.de_valor AS atributo_de_valor_pai,
+    t2.ic_editavel AS atributo_ic_editavel_pai,
+    t2.ic_opcional AS atributo_ic_opcional_pai,
+    t3.co_relacionamento,
+    t3.co_artefato AS co_artefato_filho,
+    t3.no_nome_artefato AS no_nome_artefato_filho,
+    t3.no_nome_exibicao AS no_nome_exibicao_filho,
+    t3.no_nome_interno AS no_nome_interno_filho,
+    t3.co_tipo_artefato AS co_tipo_artefato_filho,
+    t3.atributo_nu_sequencial AS atributo_nu_sequencial_filho,
+    t3.atributo_co_tipo AS atributo_co_tipo_filho,
+    t3.atributo_co_tabela AS atributo_co_tabela_filho,
+    t3.atributo_co_externo AS atributo_co_externo_filho,
+    t3.atributo_de_valor AS atributo_de_valor_filho,
+    t3.atributo_ic_editavel AS atributo_ic_editavel_filho,
+    t3.atributo_ic_opcional AS atributo_ic_opcional_filho
+   FROM tbl_artefato t1
+     LEFT JOIN tbl_atributo t2 ON t2.co_tabela::text = 'ARTEFATO'::text AND t2.co_externo = t1.co_artefato
+     LEFT JOIN relacionamento t3 ON t3.rel_co_artefato_pai = t1.co_artefato
+  WHERE t1.ts_fim_vigencia IS NULL
+  ORDER BY t1.co_artefato;
+
+ALTER TABLE public.vw_artefato_atributo
+    OWNER TO postgres;
+

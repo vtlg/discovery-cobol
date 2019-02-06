@@ -14,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -24,6 +26,9 @@ import javax.persistence.UniqueConstraint;
 @Entity(name = "TBL_ARTEFATO")
 @Table(schema = "public", uniqueConstraints = { @UniqueConstraint(columnNames = { "NO_NOME_ARTEFATO", "CO_AMBIENTE",
 		"CO_SISTEMA", "CO_TIPO_ARTEFATO", "TS_FIM_VIGENCIA" }) })
+@NamedQueries(
+		@NamedQuery(name="artefatoAtributo", query="SELECT P FROM TBL_ARTEFATO P" )
+		)
 public class ArtefatoPersistence {
 
 	@Id
@@ -387,6 +392,16 @@ public class ArtefatoPersistence {
 	public List<RelacionamentoPersistence> getTransientRelacionamentosDesativados() {
 		return transientRelacionamentosDesativados;
 	}
+	
+	
+
+	public SistemaPersistence getSistema() {
+		return sistema;
+	}
+
+	public void setSistema(SistemaPersistence sistema) {
+		this.sistema = sistema;
+	}
 
 	public void setTransientRelacionamentosDesativados(
 			List<RelacionamentoPersistence> transientRelacionamentosDesativados) {
@@ -515,6 +530,28 @@ public class ArtefatoPersistence {
 		this.icProcessoCritico = icProcessoCritico;
 	}
 
+	public ArtefatoPersistence(Long coArtefato, String noNomeArtefato, String noNomeExibicao, String noNomeInterno,
+			String coAmbiente, String coSistema, String coTipoArtefato, String deIdentificador, String deHash,
+			String deDescricaoUsuario, String deDescricaoArtefato, boolean icInclusaoManual, boolean icProcessoCritico,
+			Calendar tsInicioVigencia, Calendar tsUltimaModificacao) {
+		super();
+		this.coArtefato = coArtefato;
+		this.noNomeArtefato = noNomeArtefato;
+		this.noNomeExibicao = noNomeExibicao;
+		this.noNomeInterno = noNomeInterno;
+		this.coAmbiente = coAmbiente;
+		this.coSistema = coSistema;
+		this.coTipoArtefato = coTipoArtefato;
+		this.deIdentificador = deIdentificador;
+		this.deHash = deHash;
+		this.deDescricaoUsuario = deDescricaoUsuario;
+		this.deDescricaoArtefato = deDescricaoArtefato;
+		this.icInclusaoManual = icInclusaoManual;
+		this.icProcessoCritico = icProcessoCritico;
+		this.tsInicioVigencia = tsInicioVigencia;
+		this.tsUltimaModificacao = tsUltimaModificacao;
+	}
+
 	public ArtefatoPersistence(Object[] copyOfRange) {
 
 		this.coArtefato = (Long) copyOfRange[0];
@@ -550,5 +587,12 @@ public class ArtefatoPersistence {
 
 		return sb.toString();
 	}
+
+	public ArtefatoPersistence(ArtefatoPersistence artefato, AtributoArtefatoPersistence atributo) {
+		super();
+	}
+	
+	
+	
 
 }

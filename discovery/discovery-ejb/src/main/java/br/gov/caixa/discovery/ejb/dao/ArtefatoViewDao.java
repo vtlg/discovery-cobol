@@ -132,13 +132,11 @@ public class ArtefatoViewDao {
 		Root<ArtefatoView> artefatoRoot = cq.from(ArtefatoView.class);
 
 		Predicate pNomeInterno = cb.like(cb.upper(artefatoRoot.get("noNomeInterno")), "%" + coNome.toUpperCase() + "%");
-		Predicate pNomeExibicao = cb.like(cb.upper(artefatoRoot.get("noNomeExibicao")),
-				"%" + coNome.toUpperCase() + "%");
-
+		Predicate pNomeExibicao = cb.like(cb.upper(artefatoRoot.get("noNomeExibicao")), "%" + coNome.toUpperCase() + "%");
 		Predicate orNome = cb.or(pNomeInterno, pNomeExibicao);
 
-		// Expression<Calendar> exTsFimVigencia = artefatoRoot.get("tsFimVigencia");
-		// Predicate pTsFimVigencia = cb.isNull(exTsFimVigencia);
+//		Expression<Calendar> exTsFimVigencia = artefatoRoot.get("tsFimVigencia");
+//		Predicate pTsFimVigencia = cb.isNull(exTsFimVigencia);
 
 		cq.multiselect(artefatoRoot.get("coArtefato"), artefatoRoot.get("noNomeArtefato"),
 				artefatoRoot.get("noNomeExibicao"), artefatoRoot.get("noNomeInterno"),
