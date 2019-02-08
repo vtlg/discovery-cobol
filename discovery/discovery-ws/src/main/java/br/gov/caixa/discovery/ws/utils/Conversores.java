@@ -1,7 +1,6 @@
 package br.gov.caixa.discovery.ws.utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -12,43 +11,13 @@ import br.gov.caixa.discovery.ejb.modelos.AtributoRelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.SistemaPersistence;
 import br.gov.caixa.discovery.ejb.modelos.TipoPersistence;
-import br.gov.caixa.discovery.ejb.view.ArtefatoView;
 import br.gov.caixa.discovery.ws.modelos.ArtefatoDomain;
-import br.gov.caixa.discovery.ws.modelos.ArtefatoViewDomain;
 import br.gov.caixa.discovery.ws.modelos.AtributoDomain;
 import br.gov.caixa.discovery.ws.modelos.RelacionamentoDomain;
 import br.gov.caixa.discovery.ws.modelos.SistemaDomain;
 import br.gov.caixa.discovery.ws.modelos.TipoDomain;
 
 public class Conversores {
-
-	public static ArtefatoViewDomain converter(ArtefatoView entrada) {
-		ArtefatoViewDomain saida = new ArtefatoViewDomain();
-
-		saida.setCoAmbiente(entrada.getCoAmbiente());
-		saida.setCoArtefato(entrada.getCoArtefato());
-		saida.setCoSistema(entrada.getCoSistema());
-		saida.setCoTipoArtefato(entrada.getCoTipoArtefato());
-		// saida.setCoTipoRelacionamento(entrada.getCoTipoRelacionamento());
-		saida.setDeDescricaoArtefato(entrada.getDeDescricaoArtefato());
-		saida.setDeDescricaoUsuario(entrada.getDeDescricaoUsuario());
-		saida.setDeHash(entrada.getDeHash());
-		saida.setDeIdentificador(entrada.getDeIdentificador());
-		saida.setIcInclusaoManual(entrada.getIcInclusaoManual());
-		saida.setIcProcessoCritico(entrada.getIcProcessoCritico());
-		saida.setNoNomeArtefato(entrada.getNoNomeArtefato());
-		saida.setNoNomeExibicao(entrada.getNoNomeExibicao());
-		saida.setNoNomeInterno(entrada.getNoNomeInterno());
-		saida.setTsInicioVigencia(entrada.getTsInicioVigencia());
-		saida.setTsUltimaModificacao(entrada.getTsUltimaModificacao());
-
-		saida.setCountRelacionamento(entrada.getCountRelacionamento());
-		saida.setCountRelacionamentoControlM(entrada.getCountRelacionamentoControlM());
-		saida.setCountRelacionamentoInterface(entrada.getCountRelacionamentoInterface());
-		saida.setCountRelacionamentoNormal(entrada.getCountRelacionamentoNormal());
-
-		return saida;
-	}
 
 	public static ArtefatoDomain converter(ArtefatoPersistence entrada, boolean converterLista,
 			boolean converterAtributo) {
@@ -73,6 +42,11 @@ public class Conversores {
 		saida.setTsFimVigencia(entrada.getTsFimVigencia());
 		saida.setTsInicioVigencia(entrada.getTsInicioVigencia());
 		saida.setTsUltimaModificacao(entrada.getTsUltimaModificacao());
+
+		saida.setCountRelacionamento(entrada.getTransientCountRelacionamentos());
+		saida.setCountRelacionamentoControlM(entrada.getTransientCountRelacionamentosControlM());
+		saida.setCountRelacionamentoInterface(entrada.getTransientCountRelacionamentosInterface());
+		saida.setCountRelacionamentoNormal(entrada.getTransientCountRelacionamentosNormal());
 
 		if (entrada.getTipoArtefato() == null) {
 			TipoDomain tipoArtefatoDomain = new TipoDomain();
@@ -196,20 +170,6 @@ public class Conversores {
 
 		for (ArtefatoPersistence entry : entrada) {
 			saida.add(converter(entry, false, false));
-		}
-
-		return saida;
-	}
-
-	public static List<ArtefatoViewDomain> converterListaArtefatoView(Collection<ArtefatoView> entrada) {
-		if (entrada == null || entrada.size() == 0) {
-			return null;
-		}
-
-		List<ArtefatoViewDomain> saida = new ArrayList<>();
-
-		for (ArtefatoView entry : entrada) {
-			saida.add(converter(entry));
 		}
 
 		return saida;

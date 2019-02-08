@@ -37,4 +37,8 @@ public interface ArtefatoResourceI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response atualizarArtefato(@PathParam("coArtefato") Long coArtefato, ArtefatoDomain artefato);
 
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response incluirArtefato(ArtefatoDomain artefato);
 }

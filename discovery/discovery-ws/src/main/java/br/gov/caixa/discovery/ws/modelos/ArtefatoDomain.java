@@ -66,6 +66,18 @@ public class ArtefatoDomain {
 	@XmlJavaTypeAdapter(CalendarAdapter.class)
 	private Calendar tsFimVigencia;
 
+	@JsonProperty("countRelacionamento")
+	private Long countRelacionamento;
+
+	@JsonProperty("countRelacionamentoInterface")
+	private Long countRelacionamentoInterface;
+
+	@JsonProperty("countRelacionamentoNormal")
+	private Long countRelacionamentoNormal;
+
+	@JsonProperty("countRelacionamentoControlM")
+	private Long countRelacionamentoControlM;
+
 	@JsonProperty("tipoArtefato")
 	private TipoDomain tipoArtefato;
 
@@ -276,6 +288,38 @@ public class ArtefatoDomain {
 
 	public void setTipoArtefato(TipoDomain tipoArtefato) {
 		this.tipoArtefato = tipoArtefato;
+	}
+
+	public Long getCountRelacionamento() {
+		return countRelacionamento;
+	}
+
+	public void setCountRelacionamento(Long countRelacionamento) {
+		this.countRelacionamento = countRelacionamento;
+	}
+
+	public Long getCountRelacionamentoInterface() {
+		return countRelacionamentoInterface;
+	}
+
+	public void setCountRelacionamentoInterface(Long countRelacionamentoInterface) {
+		this.countRelacionamentoInterface = countRelacionamentoInterface;
+	}
+
+	public Long getCountRelacionamentoNormal() {
+		return countRelacionamentoNormal;
+	}
+
+	public void setCountRelacionamentoNormal(Long countRelacionamentoNormal) {
+		this.countRelacionamentoNormal = countRelacionamentoNormal;
+	}
+
+	public Long getCountRelacionamentoControlM() {
+		return countRelacionamentoControlM;
+	}
+
+	public void setCountRelacionamentoControlM(Long countRelacionamentoControlM) {
+		this.countRelacionamentoControlM = countRelacionamentoControlM;
 	}
 
 }

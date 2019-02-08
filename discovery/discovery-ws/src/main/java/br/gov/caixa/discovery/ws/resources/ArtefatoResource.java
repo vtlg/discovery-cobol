@@ -10,7 +10,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import br.gov.caixa.discovery.ejb.dao.ArtefatoDao;
-import br.gov.caixa.discovery.ejb.dao.ArtefatoViewDao;
+import br.gov.caixa.discovery.ejb.dao.RelacionamentoDao;
+import br.gov.caixa.discovery.ejb.dao.ViewDao;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ws.modelos.ArtefatoDomain;
 import br.gov.caixa.discovery.ws.utils.Conversores;
@@ -22,7 +23,10 @@ public class ArtefatoResource implements ArtefatoResourceI {
 	ArtefatoDao artefatoDao;
 
 	@EJB
-	ArtefatoViewDao artefatoViewDao;
+	RelacionamentoDao relacionamentoDao;
+
+	@EJB
+	ViewDao viewDao;
 
 	@Override
 	public Response getArtefato(Long coArtefato) throws EJBException {
@@ -43,7 +47,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 	@Override
 	public Response getRelacionamentos(Long coArtefato) throws EJBException {
 		ResponseBuilder response = Response.status(Status.OK);
-		ArtefatoPersistence persistence = artefatoViewDao.getArtefatoRelacionamento(coArtefato);
+		ArtefatoPersistence persistence = viewDao.getArtefatoRelacionamento(coArtefato);
 
 		ArtefatoDomain domain = Conversores.converter(persistence, true, true);
 
@@ -69,6 +73,7 @@ public class ArtefatoResource implements ArtefatoResourceI {
 		persistence.setTsUltimaModificacao(Calendar.getInstance());
 
 		artefatoDao.atualizar(persistence);
+		relacionamentoDao.atualizarRelacionamentoOnAlterarCoSistema(persistence);
 
 		domain = Conversores.converter(persistence, false, false);
 
@@ -77,19 +82,35 @@ public class ArtefatoResource implements ArtefatoResourceI {
 		return response.build();
 	}
 
-//	@Override
-//	public Response pesquisar(String termo) {
-//		ResponseBuilder response = Response.status(Status.OK);
-//
-//		List<ArtefatoView> listaPersistence = artefatoViewDao.getArtefato(termo);
-//
-//		if (listaPersistence == null || listaPersistence.size() == 0) {
-//			response.status(Status.NOT_FOUND);
-//		} else {
-//			response.entity(Conversores.converterListaArtefatoView(listaPersistence));
-//		}
-//
-//		return response.build();
-//	}
+	@Override
+	public Response incluirArtefato(ArtefatoDomain artefato) {
+		ResponseBuilder response = Response.status(Status.OK);
+
+		ArtefatoPersistence persistence = new ArtefatoPersistence();
+		Calendar TS_ATUAL = Calendar.getInstance();
+
+		persistence.setNoNomeArtefato(artefato.getNoNomeArtefato());
+		persistence.setNoNomeInterno(artefato.getNoNomeInterno());
+		persistence.setNoNomeExibicao(artefato.getNoNomeExibicao());
+		persistence.setCoAmbiente("DESCONHECIDO");
+		persistence.setCoSistema(artefato.getCoSistema());
+		persistence.setCoTipoArtefato(artefato.getTipoArtefato().getCoTipo());
+		persistence.setDeDescricaoUsuario(artefato.getDeDescricaoUsuario());
+		persistence.setIcInclusaoManual(true);
+		persistence.setIcProcessoCritico(artefato.isIcProcessoCritico());
+		persistence.setTsInicioVigencia(TS_ATUAL);
+		persistence.setTsUltimaModificacao(TS_ATUAL);
+
+		artefatoDao.incluir(persistence);
+
+		if (persistence.getCoArtefato() != null) {
+			artefato = Conversores.converter(persistence, false, false);
+			response.entity(artefato);
+		} else {
+			response.status(Status.INTERNAL_SERVER_ERROR);
+		}
+
+		return response.build();
+	}
 
 }

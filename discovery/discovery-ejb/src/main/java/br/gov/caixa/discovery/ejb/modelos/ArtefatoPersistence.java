@@ -26,9 +26,7 @@ import javax.persistence.UniqueConstraint;
 @Entity(name = "TBL_ARTEFATO")
 @Table(schema = "public", uniqueConstraints = { @UniqueConstraint(columnNames = { "NO_NOME_ARTEFATO", "CO_AMBIENTE",
 		"CO_SISTEMA", "CO_TIPO_ARTEFATO", "TS_FIM_VIGENCIA" }) })
-@NamedQueries(
-		@NamedQuery(name="artefatoAtributo", query="SELECT P FROM TBL_ARTEFATO P" )
-		)
+@NamedQueries(@NamedQuery(name = "artefatoAtributo", query = "SELECT P FROM TBL_ARTEFATO P"))
 public class ArtefatoPersistence {
 
 	@Id
@@ -112,6 +110,18 @@ public class ArtefatoPersistence {
 
 	@OneToMany(mappedBy = "artefato", fetch = FetchType.LAZY)
 	private Set<AtributoArtefatoPersistence> listaAtributos;
+
+	@Transient
+	private Long transientCountRelacionamentos = 0L;
+
+	@Transient
+	private Long transientCountRelacionamentosInterface = 0L;
+
+	@Transient
+	private Long transientCountRelacionamentosNormal = 0L;
+
+	@Transient
+	private Long transientCountRelacionamentosControlM = 0L;
 
 	@Transient
 	private boolean transientAtualizarRelacionamentos = true;
@@ -392,8 +402,6 @@ public class ArtefatoPersistence {
 	public List<RelacionamentoPersistence> getTransientRelacionamentosDesativados() {
 		return transientRelacionamentosDesativados;
 	}
-	
-	
 
 	public SistemaPersistence getSistema() {
 		return sistema;
@@ -406,6 +414,38 @@ public class ArtefatoPersistence {
 	public void setTransientRelacionamentosDesativados(
 			List<RelacionamentoPersistence> transientRelacionamentosDesativados) {
 		this.transientRelacionamentosDesativados = transientRelacionamentosDesativados;
+	}
+
+	public Long getTransientCountRelacionamentos() {
+		return transientCountRelacionamentos;
+	}
+
+	public void setTransientCountRelacionamentos(Long transientCountRelacionamentos) {
+		this.transientCountRelacionamentos = transientCountRelacionamentos;
+	}
+
+	public Long getTransientCountRelacionamentosInterface() {
+		return transientCountRelacionamentosInterface;
+	}
+
+	public void setTransientCountRelacionamentosInterface(Long transientCountRelacionamentosInterface) {
+		this.transientCountRelacionamentosInterface = transientCountRelacionamentosInterface;
+	}
+
+	public Long getTransientCountRelacionamentosNormal() {
+		return transientCountRelacionamentosNormal;
+	}
+
+	public void setTransientCountRelacionamentosNormal(Long transientCountRelacionamentosNormal) {
+		this.transientCountRelacionamentosNormal = transientCountRelacionamentosNormal;
+	}
+
+	public Long getTransientCountRelacionamentosControlM() {
+		return transientCountRelacionamentosControlM;
+	}
+
+	public void setTransientCountRelacionamentosControlM(Long transientCountRelacionamentosControlM) {
+		this.transientCountRelacionamentosControlM = transientCountRelacionamentosControlM;
 	}
 
 	public ArtefatoPersistence() {
@@ -591,8 +631,5 @@ public class ArtefatoPersistence {
 	public ArtefatoPersistence(ArtefatoPersistence artefato, AtributoArtefatoPersistence atributo) {
 		super();
 	}
-	
-	
-	
 
 }
