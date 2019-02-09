@@ -61,6 +61,7 @@ public class ExtratorJcl {
 		if (artefato.getArtefatosRelacionados() != null && artefato.getArtefatosRelacionados().size() > 0) {
 
 			Matcher m_dsn_cardlib = null;
+			Matcher m_dsn_connect = null;
 
 			for (Artefato entry : artefato.getArtefatosRelacionados()) {
 				if (entry.getArtefatosRelacionados() != null && entry.getArtefatosRelacionados().size() > 0) {
@@ -78,6 +79,15 @@ public class ExtratorJcl {
 						&& !"DESCONHECIDO".equals(entry.getSistema())
 						&& !artefato.getSistema().equals(entry.getSistema())) {
 					entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
+				} else if (entry.getNome().startsWith("CNT") ) {
+					m_dsn_connect = Patterns.JCL_P_DSN_CONNECT.matcher(entry.getNome());
+					
+					if (m_dsn_connect.matches()) {
+						String siglaSistemaDsn = m_dsn_connect.group("sistema");
+						entry.setSistema("SI" + siglaSistemaDsn);
+						entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
+					}
+					
 				} else if (TipoArtefato.DSN.equals(entry.getTipoArtefato())) {
 					m_dsn_cardlib = Patterns.JCL_P_DSN_CARDLIB.matcher(entry.getNome());
 					if (!entry.getNome().startsWith("CND") && !entry.getNome().startsWith("DB2")
@@ -93,10 +103,6 @@ public class ExtratorJcl {
 							entry.setSistema("SI" + siglaSistemaDsn);
 							entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
 						}
-					} else if (entry.getNome().startsWith("CNT")) {
-						String siglaSistemaDsn = entry.getNome().substring(4, 7);
-						entry.setSistema("SI" + siglaSistemaDsn);
-						entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
 					}
 				}
 

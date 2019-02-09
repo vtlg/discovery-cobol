@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class RelacionamentoId implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8172278924348227865L;
 	private Long coRelacionamentoRel;
 	private Long coNuSequencialAtr;
 	private Long coArtefatoAsc;

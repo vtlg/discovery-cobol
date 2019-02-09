@@ -1,6 +1,7 @@
 package br.gov.caixa.discovery.ws.resources;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -19,5 +20,11 @@ public interface RelacionamentoResourceI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response atualizar(@PathParam("coRelacionamento") String coRelacionamento,
 			RelacionamentoDomain relacionamentoDomain);
+
+	@GET
+	@Path("interface/{sistema}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getInterface(@PathParam("sistema") String coSistema);
 
 }

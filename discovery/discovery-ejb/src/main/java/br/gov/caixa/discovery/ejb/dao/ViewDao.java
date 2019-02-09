@@ -1,5 +1,6 @@
 package br.gov.caixa.discovery.ejb.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.persistence.criteria.Root;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.view.ArtefatoCountsView;
+import br.gov.caixa.discovery.ejb.view.InterfaceSistemaView;
 import br.gov.caixa.discovery.ejb.view.RelacionamentoView;
 
 @Stateless
@@ -144,6 +146,28 @@ public class ViewDao {
 			output = query.getResultList();
 		} catch (Exception e) {
 			throw new EJBException("ME001", e);
+		}
+
+		return output;
+	}
+
+	public List<InterfaceSistemaView> getInterfacesSistema(String coSistema) {
+		List<InterfaceSistemaView> output = new ArrayList<>();
+
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaQuery<InterfaceSistemaView> cq = cb.createQuery(InterfaceSistemaView.class);
+		Root<InterfaceSistemaView> interfaceRoot = cq.from(InterfaceSistemaView.class);
+
+		Predicate pCoSistema = cb.equal(interfaceRoot.get("coSistema"), coSistema);
+		Predicate pCoSistemaPai = cb.equal(interfaceRoot.get("coSistema"), coSistema);
+
+		cq.where(cb.or(pCoSistema, pCoSistemaPai));
+
+		try {
+			TypedQuery<InterfaceSistemaView> query = this.em.createQuery(cq);
+			output = query.getResultList();
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, "Erro ao tentar recuperar interfaces. " + "CoSistema (" + coSistema + ")", e);
 		}
 
 		return output;

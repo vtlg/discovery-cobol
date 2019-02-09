@@ -344,14 +344,14 @@ public class ArtefatoDao {
 		Dao dao = new Dao();
 		dao.abrirConexao();
 		EntityManager em = dao.getEmFactory().createEntityManager();
-		ArtefatoDao artefatoDao = new ArtefatoDao(em);
+//		ArtefatoDao artefatoDao = new ArtefatoDao(em);
 
 		
-		String[] arrSistema = {"SIPCS","SIFDL","DESCONHECIDO"};
-		String[] arrTipoArtefato = {"JCL","JCL-STEP"};
+//		String[] arrSistema = {"SIPCS","SIFDL","DESCONHECIDO"};
+//		String[] arrTipoArtefato = {"JCL","JCL-STEP"};
 		
 		
-		List<ArtefatoPersistence> artefato = artefatoDao.pesquisar(null, null, arrTipoArtefato, arrSistema, null, null, 0, 200);
+//		List<ArtefatoPersistence> artefato = artefatoDao.pesquisar(null, null, arrTipoArtefato, arrSistema, null, null, 0, 200);
 
 		em.close();
 		dao.fecharConexao();

@@ -7,16 +7,17 @@ public class Patterns {
 
 	// ("^.*[\\s]{1,}PROGRAM-ID[\\.]{1,1}[\\s]{1,}(?<nomePrograma>[\\S]{1,})[\\s]{0,}[\\.]{1,}[\\s]{0,}$")
 
-	public static final Pattern JCL_P_VARIAVEL = Pattern
-			.compile("^[/]{2,2}\\*[\\s]{1,}%%SET[\\s]{1,}(?<variavel>.*?)[\\s]{0,}=[\\s]{0,}(?<valor>.*?)$");
+	public static final Pattern JCL_P_DSN_CONNECT = Pattern.compile("^CNT[\\S]{13,13}I(?<sistema>[\\S]{3,3}?).*$");
+	
+
 
 	public static void main(String[] args) {
-		String texto = "//* %%SET %%VCNDC = IBM.CND.SDGALINK";
+		String texto = "CNT.PCS.MZ.BZX0.IGTA301R.D%%ODATE.HHHMMSS";
 		
-		Matcher m = JCL_P_VARIAVEL.matcher(texto);
+		Matcher m = JCL_P_DSN_CONNECT.matcher(texto);
 		if (m.matches()) {
-			System.out.println(m.group("variavel"));
-			System.out.println(m.group("valor"));
+			System.out.println(m.group("sistema"));
+			//System.out.println(m.group("valor"));
 			System.out.println("Aqui");
 		} else {
 			System.out.println("Não");
@@ -441,5 +442,8 @@ public class Patterns {
 
 	public static final Pattern JCL_P_IDENTIFICADOR = Pattern
 			.compile("^[/]{2,2}(?<identificador>.*?)[\\s]{1,}DD[\\s]{1,}.*$");
+	
+	public static final Pattern JCL_P_VARIAVEL = Pattern
+			.compile("^[/]{2,2}\\*[\\s]{1,}%%SET[\\s]{1,}(?<variavel>.*?)[\\s]{0,}=[\\s]{0,}(?<valor>.*?)$");
 
 }

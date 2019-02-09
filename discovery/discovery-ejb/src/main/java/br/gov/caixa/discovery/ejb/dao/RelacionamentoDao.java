@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
@@ -23,6 +22,8 @@ import javax.persistence.criteria.Root;
 
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
+import br.gov.caixa.discovery.ejb.utils.UtilsHandler;
+import br.gov.caixa.discovery.ejb.view.InterfaceSistemaView;
 
 @Stateless
 public class RelacionamentoDao {
@@ -76,7 +77,7 @@ public class RelacionamentoDao {
 		return output;
 	}
 
-	public List<RelacionamentoPersistence> getListaRelacionamento(Long coArtefato)throws EJBException {
+	public List<RelacionamentoPersistence> getListaRelacionamento(Long coArtefato) throws EJBException {
 		List<RelacionamentoPersistence> output = null;
 
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -144,7 +145,7 @@ public class RelacionamentoDao {
 	}
 
 	@SuppressWarnings("unused")
-	public int desativarControlM(Long coArtefato, Calendar tsFimVigencia)throws EJBException {
+	public int desativarControlM(Long coArtefato, Calendar tsFimVigencia) throws EJBException {
 		int output = 0;
 		List<RelacionamentoPersistence> resultRelacionamento = getListaRelacionamento(coArtefato);
 		List<RelacionamentoPersistence> listaDesativar = new ArrayList<>();
@@ -203,65 +204,54 @@ public class RelacionamentoDao {
 		try {
 			int i = this.em.createQuery(cq).executeUpdate();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Erro ao tentar atualizar relacionamento. " + "CoArtefato (" + relacionamento.getCoRelacionamento() + ")", e);
-			
+			LOGGER.log(Level.SEVERE, "Erro ao tentar atualizar relacionamento. " + "CoArtefato ("
+					+ relacionamento.getCoRelacionamento() + ")", e);
+
 		}
 
 		return relacionamento;
 	}
-	
+
 	public int atualizarRelacionamentoOnAlterarCoSistema(ArtefatoPersistence artefato) {
 		int countAtualizacoes = 0;
-		
-		String strQuery = ""
-				+ " UPDATE "
-				+ "     TBL_RELACIONAMENTO_ARTEFATO  "
-				+ " SET "
-				+ "     CO_TIPO_RELACIONAMENTO = 'INTERFACE'"
-				+ "   , IC_INCLUSAO_MANUAL = TRUE"
-				+ " WHERE CO_RELACIONAMENTO IN "
-				+ " ( "
+
+		String strQuery = "" + " UPDATE " + "     TBL_RELACIONAMENTO_ARTEFATO  " + " SET "
+				+ "     CO_TIPO_RELACIONAMENTO = 'INTERFACE'" + "   , IC_INCLUSAO_MANUAL = TRUE"
+				+ " WHERE CO_RELACIONAMENTO IN " + " ( "
 				+ "     SELECT CO_RELACIONAMENTO FROM TBL_RELACIONAMENTO_ARTEFATO T1   "
-				+ "      INNER JOIN TBL_ARTEFATO T2 "
-				+ "         ON  T1.CO_ARTEFATO = T2.CO_ARTEFATO "
-				+ "        AND T2.CO_SISTEMA <> :co_sistema "
-				+ "        AND T2.CO_SISTEMA <> 'DESCONHECIDO' "
-				+ "      WHERE T1.CO_ARTEFATO_PAI = :co_artefato "
-				+ "  UNION ALL "
+				+ "      INNER JOIN TBL_ARTEFATO T2 " + "         ON  T1.CO_ARTEFATO = T2.CO_ARTEFATO "
+				+ "        AND T2.CO_SISTEMA <> :co_sistema " + "        AND T2.CO_SISTEMA <> 'DESCONHECIDO' "
+				+ "      WHERE T1.CO_ARTEFATO_PAI = :co_artefato " + "  UNION ALL "
 				+ "     SELECT CO_RELACIONAMENTO FROM TBL_RELACIONAMENTO_ARTEFATO T1  "
-				+ "      INNER JOIN TBL_ARTEFATO T2 "
-				+ "         ON  T1.CO_ARTEFATO_PAI = T2.CO_ARTEFATO "
-				+ "        AND T2.CO_SISTEMA <> :co_sistema "
-				+ "        AND T2.CO_SISTEMA <> 'DESCONHECIDO'"
-				+ "      WHERE T1.CO_ARTEFATO = :co_artefato "
-				+ " )";
+				+ "      INNER JOIN TBL_ARTEFATO T2 " + "         ON  T1.CO_ARTEFATO_PAI = T2.CO_ARTEFATO "
+				+ "        AND T2.CO_SISTEMA <> :co_sistema " + "        AND T2.CO_SISTEMA <> 'DESCONHECIDO'"
+				+ "      WHERE T1.CO_ARTEFATO = :co_artefato " + " )";
 
 		Query query = this.em.createNativeQuery(strQuery);
-		
+
 		query.setParameter("co_sistema", artefato.getCoSistema());
 		query.setParameter("co_artefato", artefato.getCoArtefato());
-		
+
 		query.executeUpdate();
-		
-		
+
 		return countAtualizacoes;
 	}
-	
-	
+
 	public static void main(String[] args) {
 		Dao dao = new Dao();
 		dao.abrirConexao();
 		EntityManager em = dao.getEmFactory().createEntityManager();
 
 		RelacionamentoDao relacionamentoDao = new RelacionamentoDao(em);
-		
+
 		ArtefatoPersistence artefatoPersistence = new ArtefatoPersistence();
 		artefatoPersistence.setCoArtefato(196601L);
 		artefatoPersistence.setCoSistema("SIPCS");
-		
-		em.getTransaction().begin();
-		relacionamentoDao.atualizarRelacionamentoOnAlterarCoSistema(artefatoPersistence);
-		em.getTransaction().commit();
+
+		// em.getTransaction().begin();
+		// relacionamentoDao.atualizarRelacionamentoOnAlterarCoSistema(artefatoPersistence);
+		//relacionamentoDao.getInterfaces("SIPCS");
+		// em.getTransaction().commit();
 		em.close();
 		dao.fecharConexao();
 	}

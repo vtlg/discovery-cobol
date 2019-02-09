@@ -143,6 +143,6 @@ INSERT INTO public.tbl_sistema(
 	('SIDEC', 'SIDEC'),
 	('SISPL', 'SISPL'),
 	('SIATC', 'SIATC'),
+	('SIGTA', 'SIGTA'),
 	('DESCONHECIDO', 'Desconhecido');
 
-	

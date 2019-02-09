@@ -42,7 +42,7 @@ public class Discovery {
 
 			if (Configuracao.CARGA_INICIAL == false) {
 				LOGGER.log(Level.INFO, "Iniciando carga completa");
-				//_executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL),TipoArtefato.PROGRAMA_COBOL, 0, false);
+				_executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL),TipoArtefato.PROGRAMA_COBOL, 0, false);
 				_executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
 				// 
 				// _executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK),
