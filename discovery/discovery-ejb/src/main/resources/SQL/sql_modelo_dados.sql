@@ -85,6 +85,42 @@ CREATE INDEX index_tbl_artefato_03
     ON public.tbl_artefato USING btree
     (ts_fim_vigencia, co_sistema COLLATE pg_catalog."default" varchar_ops, co_tipo_artefato COLLATE pg_catalog."default" varchar_ops)
     TABLESPACE pg_default;
+
+-- Index: index_tbl_artefato_04
+
+-- DROP INDEX public.index_tbl_artefato_04;
+
+CREATE INDEX index_tbl_artefato_04
+    ON public.tbl_artefato USING btree
+    (co_sistema COLLATE pg_catalog."default" varchar_ops)
+    TABLESPACE pg_default;
+
+-- Index: index_tbl_artefato_05
+
+-- DROP INDEX public.index_tbl_artefato_05;
+
+CREATE INDEX index_tbl_artefato_05
+    ON public.tbl_artefato USING btree
+    (co_sistema COLLATE pg_catalog."default" varchar_ops, co_artefato)
+    TABLESPACE pg_default;
+
+-- Index: index_tbl_artefato_06
+
+-- DROP INDEX public.index_tbl_artefato_06;
+
+CREATE INDEX index_tbl_artefato_06
+    ON public.tbl_artefato USING btree
+    (no_nome_artefato COLLATE pg_catalog."default" varchar_ops)
+    TABLESPACE pg_default;
+
+-- Index: index_tbl_artefato_07
+
+-- DROP INDEX public.index_tbl_artefato_07;
+
+CREATE INDEX index_tbl_artefato_07
+    ON public.tbl_artefato USING btree
+    (co_tipo_artefato COLLATE pg_catalog."default" varchar_ops, no_nome_artefato COLLATE pg_catalog."default" varchar_ops)
+    TABLESPACE pg_default;
 	
 -- Table: public.tbl_atributo
 
@@ -138,6 +174,15 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.tbl_relacionamento_artefato
     OWNER to postgres;
+
+-- Index: index_tbl_relacionamento_01
+
+-- DROP INDEX public.index_tbl_relacionamento_01;
+
+CREATE INDEX index_tbl_relacionamento_01
+    ON public.tbl_relacionamento_artefato USING btree
+    (co_tipo_relacionamento COLLATE pg_catalog."default" varchar_ops)
+    TABLESPACE pg_default;
 	
 -- Table: public.tbl_sistema
 
@@ -181,8 +226,7 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.tbl_tipo
     OWNER to postgres;
-    
-    
+	
 -- View: public.vw_artefato_atributo
 
 -- DROP VIEW public.vw_artefato_atributo;
@@ -263,6 +307,56 @@ ALTER TABLE public.vw_artefato_counts
     OWNER TO postgres;
 
 
+-- View: public.vw_interface_sistema
+
+-- DROP VIEW public.vw_interface_sistema;
+
+CREATE OR REPLACE VIEW public.vw_interface_sistema AS
+ WITH RECURSIVE ascendentes(co_artefato, co_artefato_pai, co_artefato_inicial, caminho_co_artefato, co_tipo_relacionamento_inicial, co_sistema_destino) AS (
+         SELECT t1_1.co_artefato,
+            t1_1.co_artefato_pai,
+            t1_1.co_artefato AS co_artefato_inicial,
+            t1_1.co_artefato || ''::text AS caminho_co_artefato,
+            t1_1.co_tipo_relacionamento AS co_tipo_relacionamento_inicial,
+            t2_1.de_valor AS co_sistema_destino
+           FROM tbl_relacionamento_artefato t1_1
+             LEFT JOIN tbl_atributo t2_1 ON t2_1.co_externo = t1_1.co_relacionamento AND t2_1.co_tabela::text = 'RELACIONAMENTO_ARTEFATO'::text AND t2_1.co_tipo_atributo::text = 'SISTEMA-DESTINO'::text
+          WHERE t1_1.ts_fim_vigencia IS NULL AND t1_1.co_tipo_relacionamento::text = 'INTERFACE'::text
+        UNION ALL
+         SELECT t1_1.co_artefato,
+            t1_1.co_artefato_pai,
+            t4.co_artefato_inicial,
+            (t4.caminho_co_artefato || '-'::text) || t1_1.co_artefato AS caminho_co_artefato,
+            t4.co_tipo_relacionamento_inicial,
+            t4.co_sistema_destino
+           FROM tbl_relacionamento_artefato t1_1
+             JOIN ascendentes t4 ON t1_1.co_artefato = t4.co_artefato_pai
+          WHERE t1_1.ts_fim_vigencia IS NULL AND t1_1.co_tipo_relacionamento::text <> 'CONTROL-M'::text
+        )
+ SELECT DISTINCT t2.co_artefato,
+    t2.no_nome_artefato,
+    t2.no_nome_exibicao,
+    t2.no_nome_interno,
+    t2.co_tipo_artefato,
+    t2.co_sistema,
+    t3.co_artefato AS co_artefato_pai,
+    t3.no_nome_artefato AS no_nome_artefato_pai,
+    t3.no_nome_exibicao AS no_nome_exibicao_pai,
+    t3.no_nome_interno AS no_nome_interno_pai,
+    t3.co_tipo_artefato AS co_tipo_artefato_pai,
+    t3.co_sistema AS co_sistema_pai,
+    (t1.caminho_co_artefato || '-'::text) || t1.co_artefato_pai AS caminho_co_artefato,
+    t1.co_tipo_relacionamento_inicial,
+    t1.co_sistema_destino
+   FROM ascendentes t1
+     JOIN tbl_artefato t2 ON t2.co_artefato = t1.co_artefato_inicial
+     JOIN tbl_artefato t3 ON t3.co_artefato = t1.co_artefato_pai
+  WHERE t1.co_tipo_relacionamento_inicial::text = 'INTERFACE'::text AND (t3.co_tipo_artefato::text = 'PROGRAMA-COBOL'::text OR t3.co_tipo_artefato::text = 'JCL'::text) AND substr(t3.no_nome_artefato::text, 4, 2) <> 'EV'::text AND substr(t3.no_nome_artefato::text, 4, 2) <> 'JV'::text AND substr(t3.no_nome_artefato::text, 4, 2) <> 'JB'::text;
+
+ALTER TABLE public.vw_interface_sistema
+    OWNER TO postgres;
+
+
 -- View: public.vw_relacionamento
 
 -- DROP VIEW public.vw_relacionamento;
@@ -308,3 +402,74 @@ CREATE OR REPLACE VIEW public.vw_relacionamento AS
 ALTER TABLE public.vw_relacionamento
     OWNER TO postgres;
 
+
+-- FUNCTION: public.getinterfaces(bigint)
+
+-- DROP FUNCTION public.getinterfaces(bigint);
+
+CREATE OR REPLACE FUNCTION public.getinterfaces(
+	co_artefato_entrada bigint)
+    RETURNS TABLE(r_co_artefato bigint, r_no_nome_artefato character varying, r_no_nome_exibicao character varying, r_no_nome_interno character varying, r_co_tipo_artefato character varying, r_co_sistema character varying, r_co_artefato_pai bigint, r_no_nome_artefato_pai character varying, r_no_nome_exibicao_pai character varying, r_no_nome_interno_pai character varying, r_co_tipo_artefato_pai character varying, r_co_sistema_pai character varying, caminho_co_artefato character varying, co_tipo_relacionamento_inicial character varying) 
+    LANGUAGE 'sql'
+
+    COST 1000
+    VOLATILE LEAKPROOF PARALLEL SAFE
+    ROWS 10000
+AS $BODY$
+
+WITH RECURSIVE 
+ascendentes(
+	co_artefato, 
+	co_artefato_pai, 
+	CO_ARTEFATO_INICIAL,
+    CAMINHO_CO_ARTEFATO,
+	CO_TIPO_RELACIONAMENTO_INICIAL
+    ) AS (
+ SELECT 
+     T1.co_artefato            as CO_ARTEFATO
+   , T1.co_artefato_pai        as CO_ARTEFATO_PAI
+   , T1.co_artefato            as CO_ARTEFATO_INICIAL
+   , T1.co_artefato||''        as CAMINHO_CO_ARTEFATO
+   , T1.co_tipo_relacionamento as CO_TIPO_RELACIONAMENTO_INICIAL
+ FROM public.tbl_relacionamento_artefato T1
+  WHERE T1.ts_fim_vigencia is null 
+	AND T1.CO_TIPO_RELACIONAMENTO <> 'CONTROL-M'
+ UNION ALL
+ SELECT 
+     T1.co_artefato                                   as CO_ARTEFATO
+   , T1.co_artefato_pai                               as CO_ARTEFATO_PAI
+   , T4.CO_ARTEFATO_INICIAL                           as CO_ARTEFATO_INICIAL
+   , T4.CAMINHO_CO_ARTEFATO || '-' || T1.co_artefato  as CAMINHO_CO_ARTEFATO
+   , T4.CO_TIPO_RELACIONAMENTO_INICIAL                as CO_TIPO_RELACIONAMENTO_INICIAL
+  FROM public.tbl_relacionamento_artefato T1
+  JOIN ascendentes AS T4 ON T1.CO_ARTEFATO = T4.CO_ARTEFATO_PAI
+  WHERE T1.CO_TIPO_RELACIONAMENTO <> 'CONTROL-M'
+),
+RESULTADO as (
+  TABLE ascendentes
+)
+SELECT DISTINCT
+     T1.co_artefato            as CO_ARTEFATO
+   , T2.no_nome_artefato       as NO_NOME_ARTEFATO
+   , T2.no_nome_exibicao       as NO_NOME_EXIBICAO
+   , T2.no_nome_interno        as NO_NOME_INTERNO
+   , T2.co_tipo_artefato       as CO_TIPO_ARTEFATO
+   , T2.co_sistema             as CO_SISTEMA
+   , T1.co_artefato_pai        as CO_ARTEFATO_PAI
+   , T3.no_nome_artefato       as NO_NOME_ARTEFATO_PAI
+   , T3.no_nome_exibicao       as NO_NOME_EXIBICAO_PAI
+   , T3.no_nome_interno        as NO_NOME_INTERNO_PAI
+   , T3.co_tipo_artefato       as CO_TIPO_ARTEFATO_PAI
+   , T3.co_sistema             as CO_SISTEMA_PAI
+   , CAMINHO_CO_ARTEFATO||'-'||T1.co_artefato_pai as CAMINHO_CO_ARTEFATO
+   , CO_TIPO_RELACIONAMENTO_INICIAL
+from RESULTADO T1
+INNER JOIN TBL_ARTEFATO T2 ON T2.CO_ARTEFATO = T1.CO_ARTEFATO_INICIAL
+INNER JOIN TBL_ARTEFATO T3 ON T3.CO_ARTEFATO = T1.CO_ARTEFATO_PAI
+WHERE CO_TIPO_RELACIONAMENTO_INICIAL = 'INTERFACE'
+  AND (T3.co_tipo_artefato = 'PROGRAMA-COBOL' OR T3.co_tipo_artefato = 'JCL');
+
+$BODY$;
+
+ALTER FUNCTION public.getinterfaces(bigint)
+    OWNER TO postgres;

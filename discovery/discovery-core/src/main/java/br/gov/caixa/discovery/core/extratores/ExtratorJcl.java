@@ -1137,7 +1137,7 @@ public class ExtratorJcl {
 		return artefato;
 	}
 
-	private boolean _existeArtefato(List<Artefato> lista, Artefato artefato) {
+	private boolean _existeArtefato(List<Artefato> lista, Artefato artefato) throws Exception {
 
 		for (Artefato entry : lista) {
 			if (entry.getNome().equals(artefato.getNome())
@@ -1168,10 +1168,6 @@ public class ExtratorJcl {
 				|| valorSaida.startsWith("PRD") || valorSaida.startsWith("PRD0")) && !valorSaida.startsWith("PRD.V0")) {
 			valorSaida = valorSaida.substring(4);
 		}
-		
-		
-		
-		
 
 		if (valorSaida.startsWith(".")) {
 			valorSaida = valorSaida.substring(1);
