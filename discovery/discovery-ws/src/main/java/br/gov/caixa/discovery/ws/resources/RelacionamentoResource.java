@@ -16,8 +16,8 @@ import br.gov.caixa.discovery.ejb.dao.ViewDao;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
 import br.gov.caixa.discovery.ejb.view.InterfaceSistemaView;
 import br.gov.caixa.discovery.ws.modelos.InterfaceSistemaDomain;
-import br.gov.caixa.discovery.ws.modelos.InterfaceSistemaLink;
-import br.gov.caixa.discovery.ws.modelos.InterfaceSistemaNode;
+import br.gov.caixa.discovery.ws.modelos.InterfaceSistemaDiagramaSankeyLink;
+import br.gov.caixa.discovery.ws.modelos.InterfaceSistemaDiagramaSankeyNode;
 import br.gov.caixa.discovery.ws.modelos.RelacionamentoDomain;
 import br.gov.caixa.discovery.ws.utils.InterfaceSistemaNodeSorted;
 
@@ -45,15 +45,16 @@ public class RelacionamentoResource implements RelacionamentoResourceI {
 	}
 
 	@Override
-	public Response getInterface(String coSistema) {
+	public Response getInterfaceDiagramaSankey(String coSistema) {
 		ResponseBuilder response = Response.status(Status.OK);
 		HashMap<String, Integer> mapaNodes = new HashMap<>();
 
 		List<InterfaceSistemaView> listaPersistence = viewDao.getInterfacesSistema(coSistema);
-		List<InterfaceSistemaNode> listaNodes = new ArrayList<>();
-		List<InterfaceSistemaLink> listaLinks = new ArrayList<>();
+		List<InterfaceSistemaDiagramaSankeyNode> listaNodes = new ArrayList<>();
+		List<InterfaceSistemaDiagramaSankeyLink> listaLinks = new ArrayList<>();
 
 		mapaNodes.put(coSistema + "ESQUERDA", 0);
+		mapaNodes.put(coSistema + "DIREITA", 0);
 		int i = 1;
 		for (InterfaceSistemaView persistence : listaPersistence) {
 			if (!mapaNodes.containsKey(persistence.getNoNomeArtefatoPai())) {
@@ -78,30 +79,30 @@ public class RelacionamentoResource implements RelacionamentoResourceI {
 			// NODES
 			//
 
-			InterfaceSistemaNode nodeArtefato = new InterfaceSistemaNode();
+			InterfaceSistemaDiagramaSankeyNode nodeArtefato = new InterfaceSistemaDiagramaSankeyNode();
 
 			nodeArtefato.setNode(mapaNodes.get(persistence.getNoNomeArtefatoPai()));
 			nodeArtefato.setName(persistence.getNoNomeExibicaoPai());
 
-			if (!existeNode(listaNodes, nodeArtefato)) {
+			if (!sankeyExisteNode(listaNodes, nodeArtefato)) {
 				listaNodes.add(nodeArtefato);
 			}
 
-			InterfaceSistemaNode nodeSistemaPai = new InterfaceSistemaNode();
+			InterfaceSistemaDiagramaSankeyNode nodeSistemaPai = new InterfaceSistemaDiagramaSankeyNode();
 
 			nodeSistemaPai.setNode(mapaNodes.get(persistence.getCoSistemaPai() + "ESQUERDA"));
 			nodeSistemaPai.setName(persistence.getCoSistemaPai());
 
-			if (!existeNode(listaNodes, nodeSistemaPai)) {
+			if (!sankeyExisteNode(listaNodes, nodeSistemaPai)) {
 				listaNodes.add(nodeSistemaPai);
 			}
 
-			InterfaceSistemaNode nodeSistema = new InterfaceSistemaNode();
+			InterfaceSistemaDiagramaSankeyNode nodeSistema = new InterfaceSistemaDiagramaSankeyNode();
 
 			nodeSistema.setNode(mapaNodes.get(persistence.getCoSistema() + "DIREITA"));
 			nodeSistema.setName(persistence.getCoSistema());
 
-			if (!existeNode(listaNodes, nodeSistema)) {
+			if (!sankeyExisteNode(listaNodes, nodeSistema)) {
 				listaNodes.add(nodeSistema);
 			}
 
@@ -109,23 +110,32 @@ public class RelacionamentoResource implements RelacionamentoResourceI {
 			// LINKS
 			//
 
-			InterfaceSistemaLink linkOrigemArtefato = new InterfaceSistemaLink();
+//			InterfaceSistemaLink linkOrigemDestino = new InterfaceSistemaLink();
+//			linkOrigemDestino.setSource(mapaNodes.get(persistence.getCoSistemaPai() + "ESQUERDA"));
+//			linkOrigemDestino.setTarget(mapaNodes.get(persistence.getCoSistema() + "DIREITA"));
+//			linkOrigemDestino.setValue(5);
+//
+//			if (!existeLink(listaLinks, linkOrigemDestino)) {
+//				listaLinks.add(linkOrigemDestino);
+//			}			
+
+			InterfaceSistemaDiagramaSankeyLink linkOrigemArtefato = new InterfaceSistemaDiagramaSankeyLink();
 
 			linkOrigemArtefato.setSource(mapaNodes.get(persistence.getCoSistemaPai() + "ESQUERDA"));
 			linkOrigemArtefato.setTarget(mapaNodes.get(persistence.getNoNomeArtefatoPai()));
-			linkOrigemArtefato.setValue(1);
+			linkOrigemArtefato.setValue(5);
 
-			if (!existeLink(listaLinks, linkOrigemArtefato)) {
+			if (!sankeyExisteLink(listaLinks, linkOrigemArtefato)) {
 				listaLinks.add(linkOrigemArtefato);
 			}
 
-			InterfaceSistemaLink linkArtefatoDestino = new InterfaceSistemaLink();
+			InterfaceSistemaDiagramaSankeyLink linkArtefatoDestino = new InterfaceSistemaDiagramaSankeyLink();
 
 			linkArtefatoDestino.setSource(mapaNodes.get(persistence.getNoNomeArtefatoPai()));
 			linkArtefatoDestino.setTarget(mapaNodes.get(persistence.getCoSistema() + "DIREITA"));
 			linkArtefatoDestino.setValue(1);
 
-			if (!existeLink(listaLinks, linkArtefatoDestino)) {
+			if (!sankeyExisteLink(listaLinks, linkArtefatoDestino)) {
 				listaLinks.add(linkArtefatoDestino);
 			}
 
@@ -142,9 +152,10 @@ public class RelacionamentoResource implements RelacionamentoResourceI {
 		return response.build();
 	}
 
-	private static boolean existeNode(List<InterfaceSistemaNode> lista, InterfaceSistemaNode node) {
+	private static boolean sankeyExisteNode(List<InterfaceSistemaDiagramaSankeyNode> lista,
+			InterfaceSistemaDiagramaSankeyNode node) {
 
-		for (InterfaceSistemaNode entry : lista) {
+		for (InterfaceSistemaDiagramaSankeyNode entry : lista) {
 			if (node.getNode().equals(entry.getNode())) {
 				return true;
 			}
@@ -153,14 +164,67 @@ public class RelacionamentoResource implements RelacionamentoResourceI {
 		return false;
 	}
 
-	private static boolean existeLink(List<InterfaceSistemaLink> lista, InterfaceSistemaLink link) {
+	private static boolean sankeyExisteLink(List<InterfaceSistemaDiagramaSankeyLink> lista,
+			InterfaceSistemaDiagramaSankeyLink link) {
 
-		for (InterfaceSistemaLink entry : lista) {
+		for (InterfaceSistemaDiagramaSankeyLink entry : lista) {
 
 			if (link.getSource().equals(entry.getSource()) && link.getTarget().equals(entry.getTarget())) {
 				return true;
 			}
+		}
+		return false;
+	}
 
+	@Override
+	public Response getInterfaceDiagramaTabela(String coSistema) {
+		ResponseBuilder response = Response.status(Status.OK);
+
+		List<InterfaceSistemaView> listaPersistence = viewDao.getInterfacesSistema(coSistema);
+		List<InterfaceSistemaDomain> listaDomain = new ArrayList<>();
+
+		for (InterfaceSistemaView persistence : listaPersistence) {
+			InterfaceSistemaDomain domain = new InterfaceSistemaDomain();
+
+			domain.setCaminhoCoArtefato(persistence.getCaminhoCoArtefato());
+			domain.setCoTipoRelacionamentoInicial(persistence.getCoTipoRelacionamentoInicial());
+
+			domain.setCoSistemaDestino(persistence.getCoSistemaDestino());
+
+			domain.setCoArtefato(persistence.getCoArtefato());
+			domain.setCoSistema(persistence.getCoSistema());
+			domain.setCoTipoArtefato(persistence.getCoTipoArtefato());
+			domain.setNoNomeArtefato(persistence.getNoNomeArtefato());
+			domain.setNoNomeExibicao(persistence.getNoNomeExibicao());
+			domain.setNoNomeInterno(persistence.getNoNomeInterno());
+
+			domain.setCoArtefatoPai(persistence.getCoArtefatoPai());
+			domain.setCoSistemaPai(persistence.getCoSistemaPai());
+			domain.setCoTipoArtefatoPai(persistence.getCoTipoArtefatoPai());
+			domain.setNoNomeArtefatoPai(persistence.getNoNomeArtefatoPai());
+			domain.setNoNomeExibicaoPai(persistence.getNoNomeExibicaoPai());
+			domain.setNoNomeInternoPai(persistence.getNoNomeInternoPai());
+
+			if (!tabelaExisteDomain(listaDomain, domain)) {
+				listaDomain.add(domain);
+			}
+
+		}
+
+		response.entity(listaDomain);
+
+		return response.build();
+	}
+
+	private static boolean tabelaExisteDomain(List<InterfaceSistemaDomain> lista, InterfaceSistemaDomain domain) {
+
+		for (InterfaceSistemaDomain entry : lista) {
+			if (domain.getCoSistema().equals(entry.getCoSistema())
+					&& domain.getCoSistemaPai().equals(entry.getCoSistemaPai())
+					&& domain.getCoArtefato().equals(entry.getCoArtefato())
+					&& domain.getCoArtefatoPai().equals(entry.getCoArtefatoPai())) {
+				return true;
+			}
 		}
 
 		return false;

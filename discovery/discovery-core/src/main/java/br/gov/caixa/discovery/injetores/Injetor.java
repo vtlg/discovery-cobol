@@ -22,7 +22,7 @@ public class Injetor {
 
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-	public static void executar(EntityManager em, ArtefatoPersistence artefato, boolean controlM) {
+	public static void executar(EntityManager em, ArtefatoPersistence artefato, boolean controlM) throws Exception {
 		if (Configuracao.CARGA_INICIAL == true) {
 			atualizarTabelaArtefato(em, artefato);
 		} else if (controlM == false) {
@@ -39,8 +39,8 @@ public class Injetor {
 		}
 	}
 
-	private static ArtefatoPersistence ajustarRelacionamentoParaInclusao(EntityManager em,
-			ArtefatoPersistence artefato) {
+	private static ArtefatoPersistence ajustarRelacionamentoParaInclusao(EntityManager em, ArtefatoPersistence artefato)
+			throws Exception {
 
 		for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
 
@@ -56,7 +56,8 @@ public class Injetor {
 	}
 
 	private static ArtefatoPersistence atualizarTabelaArtefatoControlM(EntityManager em, ArtefatoPersistence artefato,
-			boolean desativarPai)  {
+
+			boolean desativarPai) throws Exception {
 
 		boolean incluirArtefato = false;
 
@@ -113,8 +114,8 @@ public class Injetor {
 	}
 
 	@SuppressWarnings("unused")
-	private static ArtefatoPersistence verificarTipoListasRelacionamento(EntityManager em,
-			ArtefatoPersistence artefato) {
+	private static ArtefatoPersistence verificarTipoListasRelacionamento(EntityManager em, ArtefatoPersistence artefato)
+			throws Exception {
 		if (artefato.getTransientListaRelacionamentos() != null) {
 			for (RelacionamentoPersistence entry : artefato.getTransientListaRelacionamentos()) {
 				ArtefatoPersistence artefatoPai = entry.getArtefatoPai();
@@ -136,7 +137,8 @@ public class Injetor {
 		return artefato;
 	}
 
-	private static ArtefatoPersistence unificarListasRelacionamento(EntityManager em, ArtefatoPersistence artefato) {
+	private static ArtefatoPersistence unificarListasRelacionamento(EntityManager em, ArtefatoPersistence artefato)
+			throws Exception {
 		List<RelacionamentoPersistence> tempLista = new ArrayList<>();
 
 		if (artefato.getTransientRelacionamentosDesativados() != null) {
@@ -174,7 +176,7 @@ public class Injetor {
 	}
 
 	private static boolean relacionamentoDuplicidade(List<RelacionamentoPersistence> lista,
-			RelacionamentoPersistence relacionamento) {
+			RelacionamentoPersistence relacionamento) throws Exception {
 		StringBuilder sbRelacionamento = new StringBuilder();
 		sbRelacionamento.append(relacionamento.getCoRelacionamento());
 		sbRelacionamento.append(relacionamento.getCoArtefato());
@@ -195,22 +197,33 @@ public class Injetor {
 		return false;
 	}
 
-	private static ArtefatoPersistence atualizarTabelaRelacionamento(EntityManager em, ArtefatoPersistence artefato) {
+	private static ArtefatoPersistence atualizarTabelaRelacionamento(EntityManager em, ArtefatoPersistence artefato)
+			throws Exception {
 
 		RelacionamentoDao relacionamentoDao = new RelacionamentoDao(em);
 		AtributoDao atributoDao = new AtributoDao(em);
 
+		// System.out.println(artefato);
 		for (RelacionamentoPersistence relacionamento : artefato.getTransientListaRelacionamentos()) {
 
+			// relacionamento.setArtefato(null);
+			// relacionamento.setArtefatoPai(null);
+			// relacionamento.setArtefatoPrimeiro(null);
+			// relacionamento.setArtefatoUltimo(null);
+			// relacionamento.setArtefatoAnterior(null);
+			// relacionamento.setArtefatoPosterior(null);
+
 			if (artefato.isTransientAtualizarRelacionamentos()) {
+
 				relacionamentoDao.incluir(relacionamento);
+
 				for (AtributoPersistence atributo : relacionamento.getTransientListaAtributos()) {
 					atributo.setCoExterno(relacionamento.getCoRelacionamento());
 					atributoDao.incluir(atributo);
 				}
 			}
 
-			if (relacionamento.getArtefatoPai() != null) {
+			if (relacionamento.getCoArtefatoPai() != null) {
 				atualizarTabelaRelacionamento(em, relacionamento.getArtefato());
 			}
 		}
@@ -218,13 +231,14 @@ public class Injetor {
 		return artefato;
 	}
 
-	private static ArtefatoPersistence atualizarTabelaArtefato(EntityManager em, ArtefatoPersistence artefato) {
+	private static ArtefatoPersistence atualizarTabelaArtefato(EntityManager em, ArtefatoPersistence artefato)
+			throws Exception {
 		return atualizarTabelaArtefato(em, artefato, false);
 	}
 
 	@SuppressWarnings("unused")
 	private static ArtefatoPersistence atualizarTabelaArtefato(EntityManager em, ArtefatoPersistence artefato,
-			boolean marcaDesativarPai) {
+			boolean marcaDesativarPai) throws Exception {
 
 		boolean incluirArtefato = false;
 		boolean atualizarArtefato = false;
@@ -359,7 +373,7 @@ public class Injetor {
 				artefato.setTransientAtualizarRelacionamentos(false);
 
 			} else if ((artefato.getDeHash() == null || "".equals(artefato.getDeHash()))
-					&& (artefatoPesquisa.getDeHash() == null || "".equals(artefatoPesquisa.getDeHash()))) {
+					&& (artefatoPesquisa.getDeHash() == null || "".equals(artefatoPesquisa.getDeHash().trim()))) {
 				artefato.setCoArtefato(artefatoPesquisa.getCoArtefato());
 				incluirArtefato = false;
 				atualizarArtefato = false;
@@ -490,7 +504,7 @@ public class Injetor {
 	}
 
 	private static ArtefatoPersistence atribuirDadosArtefato(ArtefatoPersistence artefato,
-			ArtefatoPersistence artefatoPesquisa) {
+			ArtefatoPersistence artefatoPesquisa) throws Exception {
 
 		/*
 		 * Verifica se o Tipo de Artefato do Artefato Entrada é igual a DESCONHECIDO e
@@ -528,7 +542,8 @@ public class Injetor {
 		return artefato;
 	}
 
-	private static ArtefatoPersistence atribuirCoArtefato(EntityManager em, ArtefatoPersistence artefatoEntrada) {
+	private static ArtefatoPersistence atribuirCoArtefato(EntityManager em, ArtefatoPersistence artefatoEntrada)
+			throws Exception {
 		for (RelacionamentoPersistence relacionamento : artefatoEntrada.getTransientListaRelacionamentos()) {
 			ArtefatoPersistence artefato = relacionamento.getArtefato();
 			ArtefatoPersistence artefatoPai = relacionamento.getArtefatoPai();

@@ -41,8 +41,22 @@ public class RelacionamentoDao {
 	}
 
 	public RelacionamentoPersistence incluir(RelacionamentoPersistence relacionamento) throws EJBException {
+
+		RelacionamentoPersistence novoRelacionamento = new RelacionamentoPersistence();
+		novoRelacionamento.setCoArtefato(relacionamento.getCoArtefato());
+		novoRelacionamento.setCoArtefatoPai(relacionamento.getCoArtefatoPai());
+		novoRelacionamento.setCoArtefatoAnterior(relacionamento.getCoArtefatoAnterior());
+		novoRelacionamento.setCoArtefatoPosterior(relacionamento.getCoArtefatoPosterior());
+		novoRelacionamento.setCoArtefatoPrimeiro(relacionamento.getCoArtefatoPrimeiro());
+		novoRelacionamento.setCoArtefatoUltimo(relacionamento.getCoArtefatoUltimo());
+		novoRelacionamento.setTsInicioVigencia(relacionamento.getTsInicioVigencia());
+		novoRelacionamento.setIcInclusaoManual(relacionamento.isIcInclusaoManual());
+		novoRelacionamento.setIcInclusaoMalha(relacionamento.isIcInclusaoMalha());
+		novoRelacionamento.setCoTipoRelacionamento(relacionamento.getCoTipoRelacionamento());
+
 		try {
-			em.persist(relacionamento);
+			em.persist(novoRelacionamento);
+			relacionamento.setCoRelacionamento(novoRelacionamento.getCoRelacionamento());
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar incluir relacionamento.", e);
 		}
@@ -250,7 +264,7 @@ public class RelacionamentoDao {
 
 		// em.getTransaction().begin();
 		// relacionamentoDao.atualizarRelacionamentoOnAlterarCoSistema(artefatoPersistence);
-		//relacionamentoDao.getInterfaces("SIPCS");
+		// relacionamentoDao.getInterfaces("SIPCS");
 		// em.getTransaction().commit();
 		em.close();
 		dao.fecharConexao();

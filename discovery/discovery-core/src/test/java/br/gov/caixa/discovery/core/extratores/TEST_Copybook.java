@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.gov.caixa.discovery.core.modelos.Artefato;
@@ -61,6 +62,7 @@ public class TEST_Copybook {
 	}
 
 	@Test
+	@Ignore
 	public void test_variavel() {
 		List<Artefato> listaArtefato = new ArrayList<>();
 

@@ -7,16 +7,18 @@ public class Patterns {
 
 	// ("^.*[\\s]{1,}PROGRAM-ID[\\.]{1,1}[\\s]{1,}(?<nomePrograma>[\\S]{1,})[\\s]{0,}[\\.]{1,}[\\s]{0,}$")
 
-	public static final Pattern JCL_P_DSN_CONNECT = Pattern.compile("^CNT[\\S]{13,13}I(?<sistema>[\\S]{3,3}?).*$");
+
 	
+	public static final Pattern JCL_P_DSN_LISTC_ENTRIES = Pattern
+			.compile("^.*[\\s]{1,}(LISTC|LISTCAT)[\\s]{1,}(ENTRIES|ENT|LVL|LEVEL)\\((?<dsn>[\\S&&[^,]]{1,})[)]{1,}.*$");
 
 
 	public static void main(String[] args) {
-		String texto = "CNT.PCS.MZ.BZX0.IGTA301R.D%%ODATE.HHHMMSS";
+		String texto = "	//SYSIN22  DD  *	  LISTCAT ENTRIES(CNT.PCS.MZ.BDS2.IJCB.ACTVRPT.USD.D%%DTANT)	  IF MAXCC=4 THEN SET MAXCC=01";
+		Matcher m = JCL_P_DSN_LISTC_ENTRIES.matcher(texto);
 		
-		Matcher m = JCL_P_DSN_CONNECT.matcher(texto);
 		if (m.matches()) {
-			System.out.println(m.group("sistema"));
+			System.out.println(m.group("dsn"));
 			//System.out.println(m.group("valor"));
 			System.out.println("Aqui");
 		} else {
@@ -54,12 +56,11 @@ public class Patterns {
 	// final Pattern P_DSN_CARDLIB =
 	// Pattern.compile("^.*DSN=%%CARDLIB[\\s]{0,}\\((?<cardlib>[\\S&&[^,]]{1,})\\).*$");
 
-	public static final Pattern JCL_P_DSN_LISTC_ENTRIES = Pattern
-			.compile("^.*[\\s]{1,}(LISTC|LISTCAT)[\\s]{1,}(ENTRIES|ENT|LVL|LEVEL)\\((?<dsn>[\\S&&[^,]]{1,})[)]{1,}.*$");
+
 
 	public static final Pattern JCL_P_NOME_TIRA_DATA_FIXA = Pattern.compile("^(?<nome>[\\S]{1,}).D[0-9]{4,8}.*$");
 	public static final Pattern JCL_P_NOME_TIRA_AMBIENTE_FIXO = Pattern
-			.compile("^[PRE||[REL]||[DES]||[TQS]||[HMP]||[PRD]]{3,3}.(?<nome>[\\S]{1,})$");
+			.compile("^PRE||REL||DES||TQS||HMP||PRD||PRD0||COD.(?<nome>[\\S]{1,})$");
 
 	public static final Pattern JCL_P_DELETE_DSN = Pattern.compile("DELETE[\\s]{1,}(?<dsn>[\\S]{1,})");
 
@@ -445,5 +446,11 @@ public class Patterns {
 	
 	public static final Pattern JCL_P_VARIAVEL = Pattern
 			.compile("^[/]{2,2}\\*[\\s]{1,}%%SET[\\s]{1,}(?<variavel>.*?)[\\s]{0,}=[\\s]{0,}(?<valor>.*?)$");
+	
+	public static final Pattern JCL_P_DSN_CONNECT =
+			Pattern.compile("^CNT\\.(?<sistemaOrigem>[\\S]{1,}?)\\.[\\S]{8,8}(?<sistemaDestino>I[\\S]{1,}?)\\..*$");
+			
+	public static final Pattern JCL_P_DSN_CONNECT_PADRAO_2 =
+			Pattern.compile("^CNT\\.(?<sistemaOrigem>[\\S]{1,}?)\\.[\\S]{8,8}(?<sistemaDestino>F[\\S]{1,}?)\\..*$");
 
 }

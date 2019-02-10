@@ -159,7 +159,7 @@ public class ViewDao {
 		Root<InterfaceSistemaView> interfaceRoot = cq.from(InterfaceSistemaView.class);
 
 		Predicate pCoSistema = cb.equal(interfaceRoot.get("coSistema"), coSistema);
-		Predicate pCoSistemaPai = cb.equal(interfaceRoot.get("coSistema"), coSistema);
+		Predicate pCoSistemaPai = cb.equal(interfaceRoot.get("coSistemaPai"), coSistema);
 
 		cq.where(cb.or(pCoSistema, pCoSistemaPai));
 

@@ -28,6 +28,7 @@ public interface PesquisaResourceI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response pesquisaRapida(
-			@QueryParam("termo") String termo);
+			@QueryParam("termo") String termo,
+			@QueryParam("limit") @DefaultValue("10") int limit);
 
 }

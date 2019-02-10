@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 @XmlRootElement(name = "node")
 @JsonSerialize(include = Inclusion.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
-public class InterfaceSistemaLink {
+public class InterfaceSistemaDiagramaSankeyLink {
 
 	private Integer source;
 	private Integer target;

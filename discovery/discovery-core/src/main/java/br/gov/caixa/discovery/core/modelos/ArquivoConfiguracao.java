@@ -7,6 +7,8 @@ public class ArquivoConfiguracao {
 	String caminhoPasta;
 	String plataforma;
 
+	Object[] dePara;
+
 	String caminhoPastaAcessoria;
 	String[] filtroInclusaoArquivoLiteral;
 	String[] filtroExclusaoArquivoLiteral;
@@ -184,4 +186,16 @@ public class ArquivoConfiguracao {
 	public void setMetodosChamadaEaseRegex(String[] metodosChamadaEaseRegex) {
 		this.metodosChamadaEaseRegex = metodosChamadaEaseRegex;
 	}
+
+	public Object[] getDePara() {
+		return dePara;
+	}
+
+	public void setDePara(Object[] dePara) {
+		this.dePara = dePara;
+	}
+	
+	
 }
+
+

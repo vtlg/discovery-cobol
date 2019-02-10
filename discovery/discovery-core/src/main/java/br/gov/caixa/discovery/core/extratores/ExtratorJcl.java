@@ -3,6 +3,7 @@ package br.gov.caixa.discovery.core.extratores;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -15,9 +16,11 @@ import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.tipos.TipoAtributo;
 import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.ArtefatoHandler;
+import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.core.utils.Patterns;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.SistemaPersistence;
+import br.gov.caixa.discovery.ejb.tipos.Tabelas;
 
 public class ExtratorJcl {
 
@@ -47,7 +50,7 @@ public class ExtratorJcl {
 			this.artefato = atribuirAmbiente(this.artefato);
 			this.artefato = atribuirSistema(this.artefato);
 			this.artefato = substituirReferencias(this.artefato);
-			this.artefato = atribuirSistemaTipo(this.artefato);			
+			this.artefato = atribuirSistemaTipo(this.artefato);
 			this.artefato = classificarRelacionamento(this.artefato);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar converter " + this.artefato.getCaminhoArquivo(), e);
@@ -62,12 +65,14 @@ public class ExtratorJcl {
 
 			Matcher m_dsn_cardlib = null;
 			Matcher m_dsn_connect = null;
+			Matcher m_dsn_connect_padrao_2 = null;
 
 			for (Artefato entry : artefato.getArtefatosRelacionados()) {
 				if (entry.getArtefatosRelacionados() != null && entry.getArtefatosRelacionados().size() > 0) {
 					entry = classificarRelacionamento(entry);
 				}
 
+				// Descarta os artefatos que não serão incluídos no banco de dados
 				if (TipoArtefato.COPYBOOK_VARIAVEL.equals(entry.getTipoArtefato())
 						|| TipoArtefato.JCL_VARIAVEL.equals(entry.getTipoArtefato())
 						|| TipoArtefato.PROGRAMA_COBOL_PARAGRAFO.equals(entry.getTipoArtefato())) {
@@ -79,27 +84,103 @@ public class ExtratorJcl {
 						&& !"DESCONHECIDO".equals(entry.getSistema())
 						&& !artefato.getSistema().equals(entry.getSistema())) {
 					entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
-				} else if (entry.getNome().startsWith("CNT") ) {
+				} else if (TipoArtefato.DSN.equals(entry.getTipoArtefato()) && entry.getNome().startsWith("CNT")) {
 					m_dsn_connect = Patterns.JCL_P_DSN_CONNECT.matcher(entry.getNome());
-					
+					m_dsn_connect_padrao_2 = Patterns.JCL_P_DSN_CONNECT_PADRAO_2.matcher(entry.getNome());
 					if (m_dsn_connect.matches()) {
-						String siglaSistemaDsn = m_dsn_connect.group("sistema");
-						entry.setSistema("SI" + siglaSistemaDsn);
-						entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
+						String sistemaOrigem = m_dsn_connect.group("sistemaOrigem");
+						String sistemaDestino = m_dsn_connect.group("sistemaDestino");
+
+						Set<String> chavesMapa = Configuracao.MAPA_DE_PARA.keySet();
+
+						String novoSistemaOrigem = Configuracao.MAPA_DE_PARA.get(sistemaOrigem);
+
+						for (String chave : chavesMapa) {
+							if (sistemaDestino.toUpperCase().startsWith(chave.toUpperCase())) {
+								String novoSistemaDestino = Configuracao.MAPA_DE_PARA.get(chave);
+
+								if (novoSistemaOrigem != null) {
+									entry.setSistema(novoSistemaOrigem);
+								} else {
+									entry.setSistema("SI" + sistemaOrigem);
+								}
+
+								entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
+
+								Atributo atributo = new Atributo();
+								atributo.setValor(novoSistemaDestino);
+								atributo.setTipoAtributo(TipoAtributo.SISTEMA_DESTINO);
+								atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
+
+								entry.adicionarAtributo(atributo);
+							}
+						}
+					} else if (m_dsn_connect_padrao_2.matches()) {
+						String sistemaOrigem = m_dsn_connect_padrao_2.group("sistemaOrigem");
+						String sistemaDestino = m_dsn_connect_padrao_2.group("sistemaDestino");
+
+						Set<String> chavesMapa = Configuracao.MAPA_DE_PARA.keySet();
+
+						String novoSistemaOrigem = Configuracao.MAPA_DE_PARA.get(sistemaOrigem);
+
+						for (String chave : chavesMapa) {
+							if (sistemaDestino.toUpperCase().startsWith(chave.toUpperCase())) {
+								String novoSistemaDestino = Configuracao.MAPA_DE_PARA.get(chave);
+
+								if (novoSistemaOrigem != null) {
+									entry.setSistema(novoSistemaOrigem);
+								} else {
+									entry.setSistema("SI" + sistemaOrigem);
+								}
+
+								entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
+
+								Atributo atributo = new Atributo();
+								atributo.setValor(novoSistemaDestino);
+								atributo.setTipoAtributo(TipoAtributo.SISTEMA_DESTINO);
+								atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
+
+								entry.adicionarAtributo(atributo);
+							}
+						}
 					}
-					
+
 				} else if (TipoArtefato.DSN.equals(entry.getTipoArtefato())) {
 					m_dsn_cardlib = Patterns.JCL_P_DSN_CARDLIB.matcher(entry.getNome());
-					if (!entry.getNome().startsWith("CND") && !entry.getNome().startsWith("DB2")
+
+					if (entry.getNome().startsWith("SIPUB") || entry.getNome().startsWith("SISEL")) {
+						// entry.setSistema("SIGDB");
+						entry.setSistema(this.artefato.getSistema());
+						entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
+
+						Atributo atributo = new Atributo();
+						atributo.setValor("SIGDB");
+						atributo.setTipoAtributo(TipoAtributo.SISTEMA_DESTINO);
+						atributo.setTipo(Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
+
+						entry.adicionarAtributo(atributo);
+
+					} else if (!entry.getNome().startsWith("CND") && !entry.getNome().startsWith("DB2")
 							&& !entry.getNome().startsWith("V01") && !entry.getNome().startsWith("&&")
+							&& !entry.getNome().startsWith("COD") && !entry.getNome().startsWith("CEE")
+							&& !entry.getNome().startsWith("JV2") && !entry.getNome().startsWith("END")
 							&& !entry.getNome().startsWith("%%") && !entry.getNome().startsWith("CNT")
 							&& !entry.getNome().startsWith("IBM") && !entry.getNome().startsWith("PRD")
-							&& !entry.getNome().startsWith("MG3") && !m_dsn_cardlib.matches()) {
+							&& !entry.getNome().startsWith("MG3") && !m_dsn_cardlib.matches()
+							&& !entry.getNome().startsWith("TCP") && !entry.getNome().startsWith("SUP") 
+							&& !entry.getNome().startsWith("SMS.PRD") ) {
 
 						String siglaSistemaDsn = entry.getNome().substring(0, 3);
-						String siglaSistemaPai = this.artefato.getSistema().substring(2);
+						String siglaSistemaPai = this.artefato.getSistema();
 
-						if (!siglaSistemaPai.equals(siglaSistemaDsn)) {
+						String novoSistemaOrigem = Configuracao.MAPA_DE_PARA.get(siglaSistemaDsn);
+						if (novoSistemaOrigem != null) {
+							entry.setSistema(novoSistemaOrigem);
+
+							if (!entry.getSistema().equals(siglaSistemaPai)) {
+								entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
+							}
+						} else if (!siglaSistemaPai.equals("SI" + siglaSistemaDsn)) {
 							entry.setSistema("SI" + siglaSistemaDsn);
 							entry.setTipoRelacionamento(TipoRelacionamento.INTERFACE);
 						}
@@ -925,7 +1006,8 @@ public class ExtratorJcl {
 				entry.setTipoArtefato(TipoArtefato.DESCONHECIDO);
 			}
 
-			if ("DESCONHECIDO".equals(entry.getSistema())) {
+			if ("DESCONHECIDO".equals(entry.getSistema()) && !TipoArtefato.UTILITARIO.equals(entry.getTipoArtefato())
+					&& !entry.getNome().startsWith("%") && !entry.getNome().startsWith("&")) {
 				String coSistema = "SI" + entry.getNome().substring(0, 3);
 				SistemaPersistence sistemaPersistence = ArtefatoHandler.buscarSistemaPersistence(coSistema);
 
@@ -1032,7 +1114,12 @@ public class ExtratorJcl {
 					if (nomeArtefato != null) {
 						entry.setExcluir(true);
 						Artefato novoArtefato = entry.copiar();
-						novoArtefato.setNome(nomeArtefato);
+
+						if (TipoArtefato.DSN.equals(novoArtefato.getTipoArtefato())) {
+							novoArtefato.setNome(_tratarNomeDsn(nomeArtefato));
+						} else {
+							novoArtefato.setNome(nomeArtefato);
+						}
 
 						if (!_existeArtefato(tempLista, novoArtefato)) {
 							tempLista.add(novoArtefato);
@@ -1073,11 +1160,27 @@ public class ExtratorJcl {
 			valorSaida = m_nome_tira_data_fixa.group("nome") + ".D%%ODATE";
 		}
 
-		Matcher m_nome_tira_ambiente_fixo = Patterns.JCL_P_NOME_TIRA_AMBIENTE_FIXO.matcher(valorSaida);
+		// Matcher m_nome_tira_ambiente_fixo =
+		// Patterns.JCL_P_NOME_TIRA_AMBIENTE_FIXO.matcher(valorSaida);
 
-		if (m_nome_tira_ambiente_fixo.matches()) {
+		if ((valorSaida.startsWith("COD") || valorSaida.startsWith("PRE") || valorSaida.startsWith("REL")
+				|| valorSaida.startsWith("DES") || valorSaida.startsWith("TQS") || valorSaida.startsWith("HMP")
+				|| valorSaida.startsWith("PRD") || valorSaida.startsWith("PRD0")) && !valorSaida.startsWith("PRD.V0")) {
 			valorSaida = valorSaida.substring(4);
 		}
+		
+		
+		
+		
+
+		if (valorSaida.startsWith(".")) {
+			valorSaida = valorSaida.substring(1);
+		}
+
+		if (valorSaida.endsWith("D%%CALCDATE %%ODATE -1")) {
+			valorSaida = valorSaida.replace("D%%CALCDATE %%ODATE -1", "D%%ODATE");
+		}
+		//
 
 		return valorSaida;
 	}

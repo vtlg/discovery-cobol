@@ -213,7 +213,7 @@ public class ArtefatoDao {
 		return output;
 	}
 
-	public List<ArtefatoPersistence> pesquisar(String noNome) {
+	public List<ArtefatoPersistence> pesquisar(String noNome, int limit) {
 		LOGGER.log(Level.FINE, "Pesquisar artefato " + "Nome (" + noNome + ")");
 
 		List<ArtefatoPersistence> listaOutput = new ArrayList<>();
@@ -236,7 +236,7 @@ public class ArtefatoDao {
 				.where(cb.and(orNome, pTsFimVigencia));
 
 		try {
-			TypedQuery<ArtefatoPersistence> query = em.createQuery(cq);
+			TypedQuery<ArtefatoPersistence> query = em.createQuery(cq).setMaxResults(limit);
 			listaOutput = query.getResultList();
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar pesquisar artefato. " + "Nome (" + noNome + ")", e);

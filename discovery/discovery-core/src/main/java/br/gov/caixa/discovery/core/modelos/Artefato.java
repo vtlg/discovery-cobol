@@ -100,6 +100,8 @@ public class Artefato {
 		sb2.append(this.ambiente);
 		sb2.append(this.sistema);
 		sb2.append(this.tipoRelacionamento.get());
+		
+		//System.out.println(" entry (" +  sb1.toString() +  ") == this (" + sb2.toString() + ")" );
 
 		if (!sb2.toString().equals(sb1.toString())) {
 			return false;
@@ -323,19 +325,8 @@ public class Artefato {
 		}
 
 		else if (TipoArtefato.UTILITARIO.equals(this.getTipoArtefato())) {
-			this.representacaoTextual.append(this.getNome());
-
-			for (Atributo entry : this.getAtributos()) {
-				this.representacaoTextual.append(entry.getValor());
-			}
-
-			this.hash = UtilsHandler.calcularHash(this.representacaoTextual.toString(), UtilsHandler.SHA256, "UTF-8");
-			if (this.hash.length() < 64) {
-				this.hash = "0" + hash;
-			}
-
+			this.hash = null;
 		} else if (this.representacaoTextual.toString() != null && !this.representacaoTextual.toString().isEmpty()) {
-
 			this.representacaoTextual.append(this.nome);
 			this.representacaoTextual.append(this.descricao);
 			this.representacaoTextual.append(this.identificador);

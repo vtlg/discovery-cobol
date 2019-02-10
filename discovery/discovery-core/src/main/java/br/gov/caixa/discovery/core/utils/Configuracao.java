@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 
 import br.gov.caixa.discovery.core.modelos.ArquivoConfiguracao;
@@ -34,6 +36,13 @@ public class Configuracao {
 
 	public static Collection<Artefato> COLLECTION_ARTEFATO = new HashSet<>();
 	public static Collection<ArquivoConfiguracao> COLLECTION_ARQUIVO_CONFIGURACAO = new HashSet<>();
+	public static HashMap<String, String> MAPA_DE_PARA = new HashMap<>();
+
+	public static void main(String[] args) {
+		String[] argumentos = { " --ambiente PRD --sistema SIPCS " };
+		Configuracao.carregar(argumentos);
+		System.out.println("");
+	}
 
 	/**
 	 * @param args <br>
@@ -120,6 +129,31 @@ public class Configuracao {
 			jReader = new JsonReader(new FileReader("config.json"));
 			ArquivoConfiguracao[] arrConfiguracao = gson.fromJson(jReader, ArquivoConfiguracao[].class);
 			COLLECTION_ARQUIVO_CONFIGURACAO.addAll(Arrays.asList(arrConfiguracao));
+
+			for (ArquivoConfiguracao configuracao : COLLECTION_ARQUIVO_CONFIGURACAO) {
+				if ("DE-PARA".equals(configuracao.getTipo())) {
+
+					if (configuracao.getDePara() != null && configuracao.getDePara().length > 0) {
+
+						for (Object obj : Arrays.asList(configuracao.getDePara())) {
+
+							if (obj instanceof LinkedTreeMap) {
+								LinkedTreeMap<String, String> entry = (LinkedTreeMap<String, String>) obj;
+
+								entry.forEach((k, v) -> {
+									MAPA_DE_PARA.put(k.toString(), v.toString());
+								});
+
+							}
+
+							// HASHMAP_DE_PARA.put(obj, value)
+
+						}
+					}
+
+				}
+			}
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JsonSyntaxException e) {

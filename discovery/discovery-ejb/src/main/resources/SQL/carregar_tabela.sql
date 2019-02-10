@@ -1,3 +1,10 @@
+TRUNCATE TBL_ARTEFATO CASCADE;
+TRUNCATE TBL_ATRIBUTO CASCADE;
+TRUNCATE TBL_RELACIONAMENTO_ARTEFATO CASCADE;
+TRUNCATE TBL_SISTEMA CASCADE;
+TRUNCATE TBL_TIPO CASCADE;
+
+
 INSERT INTO public.tbl_tipo(
 	co_tabela, co_tipo, de_tipo, ic_pesquisavel, ic_exibir_atributo, ic_exibir_grafo, co_cor, co_cor_borda, nu_largura_borda)
 	VALUES 
@@ -84,6 +91,7 @@ INSERT INTO public.tbl_tipo(
 ('ARTEFATO','JCL-STEP','JCL Step',true,false,true,'#FFFFFF','#e57373', 1),
 ('ARTEFATO','DSN','DSN',true,false,true,'darkkhaki','darkkhaki', 1),
 ('ATRIBUTO','PROCESSO-CRITICO','Processo Crítico',true,true,true,'orange','orange', 1),
+('ATRIBUTO','SISTEMA-DESTINO','Sistema Destino',true,true,true,'orange','orange', 1),
 ('RELACIONAMENTO_ARTEFATO','NORMAL','Normal',false,true,true,'none','#cecece', 0.8),
 ('RELACIONAMENTO_ARTEFATO','INTERFACE','Interface',false,true,true,'none','#000000', 2),
 ('RELACIONAMENTO_ARTEFATO','CONTROL-M','Control-M',false,true,true,'none','#e57373', 2),
@@ -144,5 +152,12 @@ INSERT INTO public.tbl_sistema(
 	('SISPL', 'SISPL'),
 	('SIATC', 'SIATC'),
 	('SIGTA', 'SIGTA'),
+	('SICAC','SICAC'),
+	('SUGAP','SUGAP'),
+	('SIGCB','SIGCB'),
+	('SICOB','SICOB'),
+	('SIGDB','SIGDB'),
+	('SICAP','SICAP'),
+	('SIACC','SIACC'),
+	('SISFIN','SISFIN'),
 	('DESCONHECIDO', 'Desconhecido');
-

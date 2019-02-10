@@ -25,10 +25,10 @@ public class PesquisaResource implements PesquisaResourceI {
 	ViewDao viewDao;
 
 	@Override
-	public Response pesquisaRapida(String termo) {
+	public Response pesquisaRapida(String termo, int limit) {
 		ResponseBuilder response = Response.status(Status.OK);
 
-		List<ArtefatoPersistence> listaPersistence = artefatoDao.pesquisar(termo);
+		List<ArtefatoPersistence> listaPersistence = artefatoDao.pesquisar(termo, limit);
 
 		if (listaPersistence == null || listaPersistence.size() == 0) {
 			response.status(Status.NOT_FOUND);

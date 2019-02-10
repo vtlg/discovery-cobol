@@ -61,6 +61,9 @@ public class InterfaceSistemaView implements Serializable {
 	@Column(name = "CO_TIPO_RELACIONAMENTO_INICIAL")
 	private String coTipoRelacionamentoInicial;
 
+	@Column(name = "CO_SISTEMA_DESTINO")
+	private String coSistemaDestino;
+
 	public InterfaceSistemaView() {
 		super();
 	}
@@ -175,6 +178,14 @@ public class InterfaceSistemaView implements Serializable {
 
 	public void setCoTipoRelacionamentoInicial(String coTipoRelacionamentoInicial) {
 		this.coTipoRelacionamentoInicial = coTipoRelacionamentoInicial;
+	}
+
+	public String getCoSistemaDestino() {
+		return coSistemaDestino;
+	}
+
+	public void setCoSistemaDestino(String coSistemaDestino) {
+		this.coSistemaDestino = coSistemaDestino;
 	}
 
 }

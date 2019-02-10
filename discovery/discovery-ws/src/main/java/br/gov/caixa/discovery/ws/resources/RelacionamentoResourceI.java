@@ -22,9 +22,15 @@ public interface RelacionamentoResourceI {
 			RelacionamentoDomain relacionamentoDomain);
 
 	@GET
-	@Path("interface/{sistema}")
+	@Path("interface/{sistema}/sankey")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getInterface(@PathParam("sistema") String coSistema);
+	public Response getInterfaceDiagramaSankey(@PathParam("sistema") String coSistema);
+	
+	@GET
+	@Path("interface/{sistema}/tabela")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getInterfaceDiagramaTabela(@PathParam("sistema") String coSistema);
 
 }
