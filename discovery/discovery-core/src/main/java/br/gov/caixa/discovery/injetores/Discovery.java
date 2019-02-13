@@ -27,7 +27,7 @@ public class Discovery {
 
 	public static EntityManager em = null;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		LOGGER.log(Level.INFO, "Carregando parâmetros");
 		Configuracao.carregar(args);
 
@@ -38,18 +38,20 @@ public class Discovery {
 
 			if (Configuracao.CARGA_INICIAL == true) {
 				LOGGER.log(Level.INFO, "Iniciando carga inicial");
-				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL), TipoArtefato.PROGRAMA_COBOL, 0, false);
+				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL),
+						TipoArtefato.PROGRAMA_COBOL, 0, false);
 				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
 				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0,
 						false);
-				//Configuracao.CARGA_INICIAL = false;
+				// Configuracao.CARGA_INICIAL = false;
 			}
 
 			if (Configuracao.CARGA_INICIAL == false) {
 				LOGGER.log(Level.INFO, "Iniciando carga completa");
 				_executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
-				//_executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL), TipoArtefato.PROGRAMA_COBOL, 0, false);
-				//_executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0, false);
+				 _executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL),TipoArtefato.PROGRAMA_COBOL, 0, false);
+				// _executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK),
+				// TipoArtefato.COPYBOOK, 0, false);
 				// _executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.CONTROL_M),
 				// TipoArtefato.CONTROL_M, 0, true);
 			}
@@ -64,7 +66,7 @@ public class Discovery {
 		long startTime = Calendar.getInstance().getTimeInMillis();
 		LOGGER.log(Level.INFO, "(Carga Inicial) Iniciando carregamentos dos artefatos " + tipoArtefato.get());
 
-		List<Path> listaPaths = _getListaPaths(arquivoConfiguracao, tipoArtefato);
+		List<Path> listaPaths = Configuracao.getListaPaths(arquivoConfiguracao, tipoArtefato);
 
 		em.getTransaction().begin();
 		int countCommit = 0;
@@ -124,7 +126,7 @@ public class Discovery {
 		long startTime = Calendar.getInstance().getTimeInMillis();
 		LOGGER.log(Level.INFO, "(Carga Normal) Iniciando carregamentos dos artefatos " + tipoArtefato.get());
 
-		List<Path> listaPaths = _getListaPaths(arquivoConfiguracao, tipoArtefato);
+		List<Path> listaPaths = Configuracao.getListaPaths(arquivoConfiguracao, tipoArtefato);
 
 		for (Path path : listaPaths) {
 			Extrator extrator = new Extrator();
@@ -137,7 +139,6 @@ public class Discovery {
 			}
 
 			for (ArtefatoPersistence entry : listaArtefatoPersistence) {
-
 				if (Configuracao.CARGA_INICIAL) {
 					entry.setDeHash("");
 				}
@@ -152,28 +153,15 @@ public class Discovery {
 			listaArtefatoPersistence = null;
 			extrator = null;
 			Runtime.getRuntime().gc();
-			
-			Path pathDestino = Paths
-					.get(path.getParent().toString() + "/processados/" + path.getFileName().toString());
 
-			Files.move(path, pathDestino, StandardCopyOption.REPLACE_EXISTING);			
-			
+			Path pathDestino = Paths.get(path.getParent().toString() + "/processados/" + path.getFileName().toString());
+
+			Files.move(path, pathDestino, StandardCopyOption.REPLACE_EXISTING);
+
 		}
 
 		LOGGER.log(Level.INFO, "(Carga Final) Finalizando carregamentos dos artefatos " + tipoArtefato.get()
 				+ " - Tempo execução " + UtilsHandler.getTempoExecucao(startTime));
 	}
 
-	private static List<Path> _getListaPaths(ArquivoConfiguracao arquivoConfiguracao, TipoArtefato tipoArtefato)
-			throws Exception {
-		List<Path> output = new ArrayList<>();
-
-		if (arquivoConfiguracao == null) {
-			throw new RuntimeException("Arquivo de configuração é nulo.");
-		}
-		String caminhoPasta = arquivoConfiguracao.getCaminhoPasta();
-		output = UtilsHandler.recuperarListaArquivo(caminhoPasta, false);
-
-		return output;
-	}
 }

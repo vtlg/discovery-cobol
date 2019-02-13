@@ -43,6 +43,7 @@ public class ExtratorJcl {
 		try {
 			this.artefato = processarCodigoCompleto(this.artefato);
 			this.artefato = identificarVariaveis(this.artefato);
+			adicionarVariaveisControlM();
 			this.artefato = separarSteps(this.artefato);
 			this.artefato = tratarCodigo(this.artefato);
 			this.artefato = tratarSteps(this.artefato);
@@ -115,6 +116,7 @@ public class ExtratorJcl {
 								entry.adicionarAtributo(atributo);
 							}
 						}
+
 					} else if (m_dsn_connect_padrao_2.matches()) {
 						String sistemaOrigem = m_dsn_connect_padrao_2.group("sistemaOrigem");
 						String sistemaDestino = m_dsn_connect_padrao_2.group("sistemaDestino");
@@ -144,7 +146,14 @@ public class ExtratorJcl {
 							}
 						}
 					}
+				} else if (TipoArtefato.DSN.equals(entry.getTipoArtefato())
+						&& (entry.getNome().startsWith("ZIP") || entry.getNome().startsWith("DB2")
+								|| entry.getNome().startsWith("TCP") || entry.getNome().startsWith("NDS")
+								|| entry.getNome().startsWith("MG2") || entry.getNome().startsWith("MG3")
 
+						)) {
+					entry.setSistema("DESCONHECIDO");
+					entry.setTipoRelacionamento(TipoRelacionamento.NORMAL);
 				} else if (TipoArtefato.DSN.equals(entry.getTipoArtefato())) {
 					m_dsn_cardlib = Patterns.JCL_P_DSN_CARDLIB.matcher(entry.getNome());
 
@@ -167,8 +176,8 @@ public class ExtratorJcl {
 							&& !entry.getNome().startsWith("%%") && !entry.getNome().startsWith("CNT")
 							&& !entry.getNome().startsWith("IBM") && !entry.getNome().startsWith("PRD")
 							&& !entry.getNome().startsWith("MG3") && !m_dsn_cardlib.matches()
-							&& !entry.getNome().startsWith("TCP") && !entry.getNome().startsWith("SUP") 
-							&& !entry.getNome().startsWith("SMS.PRD") ) {
+							&& !entry.getNome().startsWith("TCP") && !entry.getNome().startsWith("SUP")
+							&& !entry.getNome().startsWith("SMS.PRD")) {
 
 						String siglaSistemaDsn = entry.getNome().substring(0, 3);
 						String siglaSistemaPai = this.artefato.getSistema();
@@ -230,7 +239,17 @@ public class ExtratorJcl {
 	private Artefato identificarVariaveis(Artefato artefato) throws Exception {
 		Matcher m_jcl_variavel = null;
 
-		for (String texto : artefato.getCodigoCompleto()) {
+		for (String textoCompleto : artefato.getCodigoCompleto()) {
+			if ("".equals(textoCompleto.trim())) {
+				continue;
+			}
+			String texto = textoCompleto;
+			if (texto.length() >= 73) {
+				texto = texto.substring(this.deslocamento, 72);
+			} else {
+				texto = texto.substring(this.deslocamento, texto.length());
+			}			
+			
 			m_jcl_variavel = Patterns.JCL_P_VARIAVEL.matcher(texto);
 
 			if (m_jcl_variavel.matches()) {
@@ -255,6 +274,15 @@ public class ExtratorJcl {
 		}
 
 		return artefato;
+	}
+
+	private void adicionarVariaveisControlM() throws Exception {
+
+		Artefato artefatoControlM = Configuracao.MAPA_ARTEFATO_CONTROL_M.get(this.artefato.getNome());
+
+		if (artefatoControlM != null) {
+			this.artefato.adicionarArtefatosRelacionados(artefatoControlM.getArtefatosRelacionados());
+		}
 	}
 
 	private Artefato separarSteps(Artefato artefato) throws Exception {
@@ -1007,7 +1035,8 @@ public class ExtratorJcl {
 			}
 
 			if ("DESCONHECIDO".equals(entry.getSistema()) && !TipoArtefato.UTILITARIO.equals(entry.getTipoArtefato())
-					&& !entry.getNome().startsWith("%") && !entry.getNome().startsWith("&")) {
+					&& !entry.getNome().startsWith("%") && !entry.getNome().startsWith("&")
+					&& !entry.getNome().startsWith("DB2") && !entry.getNome().startsWith("NDS")) {
 				String coSistema = "SI" + entry.getNome().substring(0, 3);
 				SistemaPersistence sistemaPersistence = ArtefatoHandler.buscarSistemaPersistence(coSistema);
 
@@ -1120,6 +1149,8 @@ public class ExtratorJcl {
 						} else {
 							novoArtefato.setNome(nomeArtefato);
 						}
+						
+						
 
 						if (!_existeArtefato(tempLista, novoArtefato)) {
 							tempLista.add(novoArtefato);
@@ -1152,7 +1183,10 @@ public class ExtratorJcl {
 	private String _tratarNomeDsn(String nomeDsn) throws Exception {
 
 		String valorSaida = nomeDsn;
-		valorSaida = nomeDsn.replace("%%ALIAS%%.", "");
+		valorSaida = valorSaida.replaceAll("^'", "");
+		valorSaida = valorSaida.replaceAll("'$", "");
+
+		valorSaida = valorSaida.replace("%%ALIAS%%.", "");
 
 		Matcher m_nome_tira_data_fixa = Patterns.JCL_P_NOME_TIRA_DATA_FIXA.matcher(valorSaida);
 

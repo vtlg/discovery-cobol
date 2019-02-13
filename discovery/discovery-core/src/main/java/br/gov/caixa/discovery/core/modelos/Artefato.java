@@ -101,7 +101,7 @@ public class Artefato {
 		sb2.append(this.sistema);
 		sb2.append(this.tipoRelacionamento.get());
 		
-		//System.out.println(" entry (" +  sb1.toString() +  ") == this (" + sb2.toString() + ")" );
+		System.out.println(" entry (" +  sb1.toString() +  ") == this (" + sb2.toString() + ")" );
 
 		if (!sb2.toString().equals(sb1.toString())) {
 			return false;

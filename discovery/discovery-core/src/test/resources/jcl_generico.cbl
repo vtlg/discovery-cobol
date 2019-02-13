@@ -50,6 +50,12 @@
 //*   ENTRADA - ARQUIVO DE REMESSA SIMPLES                              
 //INDIN    DD  DISP=SHR,                                                
 //             DSN=%%ALIAS%%.PCS.MZ.BZX0.MDA1B4C2.B446.S03.FRESPOK      
+//         DD  DISP=SHR,
+//             DSN=ZIP.LOAD
+//INDD     DD  DISP=SHR,
+//             DSN=NDS.CTM.V01.PCS.D%%ODATE.PLEX02
+//NETRC    DD  DISP=SHR,
+//             DSN=TCP.NETRC.PLEX%%AMB
 //*                                                                     
 //*   SAIDA   - BACKUP DO ARQUIVO DE REMESSA SIMPLES                    
 //INDOUT   DD  DISP=(,CATLG,DELETE),                                    
@@ -145,6 +151,7 @@
    DELETE  %%ALIAS%%.PCS.MZ.BZX0.MDA1BD5C.C761.S02.SELECT               
    DELETE  %%ALIAS%%.PCS.MZ.BZX0.MDA1BD5C.C761.S02.SIERED5D             
    DELETE  %%ALIAS%%.PCS.MZ.BZX0.MDA1BD5D.C761.S02.SELECT               
+   DELETE '%%ALIAS%%.PCS.MZ.BZX0.MPJ32100.FCCON001'
   IF MAXCC=8 THEN SET MAXCC=0                                           
 //SYSIN22  DD  *
   LISTCAT ENTRIES(CNT.PCS.MZ.BDS2.IJCB.ACTVRPT.USD.D%%DTANT)

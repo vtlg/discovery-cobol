@@ -30,11 +30,11 @@ public class ExtratorControlM {
 
 	public static void main(String[] args) throws IOException {
 		Stream<Path> listaPaths = Files
-				.list(Paths.get("D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\MALHA\\"));
+				.list(Paths.get("D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\SIPCS\\CEFPRD\\SCHEDULE\\"));
 
 		ExtratorControlM extrator = new ExtratorControlM();
 		extrator.inicializar(listaPaths);
-		extrator.executa();
+		extrator.executarArtefatosControlM();
 	}
 
 	public ExtratorControlM() {
@@ -80,6 +80,116 @@ public class ExtratorControlM {
 		// criarMapaRelacionamento();
 
 		return listaArtefatos;
+	}
+
+	public HashMap<String, Artefato> executarArtefatosControlM() {
+		HashMap<String, Artefato> output = new HashMap<>();
+
+		extrairArtefatos(mapLista);
+
+		for (Artefato entry : listaArtefatos) {
+			Artefato artefatoMapa = output.get(entry.getNome());
+
+			if (artefatoMapa != null) {
+				if (entry.getArtefatosRelacionados() != null && entry.getArtefatosRelacionados().size() > 0) {
+					if (artefatoMapa.getArtefatosRelacionados() != null) {
+
+						for (Artefato variavelEntry : entry.getArtefatosRelacionados()) {
+							if (!existeVariavel(artefatoMapa.getArtefatosRelacionados(), variavelEntry)) {
+								artefatoMapa.adicionarArtefatosRelacionados(variavelEntry);
+							}
+						}
+					} else {
+						artefatoMapa.adicionarArtefatosRelacionados(entry.getArtefatosRelacionados());
+					}
+				}
+			} else {
+				if (entry.getArtefatosRelacionados() != null && entry.getArtefatosRelacionados().size() > 0) {
+					output.put(entry.getNome(), entry);
+				}
+			}
+		}
+
+		return output;
+	}
+
+	private static boolean existeVariavel(List<Artefato> lista, Artefato variavelEntrada) {
+
+		if (lista != null && lista.size() > 0 && variavelEntrada != null) {
+			for (Artefato entry : lista) {
+				if (entry.getNome().equals(variavelEntrada.getNome())) {
+					Atributo entryAtributo = entry.buscaAtributo(TipoAtributo.VALOR_PADRAO);
+					Atributo entryEntrada = variavelEntrada.buscaAtributo(TipoAtributo.VALOR_PADRAO);
+
+					if ((entryAtributo.getValor() == null && entryEntrada.getValor() == null)
+							|| entryAtributo.getValor().equals(entryEntrada.getValor())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private void extrairArtefatos(HashMap<String, List<String>> mapListaArquivo) {
+
+		Pattern P_MEMNAME_GROUP_1 = Pattern.compile("^M(?<memName>[\\S]{8,8})(?<group>[\\S]{1,})[\\s]{1,}.*$");
+		Pattern P_MEMNAME_2 = Pattern.compile("^M(?<memName>[\\S]{1,})[\\s]{1,}.*$");
+		Pattern P_VARIAVEL = Pattern.compile("^T(?<nomeVariavel>[\\S]{1,})=(?<valorVariavel>[\\S]{1,})*$");
+
+		mapListaArquivo.forEach((arquivo, listaTexto) -> {
+
+			Matcher m_memName_group_1 = null;
+			Matcher m_memName_2 = null;
+			Matcher m_variavel = null;
+
+			String memName = null;
+
+			Artefato artefato = null;
+
+			for (String texto : listaTexto) {
+				m_memName_group_1 = P_MEMNAME_GROUP_1.matcher(texto);
+				m_memName_2 = P_MEMNAME_2.matcher(texto);
+				m_variavel = P_VARIAVEL.matcher(texto);
+
+				if (m_memName_group_1.matches() || m_memName_2.matches()) {
+					if (artefato != null) {
+						listaArtefatos.add(artefato);
+					}
+
+					artefato = new Artefato();
+
+					memName = null;
+
+					if (m_memName_group_1.matches()) {
+						memName = m_memName_group_1.group("memName");
+					} else if (m_memName_2.matches()) {
+						memName = m_memName_2.group("memName");
+					}
+					artefato.setNome(memName);
+				}
+
+				if (m_variavel.matches()) {
+					String nomeVariavel = m_variavel.group("nomeVariavel");
+					String valorVariavel = m_variavel.group("valorVariavel");
+
+					Artefato artefatoVariavel = new Artefato();
+					artefatoVariavel.setNome(nomeVariavel);
+					artefatoVariavel.setTipoArtefato(TipoArtefato.JCL_VARIAVEL);
+
+					Atributo atributoValorPadrao = new Atributo(TipoAtributo.VALOR_PADRAO, valorVariavel, null,
+							Tabelas.TBL_ARTEFATO.get());
+
+					artefatoVariavel.adicionarAtributo(atributoValorPadrao);
+
+					artefato.adicionarArtefatosRelacionados(artefatoVariavel);
+				}
+			}
+
+			if (artefato != null) {
+				listaArtefatos.add(artefato);
+			}
+		});
 	}
 
 	@SuppressWarnings("unused")

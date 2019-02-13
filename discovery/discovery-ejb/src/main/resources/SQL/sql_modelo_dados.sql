@@ -6,7 +6,7 @@ CREATE SEQUENCE public.seq_artefato_co_artefato;
 
 ALTER SEQUENCE public.seq_artefato_co_artefato
     OWNER TO postgres;
-	
+
 -- SEQUENCE: public.seq_atributo_nu_sequencial
 
 -- DROP SEQUENCE public.seq_atributo_nu_sequencial;
@@ -15,7 +15,8 @@ CREATE SEQUENCE public.seq_atributo_nu_sequencial;
 
 ALTER SEQUENCE public.seq_atributo_nu_sequencial
     OWNER TO postgres;
-	
+
+
 -- SEQUENCE: public.seq_relacionamento_co_relacionamento
 
 -- DROP SEQUENCE public.seq_relacionamento_co_relacionamento;
@@ -306,7 +307,6 @@ CREATE OR REPLACE VIEW public.vw_artefato_counts AS
 ALTER TABLE public.vw_artefato_counts
     OWNER TO postgres;
 
-
 -- View: public.vw_interface_sistema
 
 -- DROP VIEW public.vw_interface_sistema;
@@ -356,7 +356,6 @@ CREATE OR REPLACE VIEW public.vw_interface_sistema AS
 ALTER TABLE public.vw_interface_sistema
     OWNER TO postgres;
 
-
 -- View: public.vw_relacionamento
 
 -- DROP VIEW public.vw_relacionamento;
@@ -402,74 +401,3 @@ CREATE OR REPLACE VIEW public.vw_relacionamento AS
 ALTER TABLE public.vw_relacionamento
     OWNER TO postgres;
 
-
--- FUNCTION: public.getinterfaces(bigint)
-
--- DROP FUNCTION public.getinterfaces(bigint);
-
-CREATE OR REPLACE FUNCTION public.getinterfaces(
-	co_artefato_entrada bigint)
-    RETURNS TABLE(r_co_artefato bigint, r_no_nome_artefato character varying, r_no_nome_exibicao character varying, r_no_nome_interno character varying, r_co_tipo_artefato character varying, r_co_sistema character varying, r_co_artefato_pai bigint, r_no_nome_artefato_pai character varying, r_no_nome_exibicao_pai character varying, r_no_nome_interno_pai character varying, r_co_tipo_artefato_pai character varying, r_co_sistema_pai character varying, caminho_co_artefato character varying, co_tipo_relacionamento_inicial character varying) 
-    LANGUAGE 'sql'
-
-    COST 1000
-    VOLATILE LEAKPROOF PARALLEL SAFE
-    ROWS 10000
-AS $BODY$
-
-WITH RECURSIVE 
-ascendentes(
-	co_artefato, 
-	co_artefato_pai, 
-	CO_ARTEFATO_INICIAL,
-    CAMINHO_CO_ARTEFATO,
-	CO_TIPO_RELACIONAMENTO_INICIAL
-    ) AS (
- SELECT 
-     T1.co_artefato            as CO_ARTEFATO
-   , T1.co_artefato_pai        as CO_ARTEFATO_PAI
-   , T1.co_artefato            as CO_ARTEFATO_INICIAL
-   , T1.co_artefato||''        as CAMINHO_CO_ARTEFATO
-   , T1.co_tipo_relacionamento as CO_TIPO_RELACIONAMENTO_INICIAL
- FROM public.tbl_relacionamento_artefato T1
-  WHERE T1.ts_fim_vigencia is null 
-	AND T1.CO_TIPO_RELACIONAMENTO <> 'CONTROL-M'
- UNION ALL
- SELECT 
-     T1.co_artefato                                   as CO_ARTEFATO
-   , T1.co_artefato_pai                               as CO_ARTEFATO_PAI
-   , T4.CO_ARTEFATO_INICIAL                           as CO_ARTEFATO_INICIAL
-   , T4.CAMINHO_CO_ARTEFATO || '-' || T1.co_artefato  as CAMINHO_CO_ARTEFATO
-   , T4.CO_TIPO_RELACIONAMENTO_INICIAL                as CO_TIPO_RELACIONAMENTO_INICIAL
-  FROM public.tbl_relacionamento_artefato T1
-  JOIN ascendentes AS T4 ON T1.CO_ARTEFATO = T4.CO_ARTEFATO_PAI
-  WHERE T1.CO_TIPO_RELACIONAMENTO <> 'CONTROL-M'
-),
-RESULTADO as (
-  TABLE ascendentes
-)
-SELECT DISTINCT
-     T1.co_artefato            as CO_ARTEFATO
-   , T2.no_nome_artefato       as NO_NOME_ARTEFATO
-   , T2.no_nome_exibicao       as NO_NOME_EXIBICAO
-   , T2.no_nome_interno        as NO_NOME_INTERNO
-   , T2.co_tipo_artefato       as CO_TIPO_ARTEFATO
-   , T2.co_sistema             as CO_SISTEMA
-   , T1.co_artefato_pai        as CO_ARTEFATO_PAI
-   , T3.no_nome_artefato       as NO_NOME_ARTEFATO_PAI
-   , T3.no_nome_exibicao       as NO_NOME_EXIBICAO_PAI
-   , T3.no_nome_interno        as NO_NOME_INTERNO_PAI
-   , T3.co_tipo_artefato       as CO_TIPO_ARTEFATO_PAI
-   , T3.co_sistema             as CO_SISTEMA_PAI
-   , CAMINHO_CO_ARTEFATO||'-'||T1.co_artefato_pai as CAMINHO_CO_ARTEFATO
-   , CO_TIPO_RELACIONAMENTO_INICIAL
-from RESULTADO T1
-INNER JOIN TBL_ARTEFATO T2 ON T2.CO_ARTEFATO = T1.CO_ARTEFATO_INICIAL
-INNER JOIN TBL_ARTEFATO T3 ON T3.CO_ARTEFATO = T1.CO_ARTEFATO_PAI
-WHERE CO_TIPO_RELACIONAMENTO_INICIAL = 'INTERFACE'
-  AND (T3.co_tipo_artefato = 'PROGRAMA-COBOL' OR T3.co_tipo_artefato = 'JCL');
-
-$BODY$;
-
-ALTER FUNCTION public.getinterfaces(bigint)
-    OWNER TO postgres;

@@ -1,7 +1,7 @@
 [
-    {
+	{
         "ambiente": "QUALQUER",
-		"sistema": "SIPCS",
+		"sistema": "QUALQUER",
 		"tipo": "DE-PARA",
         "dePara": [
 			{"PCS":"SIPCS"},
@@ -19,8 +19,6 @@
 			{"CAP":"SICAP"},
 			{"AAC":"SIACC"},
 			{"FIN":"SISFIN"},
-			{"IRJT":"EXTERNO"},
-			{"IJCB":"EXTERNO"},
 			{"IOCR":"SUGAP"},
 			{"IPCS":"SIPCS"},
 			{"IFDL":"SIFDL"},
@@ -36,7 +34,16 @@
 			{"IGDB":"SIGDB"},
 			{"ICAP":"SICAP"},
 			{"IAAC":"SIACC"},
-			{"IFIN":"SISFIN"},
+			{"IFIN":"SISFIN"}
+        ]
+	},
+	{
+        "ambiente": "QUALQUER",
+		"sistema": "SIPCS",
+		"tipo": "DE-PARA",
+        "dePara": [
+			{"IRJT":"EXTERNO"},
+			{"IJCB":"EXTERNO"},
 			{"ICAIXSEG":"EXTERNO"},
 			{"IELO":"EXTERNO"},
 			{"INELO":"EXTERNO"},
@@ -49,45 +56,15 @@
 		"sistema": "SIFDL",
 		"tipo": "DE-PARA",
         "dePara": [
-			{"PCS":"SIPCS"},
-			{"FDL":"SIFDL"},
-			{"EPA":"SIEPA"},
-			{"ACH":"SIACH"},
-			{"ATC":"SITAC"},
-			{"DEC":"SIDEC"},
-			{"GTA":"SIGTA"},
-			{"CAC":"SICAC"},
-			{"GAP":"SUGAP"},
-			{"GCB":"SIGCB"},
-			{"COB":"SICOB"},
-			{"GDB":"SIGDB"},
-			{"CAP":"SICAP"},
-			{"AAC":"SIACC"},
-			{"FIN":"SISFIN"},
 			{"IRJT":"EXTERNO"},
 			{"IJCB":"EXTERNO"},
-			{"IOCR":"SUGAP"},
-			{"IPCS":"SIPCS"},
-			{"IFDL":"SIFDL"},
-			{"IEPA":"SIEPA"},
-			{"IACH":"SIACH"},
-			{"IATC":"SIATC"},
-			{"IDEC":"SIDEC"},
-			{"IGTA":"SIGTA"},
-			{"ICAC":"SICAC"},
-			{"IGAP":"SUGAP"},
-			{"IGCB":"SIGCB"},
-			{"ICOB":"SICOB"},
-			{"IGDB":"SIGDB"},
-			{"ICAP":"SICAP"},
-			{"IAAC":"SIACC"},
-			{"IFIN":"SISFIN"},
 			{"ICAIXSEG":"EXTERNO"},
 			{"IELO":"EXTERNO"},
 			{"INELO":"EXTERNO"},
-			{"ITCP":""},
-			{"E1C":"EXTERNO"},
-			{"1C0":"EXTERNO"}
+			{"INELO":"EXTERNO"},
+			{"FRENC":"SIPCS"},
+			{"IE1C":"EXTERNO"},
+			{"I1C0":"EXTERNO"}
         ]
     },
 	{
@@ -175,6 +152,12 @@
 		"sistema": "SIFDL",
 		"tipo": "JCL",
 		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\SIFDL\\CEFPRD\\JCL\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIFDL",
+		"tipo": "CONTROL-M",
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\SIFDL\\CEFPRD\\SCHEDULE\\"
 	},
 	{
 		"ambiente": "PRD",

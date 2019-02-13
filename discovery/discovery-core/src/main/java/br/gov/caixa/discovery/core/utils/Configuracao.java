@@ -3,13 +3,16 @@ package br.gov.caixa.discovery.core.utils;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +23,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 
+import br.gov.caixa.discovery.core.extratores.ExtratorControlM;
 import br.gov.caixa.discovery.core.modelos.ArquivoConfiguracao;
 import br.gov.caixa.discovery.core.modelos.Artefato;
 import br.gov.caixa.discovery.core.tipos.TipoAmbiente;
@@ -37,8 +41,9 @@ public class Configuracao {
 	public static Collection<Artefato> COLLECTION_ARTEFATO = new HashSet<>();
 	public static Collection<ArquivoConfiguracao> COLLECTION_ARQUIVO_CONFIGURACAO = new HashSet<>();
 	public static HashMap<String, String> MAPA_DE_PARA = new HashMap<>();
+	public static HashMap<String, Artefato> MAPA_ARTEFATO_CONTROL_M = new HashMap<>();
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		String[] argumentos = { " --ambiente PRD --sistema SIPCS " };
 		Configuracao.carregar(argumentos);
 		System.out.println("");
@@ -52,11 +57,12 @@ public class Configuracao {
 	 *             --mover-arquivos : (OPCIONAL) Caso setado, os arquivos
 	 *             convertidos serão movidos para subpasta ./arquivos_processados
 	 */
-	public static void carregar(String[] args) {
+	public static void carregar(String[] args) throws Exception {
 		LoggerImpl.configurarFileLog(Level.INFO);
 		_carregarParametro(args);
 		_carregarConfiguracaoJson();
 		_carregarCollectionArtefatos();
+		_carregarMapaArtefatosControlM();
 	}
 
 	public static ArquivoConfiguracao getConfiguracao(TipoArtefato tipopArtefato) {
@@ -121,6 +127,7 @@ public class Configuracao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void _carregarConfiguracaoJson() {
 		Gson gson = new Gson();
 
@@ -132,11 +139,14 @@ public class Configuracao {
 
 			for (ArquivoConfiguracao configuracao : COLLECTION_ARQUIVO_CONFIGURACAO) {
 				if ("DE-PARA".equals(configuracao.getTipo())) {
-
-					if (configuracao.getDePara() != null && configuracao.getDePara().length > 0) {
-
+					
+					if (configuracao.getDePara() != null 
+							&& configuracao.getDePara().length > 0
+							&& (
+									Configuracao.SISTEMA.equals(configuracao.getSistema()) || configuracao.getSistema().equals("QUALQUER")
+							   )
+							) {
 						for (Object obj : Arrays.asList(configuracao.getDePara())) {
-
 							if (obj instanceof LinkedTreeMap) {
 								LinkedTreeMap<String, String> entry = (LinkedTreeMap<String, String>) obj;
 
@@ -172,8 +182,29 @@ public class Configuracao {
 	private static void _carregarCollectionArtefatos() {
 		if (COLLECTION_ARQUIVO_CONFIGURACAO != null && COLLECTION_ARQUIVO_CONFIGURACAO.size() >= 0) {
 			COLLECTION_ARQUIVO_CONFIGURACAO.stream().forEach((configuracao) -> {
-
 			});
 		}
+	}
+
+	private static void _carregarMapaArtefatosControlM() throws Exception {
+		List<Path> listaPaths = Configuracao.getListaPaths(Configuracao.getConfiguracao(TipoArtefato.CONTROL_M),
+				TipoArtefato.CONTROL_M);
+
+		ExtratorControlM extrator = new ExtratorControlM();
+		extrator.inicializar(listaPaths.stream());
+		MAPA_ARTEFATO_CONTROL_M = extrator.executarArtefatosControlM();
+	}
+
+	public static List<Path> getListaPaths(ArquivoConfiguracao arquivoConfiguracao, TipoArtefato tipoArtefato)
+			throws Exception {
+		List<Path> output = new ArrayList<>();
+
+		if (arquivoConfiguracao == null) {
+			throw new RuntimeException("Arquivo de configuração é nulo.");
+		}
+		String caminhoPasta = arquivoConfiguracao.getCaminhoPasta();
+		output = UtilsHandler.recuperarListaArquivo(caminhoPasta, false);
+
+		return output;
 	}
 }

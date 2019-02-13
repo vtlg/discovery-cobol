@@ -530,6 +530,18 @@ public class TEST_Jcl {
 		Atributo atributo63_1 = new Atributo(TipoAtributo.SISTEMA_DESTINO, "EXTERNO", null, Tabelas.TBL_RELACIONAMENTO_ARTEFATO.get());
 		artefato63.adicionarAtributo(atributo63_1);
 		
+		Artefato artefato64 = new Artefato("PCS.MZ.BZX0.MPJ32100.FCCON001", "PCS.MZ.BZX0.MPJ32100.FCCON001", null, TipoArtefato.DSN,
+				TipoAmbiente.DESCONHECIDO, "SIPCS", null, null, TipoRelacionamento.NORMAL);
+		
+		Artefato artefato65 = new Artefato("ZIP.LOAD", "ZIP.LOAD", null, TipoArtefato.DSN,
+				TipoAmbiente.DESCONHECIDO, "DESCONHECIDO", null, null, TipoRelacionamento.NORMAL);
+		
+		Artefato artefato66 = new Artefato("TCP.NETRC.PLEX%%AMB", "TCP.NETRC.PLEX%%AMB", null, TipoArtefato.DSN,
+				TipoAmbiente.DESCONHECIDO, "DESCONHECIDO", null, null, TipoRelacionamento.NORMAL);
+		
+		Artefato artefato67 = new Artefato("NDS.CTM.V01.PCS.D%%ODATE.PLEX02", "NDS.CTM.V01.PCS.D%%ODATE.PLEX02", null, TipoArtefato.DSN,
+				TipoAmbiente.DESCONHECIDO, "DESCONHECIDO", null, null, TipoRelacionamento.NORMAL);
+		
 		listaArtefato.add(artefato01);
 		listaArtefato.add(artefato02);
 		listaArtefato.add(artefato03);
@@ -593,6 +605,10 @@ public class TEST_Jcl {
 		listaArtefato.add(artefato61);
 		listaArtefato.add(artefato62);
 		listaArtefato.add(artefato63);
+		listaArtefato.add(artefato64);
+		listaArtefato.add(artefato65);
+		listaArtefato.add(artefato66);
+		listaArtefato.add(artefato67);
 
 		// ***
 
