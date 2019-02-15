@@ -131,7 +131,7 @@ public class RelacionamentoDao {
 
 		List<RelacionamentoPersistence> output = getListaRelacionamento(coArtefato);
 
-		if (output != null) {
+		if (output != null && output.size() > 0) {
 			CriteriaBuilder cb = this.em.getCriteriaBuilder();
 			CriteriaUpdate<RelacionamentoPersistence> cq = cb.createCriteriaUpdate(RelacionamentoPersistence.class);
 			Root<RelacionamentoPersistence> relacionamentoRoot = cq.from(RelacionamentoPersistence.class);

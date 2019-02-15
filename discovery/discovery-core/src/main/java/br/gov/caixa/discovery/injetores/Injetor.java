@@ -23,6 +23,7 @@ public class Injetor {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	public static void executar(EntityManager em, ArtefatoPersistence artefato, boolean controlM) throws Exception {
+
 		if (Configuracao.CARGA_INICIAL == true) {
 			atualizarTabelaArtefato(em, artefato);
 		} else if (controlM == false) {
@@ -223,7 +224,7 @@ public class Injetor {
 				}
 			}
 
-			if (relacionamento.getCoArtefatoPai() != null) {
+			if (relacionamento.getCoArtefatoPai() != null && relacionamento.getArtefato() != null) {
 				atualizarTabelaRelacionamento(em, relacionamento.getArtefato());
 			}
 		}
@@ -248,13 +249,14 @@ public class Injetor {
 		AtributoDao atributoDao = new AtributoDao(em);
 		RelacionamentoDao relacionamentoDao = new RelacionamentoDao(em);
 		String coNome = artefato.getNoNomeArtefato();
+		String coTipoArtefato = artefato.getCoTipoArtefato();
 
 		List<ArtefatoPersistence> resultListaArtefatoPesquisa = null;
 
 		ArtefatoPersistence artefatoPesquisa = null;
-		if (!TipoArtefato.DESCONHECIDO.get().equals(artefato.getCoTipoArtefato())) {
+		if (!TipoArtefato.DESCONHECIDO.get().equals(coTipoArtefato)) {
 			try {
-				resultListaArtefatoPesquisa = artefatoDao.getListaArtefato(coNome, artefato.getCoTipoArtefato(), null,
+				resultListaArtefatoPesquisa = artefatoDao.getListaArtefato(coNome, coTipoArtefato, null,
 						null, true);
 			} catch (EJBException e) {
 				LOGGER.log(Level.SEVERE, "Erro ao pesquisar artefatos", e);

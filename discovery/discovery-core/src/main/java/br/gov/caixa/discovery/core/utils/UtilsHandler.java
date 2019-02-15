@@ -29,6 +29,12 @@ public class UtilsHandler {
 	public static final String SHA384 = "SHA-384";
 	public static final String SHA512 = "SHA-512";
 
+	public static String calcularHash(Path path, String method) throws IOException {
+		String hashOutput = null;
+		hashOutput = UtilsHandler.calcularHash(Files.readAllBytes(path), UtilsHandler.SHA256);
+		return hashOutput;
+	}
+
 	public static String calcularHash(String valorEntrada, String method) {
 		return calcularHash(valorEntrada, method, "UTF-8");
 	}
@@ -36,11 +42,19 @@ public class UtilsHandler {
 	public static String calcularHash(String valorEntrada, String method, String encode) {
 		String valorSaida = null;
 		try {
-			valorSaida = DatatypeConverter
-					.printHexBinary(MessageDigest.getInstance(method).digest(valorEntrada.getBytes(encode)));
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			valorSaida = calcularHash(valorEntrada.getBytes(encode), method);
 		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		return valorSaida;
+	}
+
+	public static String calcularHash(byte[] valorEntrada, String method) {
+		String valorSaida = null;
+		try {
+			valorSaida = DatatypeConverter.printHexBinary(MessageDigest.getInstance(method).digest(valorEntrada));
+		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 
@@ -218,7 +232,7 @@ public class UtilsHandler {
 		}
 		return listaOutput;
 	}
-	
+
 	public static String getTempoExecucao(long startTime) {
 		long endTime = System.currentTimeMillis();
 

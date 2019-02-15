@@ -211,6 +211,13 @@ public class TEST_ProgramaCobol {
 				"EXEC SQL INSERT INTO MPDT083 (NUMSEC, INDICA, PROGRAMA, CADENA, DATOS) VALUES (:TB-083NUMSEC, :TB-083INDICA, :TB-083PROGRAMA, :TB-083CADENA, :TB-083DATOS) FOR :IND-TB083 ROWS END-EXEC.",
 				null, "ARTEFATO");
 		artefato12.adicionarAtributo(atributo12_0);
+		// ***
+		Artefato artefato13 = new Artefato("DECLARACAO-SQL-13", "DECLARACAO-SQL-13", null, TipoArtefato.DECLARACAO_SQL,
+				TipoAmbiente.PRD, "SIPCS", null, null);
+		Atributo atributo13_0 = new Atributo(TipoAtributo.DECLARACAO_COMPLETA,
+				"EXEC SQL DECLARE CUR_FDLTB005 CURSOR FOR SELECT CO_ENTIDADE ,CO_PERFIL_ACESSO ,NU_TIPO_OPERACAO_FIDELIZACAO ,IC_ACAO ,DE_ACAO ,CO_TERMINAL_ATUALIZACAO ,CO_USUARIO_ATUALIZACAO ,TS_ULTIMA_ALTERACAO FROM FDL.FDLTB005_ACAO_ASCDA_PRFL_ACSSO WHERE CO_ENTIDADE =:FDLTB005.CO-ENTIDADE AND CO_PERFIL_ACESSO =:FDLTB005.CO-PERFIL-ACESSO FOR UPDATE END-EXEC.",
+				null, "ARTEFATO");
+		artefato13.adicionarAtributo(atributo13_0);
 
 		listaArtefato.add(artefato01);
 		listaArtefato.add(artefato02);
@@ -224,6 +231,7 @@ public class TEST_ProgramaCobol {
 		listaArtefato.add(artefato10);
 		listaArtefato.add(artefato11);
 		listaArtefato.add(artefato12);
+		listaArtefato.add(artefato13);
 
 		// ***
 
@@ -284,6 +292,9 @@ public class TEST_ProgramaCobol {
 		Artefato artefato12 = new Artefato("MPDT013", "MPDT013", null, TipoArtefato.TABELA, TipoAmbiente.DESCONHECIDO, "DESCONHECIDO",
 				null, null, TipoRelacionamento.NORMAL);
 		// ***
+		Artefato artefato13 = new Artefato("FDLTB005_ACAO_ASCDA_PRFL_ACSSO", "FDLTB005_ACAO_ASCDA_PRFL_ACSSO", null, TipoArtefato.TABELA, TipoAmbiente.DESCONHECIDO, "DESCONHECIDO",
+				null, null, TipoRelacionamento.NORMAL);
+		// ***
 		listaArtefato.add(artefato01);
 		listaArtefato.add(artefato02);
 		listaArtefato.add(artefato03);
@@ -296,6 +307,7 @@ public class TEST_ProgramaCobol {
 		listaArtefato.add(artefato10);
 		listaArtefato.add(artefato11);
 		listaArtefato.add(artefato12);
+		listaArtefato.add(artefato13);
 
 		// ***
 

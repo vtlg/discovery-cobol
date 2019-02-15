@@ -59,6 +59,10 @@ public class Extrator {
 	}
 
 	public List<Artefato> converter() {
+		return converter(true);
+	}
+
+	public List<Artefato> converter(boolean isRemoverArtefatosNaoIncluir) {
 		if (this.listaCaminhoArquivos == null && listaCaminhoArquivos.size() == 0) {
 			LOGGER.log(Level.WARNING, "Nenhum arquivo para extração!");
 			return null;
@@ -66,7 +70,21 @@ public class Extrator {
 
 		List<Artefato> listaArtefato = new ArrayList<>();
 
-		if (TipoArtefato.CONTROL_M.equals(this.tipoArtefato) && Configuracao.CARGA_INICIAL == false) {
+		if (TipoArtefato.CATALOGO_DB.equals(this.tipoArtefato)) {
+
+			for (String caminhoArquivo : this.listaCaminhoArquivos) {
+				ExtratorCatalogoDb extrator = new ExtratorCatalogoDb();
+				extrator.inicializar(caminhoArquivo);
+				listaArtefato.addAll(extrator.executa());
+			}
+
+			if (Configuracao.CARGA_INICIAL) {
+				for (Artefato entry : listaArtefato) {
+					entry.setArtefatosRelacionados(null);
+				}
+			}
+
+		} else if (TipoArtefato.CONTROL_M.equals(this.tipoArtefato) && Configuracao.CARGA_INICIAL == false) {
 			ExtratorControlM extrator = new ExtratorControlM();
 			extrator.inicializar(listaCaminhoArquivos);
 			listaArtefato = extrator.executa();
@@ -74,7 +92,6 @@ public class Extrator {
 			for (String caminhoArquivo : this.listaCaminhoArquivos) {
 				Path path = Paths.get(caminhoArquivo);
 				_validarArquivo(path);
-				// _extrairCodigoCompleto(path);
 				List<String> codigoCompleto = _extrairCodigoCompleto(path);
 
 				Artefato artefato = new Artefato();
@@ -117,8 +134,9 @@ public class Extrator {
 					listaArtefato.add(artefato);
 				}
 
-				listaArtefato = removerArtefatosNaoIncluir(listaArtefato);
-
+				if (isRemoverArtefatosNaoIncluir) {
+					listaArtefato = removerArtefatosNaoIncluir(listaArtefato);
+				}
 			}
 		}
 
@@ -165,6 +183,7 @@ public class Extrator {
 	}
 
 	private List<String> _extrairCodigoCompleto(Path path) {
+
 		List<String> tempCodigoCompleto = new ArrayList<>();
 
 		try {
@@ -185,6 +204,7 @@ public class Extrator {
 			LOGGER.log(Level.SEVERE, "Erro ao abrir o arquivo " + path.toAbsolutePath().toString() + ".");
 			return null;
 		}
+
 		return tempCodigoCompleto;
 	}
 

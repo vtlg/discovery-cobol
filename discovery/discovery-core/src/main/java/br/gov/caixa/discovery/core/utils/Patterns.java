@@ -7,18 +7,22 @@ public class Patterns {
 
 	// ("^.*[\\s]{1,}PROGRAM-ID[\\.]{1,1}[\\s]{1,}(?<nomePrograma>[\\S]{1,})[\\s]{0,}[\\.]{1,}[\\s]{0,}$")
 
-
+	public static Pattern COBOL_P_DELETE_1_NOT = Pattern
+			.compile(".*[\\s]{1,}DELETE END-EXEC.*");
 	
-	public static final Pattern JCL_P_DSN_LISTC_ENTRIES = Pattern
-			.compile("^.*[\\s]{1,}(LISTC|LISTCAT)[\\s]{1,}(ENTRIES|ENT|LVL|LEVEL)\\((?<dsn>[\\S&&[^,]]{1,})[)]{1,}.*$");
+	public static Pattern COBOL_P_UPDATE_1_NOT = Pattern
+			.compile(".*[\\s]{1,}UPDATE END-EXEC.*");
 
-
+	public static Pattern COBOL_P_UPDATE_1 = Pattern
+			.compile(".*[\\s]{1,}UPDATE[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}.*");
+	
+	
 	public static void main(String[] args) {
-		String texto = "	//SYSIN22  DD  *	  LISTCAT ENTRIES(CNT.PCS.MZ.BDS2.IJCB.ACTVRPT.USD.D%%DTANT)	  IF MAXCC=4 THEN SET MAXCC=01";
-		Matcher m = JCL_P_DSN_LISTC_ENTRIES.matcher(texto);
+		String texto = "EXEC SQL DECLARE CUR_FDLTB005 CURSOR FOR SELECT CO_ENTIDADE ,CO_PERFIL_ACESSO ,NU_TIPO_OPERACAO_FIDELIZACAO ,IC_ACAO ,DE_ACAO ,CO_TERMINAL_ATUALIZACAO ,CO_USUARIO_ATUALIZACAO ,TS_ULTIMA_ALTERACAO FROM FDL.FDLTB005_ACAO_ASCDA_PRFL_ACSSO WHERE CO_ENTIDADE =:FDLTB005.CO-ENTIDADE AND CO_PERFIL_ACESSO =:FDLTB005.CO-PERFIL-ACESSO FOR UPDATE END-EXEC.";
+		Matcher m = COBOL_P_UPDATE_1_NOT.matcher(texto);
 		
 		if (m.matches()) {
-			System.out.println(m.group("dsn"));
+			System.out.println(m.group("tabela"));
 			//System.out.println(m.group("valor"));
 			System.out.println("Aqui");
 		} else {
@@ -193,8 +197,7 @@ public class Patterns {
 					+ "[=]{2,2}[\\s]{0,}(?<valorAntigo>[\\S]{1,})[\\s]{0,}[=]{2,2}[\\s]{1,}" + "BY[\\s]{1,}"
 					+ "[=]{2,2}[\\s]{0,}(?<novoValor>[\\S]{1,})[\\s]{0,}[=]{2,2}[\\s]{0,}" + "[\\.]{1,}[\\s]{0,}$");
 
-	public static Pattern COBOL_P_UPDATE_1 = Pattern
-			.compile(".*[\\s]{1,}UPDATE[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}.*");
+
 	public static Pattern COBOL_P_DELETE_FROM_1 = Pattern
 			.compile(".*[\\s]{1,}DELETE[\\s]{1,}FROM[\\s]{1,}(?<tabela>[\\S]{1,})[\\s]{0,}.*");
 	public static Pattern COBOL_P_INSERT_1 = Pattern
@@ -452,5 +455,6 @@ public class Patterns {
 			
 	public static final Pattern JCL_P_DSN_CONNECT_PADRAO_2 =
 			Pattern.compile("^CNT\\.(?<sistemaOrigem>[\\S]{1,}?)\\.[\\S]{8,8}(?<sistemaDestino>F[\\S]{1,}?)\\..*$");
-
+	public static final Pattern JCL_P_DSN_LISTC_ENTRIES = Pattern
+			.compile("^.*[\\s]{1,}(LISTC|LISTCAT)[\\s]{1,}(ENTRIES|ENT|LVL|LEVEL)\\((?<dsn>[\\S&&[^,]]{1,})[)]{1,}.*$");
 }

@@ -39,9 +39,11 @@ public class Configuracao {
 	public static Calendar TS_ATUAL = Calendar.getInstance();
 
 	public static Collection<Artefato> COLLECTION_ARTEFATO = new HashSet<>();
+	
 	public static Collection<ArquivoConfiguracao> COLLECTION_ARQUIVO_CONFIGURACAO = new HashSet<>();
 	public static HashMap<String, String> MAPA_DE_PARA = new HashMap<>();
 	public static HashMap<String, Artefato> MAPA_ARTEFATO_CONTROL_M = new HashMap<>();
+	public static HashMap<String, List<Path>> MAPA_PATH_COPYBOOK = new HashMap<>();
 
 	public static void main(String[] args) throws Exception {
 		String[] argumentos = { " --ambiente PRD --sistema SIPCS " };
@@ -62,12 +64,22 @@ public class Configuracao {
 		_carregarParametro(args);
 		_carregarConfiguracaoJson();
 		_carregarCollectionArtefatos();
+		_carregarMapaPathCopybook();
 		_carregarMapaArtefatosControlM();
 	}
 
 	public static ArquivoConfiguracao getConfiguracao(TipoArtefato tipopArtefato) {
+		return getConfiguracao(tipopArtefato, AMBIENTE, SISTEMA);
+	}
+
+	public static ArquivoConfiguracao getConfiguracao(TipoArtefato tipopArtefato, String coSistema) {
+		return getConfiguracao(tipopArtefato, AMBIENTE, SISTEMA);
+	}
+
+	public static ArquivoConfiguracao getConfiguracao(TipoArtefato tipopArtefato, TipoAmbiente ambiente,
+			String coSistema) {
 		for (ArquivoConfiguracao entry : COLLECTION_ARQUIVO_CONFIGURACAO) {
-			if (AMBIENTE.get().equals(entry.getAmbiente()) && SISTEMA.equals(entry.getSistema())
+			if (ambiente.get().equals(entry.getAmbiente()) && coSistema.equals(entry.getSistema())
 					&& tipopArtefato.get().equals(entry.getTipo())) {
 				return entry;
 			}
@@ -139,13 +151,10 @@ public class Configuracao {
 
 			for (ArquivoConfiguracao configuracao : COLLECTION_ARQUIVO_CONFIGURACAO) {
 				if ("DE-PARA".equals(configuracao.getTipo())) {
-					
-					if (configuracao.getDePara() != null 
-							&& configuracao.getDePara().length > 0
-							&& (
-									Configuracao.SISTEMA.equals(configuracao.getSistema()) || configuracao.getSistema().equals("QUALQUER")
-							   )
-							) {
+
+					if (configuracao.getDePara() != null && configuracao.getDePara().length > 0
+							&& (Configuracao.SISTEMA.equals(configuracao.getSistema())
+									|| configuracao.getSistema().equals("QUALQUER"))) {
 						for (Object obj : Arrays.asList(configuracao.getDePara())) {
 							if (obj instanceof LinkedTreeMap) {
 								LinkedTreeMap<String, String> entry = (LinkedTreeMap<String, String>) obj;
@@ -194,6 +203,34 @@ public class Configuracao {
 		extrator.inicializar(listaPaths.stream());
 		MAPA_ARTEFATO_CONTROL_M = extrator.executarArtefatosControlM();
 	}
+	
+	private static void _carregarMapaPathCopybook() throws Exception {
+		
+		List<Path> listaPaths = new ArrayList<>();
+		for (ArquivoConfiguracao configuracao : Configuracao.COLLECTION_ARQUIVO_CONFIGURACAO) {
+			if (Configuracao.AMBIENTE.get().equals(configuracao.getAmbiente()) && TipoArtefato.COPYBOOK.get().equals(configuracao.getTipo()) ) {
+				listaPaths.addAll(Configuracao.getListaPaths(configuracao, TipoArtefato.COPYBOOK));		
+			}
+		}
+
+		Matcher m_extrator_p_nome_artefato = null;
+		for (Path path : listaPaths) {
+			String nomeArtefato = null;
+			m_extrator_p_nome_artefato = Patterns.EXTRATOR_P_NOME_ARTEFATO.matcher(path.getFileName().toString());
+			
+			if (m_extrator_p_nome_artefato.matches()) {
+				nomeArtefato = m_extrator_p_nome_artefato.group("parametro");
+				
+				if (MAPA_PATH_COPYBOOK.containsKey(nomeArtefato)) {
+					MAPA_PATH_COPYBOOK.get(nomeArtefato).add(path);
+				} else {
+					MAPA_PATH_COPYBOOK.put(nomeArtefato, new ArrayList<>());
+					MAPA_PATH_COPYBOOK.get(nomeArtefato).add(path);
+				}
+			}			
+		}
+	}
+	
 
 	public static List<Path> getListaPaths(ArquivoConfiguracao arquivoConfiguracao, TipoArtefato tipoArtefato)
 			throws Exception {

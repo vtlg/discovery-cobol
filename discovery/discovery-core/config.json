@@ -83,6 +83,12 @@
 	{
 		"ambiente": "PRD",
 		"sistema": "SIPCS",
+		"tipo": "CATALOGO-DB",
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\SIPCS\\CEFPRD\\CATALOG\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIPCS",
 		"tipo": "PARAMETRO_MPDT304",
 		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\ARQUIVOS\\MPDT304.csv",
 		"caminhoPastaAcessoria": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\sipcs\\CEFPRD\\ARQUIVOS\\MPDT304.properties"
@@ -158,6 +164,12 @@
 		"sistema": "SIFDL",
 		"tipo": "CONTROL-M",
 		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\SIFDL\\CEFPRD\\SCHEDULE\\"
+	},
+	{
+		"ambiente": "PRD",
+		"sistema": "SIFDL",
+		"tipo": "CATALOGO-DB",
+		"caminhoPasta": "D:\\CAIXA\\backup_notebook_2019_01_10\\codigo\\SIFDL\\CEFPRD\\CATALOG\\"
 	},
 	{
 		"ambiente": "PRD",

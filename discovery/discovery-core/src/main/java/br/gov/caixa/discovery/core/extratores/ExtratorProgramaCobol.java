@@ -383,6 +383,8 @@ public class ExtratorProgramaCobol {
 		Matcher m_From_1 = null;
 		Matcher m_Delete_From_1 = null;
 		Matcher m_Update_1 = null;
+		Matcher m_Update_1_not = null;
+		Matcher m_Delete_1_not = null;
 
 		List<Artefato> tempLista = new ArrayList<>();
 		tempLista.addAll(artefato.getArtefatosRelacionados());
@@ -406,21 +408,24 @@ public class ExtratorProgramaCobol {
 
 			m_Delete_From_1 = Patterns.COBOL_P_DELETE_FROM_1.matcher(texto);
 			m_Update_1 = Patterns.COBOL_P_UPDATE_1.matcher(texto);
+			m_Update_1_not = Patterns.COBOL_P_UPDATE_1_NOT.matcher(texto);
+			m_Delete_1_not = Patterns.COBOL_P_DELETE_1_NOT.matcher(texto);
 			m_Insert_1 = Patterns.COBOL_P_INSERT_1.matcher(texto);
 
-			if (m_Update_1.matches()) {
+			if (m_Update_1.matches() && !m_Update_1_not.matches()) {
 				String nomeTabela = m_Update_1.group("tabela");
 				nomeTabela = nomeTabela.substring(nomeTabela.indexOf(".") + 1);
 
 				if (!"of".toUpperCase().equals(nomeTabela.toUpperCase())) {
 					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 							nomeTabela)) {
-						//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
+						// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+						// TipoArtefato.TABELA);
 						Artefato tabela = new Artefato();
 						tabela.setNome(nomeTabela);
 						tabela.setNomeInterno(nomeTabela);
-						//tabela.setAmbiente(Configuracao.AMBIENTE);
-						//tabela.setSistema(sistema);
+						// tabela.setAmbiente(Configuracao.AMBIENTE);
+						// tabela.setSistema(sistema);
 						tabela.setTipoArtefato(TipoArtefato.TABELA);
 						artefato.adicionarArtefatosRelacionados(tabela);
 					}
@@ -434,20 +439,21 @@ public class ExtratorProgramaCobol {
 				if (!"of".toUpperCase().equals(nomeTabela.toUpperCase())) {
 					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 							nomeTabela)) {
-						//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
-						
+						// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+						// TipoArtefato.TABELA);
+
 						Artefato tabela = new Artefato();
 						tabela.setNome(nomeTabela);
 						tabela.setNomeInterno(nomeTabela);
-						//tabela.setAmbiente(Configuracao.AMBIENTE);
-						//tabela.setSistema(sistema);
+						// tabela.setAmbiente(Configuracao.AMBIENTE);
+						// tabela.setSistema(sistema);
 						tabela.setTipoArtefato(TipoArtefato.TABELA);
 						artefato.adicionarArtefatosRelacionados(tabela);
 					}
 				}
 			}
 
-			if (m_Delete_From_1.matches()) {
+			if (m_Delete_From_1.matches() && !m_Delete_1_not.matches()) {
 				String nomeTabela = m_Delete_From_1.group("tabela").trim();
 
 				if (nomeTabela.contains(".")) {
@@ -460,13 +466,14 @@ public class ExtratorProgramaCobol {
 
 				if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 						nomeTabela)) {
-					//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
+					// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+					// TipoArtefato.TABELA);
 
 					Artefato tabela = new Artefato();
 					tabela.setNome(nomeTabela);
 					tabela.setNomeInterno(nomeTabela);
-					//tabela.setAmbiente(Configuracao.AMBIENTE);
-					//tabela.setSistema(sistema);
+					// tabela.setAmbiente(Configuracao.AMBIENTE);
+					// tabela.setSistema(sistema);
 					tabela.setTipoArtefato(TipoArtefato.TABELA);
 					tabela.adicionarArtefatosRelacionados(tabela);
 				}
@@ -486,13 +493,14 @@ public class ExtratorProgramaCobol {
 
 					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 							nomeTabela)) {
-						//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
+						// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+						// TipoArtefato.TABELA);
 
 						Artefato tabela = new Artefato();
 						tabela.setNome(nomeTabela);
 						tabela.setNomeInterno(nomeTabela);
-						//tabela.setAmbiente(Configuracao.AMBIENTE);
-						//tabela.setSistema(sistema);
+						// tabela.setAmbiente(Configuracao.AMBIENTE);
+						// tabela.setSistema(sistema);
 						tabela.setTipoArtefato(TipoArtefato.TABELA);
 						artefato.adicionarArtefatosRelacionados(tabela);
 					}
@@ -513,13 +521,14 @@ public class ExtratorProgramaCobol {
 
 					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 							nomeTabela)) {
-						//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
+						// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+						// TipoArtefato.TABELA);
 
 						Artefato tabela = new Artefato();
 						tabela.setNome(nomeTabela);
 						tabela.setNomeInterno(nomeTabela);
-						//tabela.setAmbiente(Configuracao.AMBIENTE);
-						//tabela.setSistema(sistema);
+						// tabela.setAmbiente(Configuracao.AMBIENTE);
+						// tabela.setSistema(sistema);
 						tabela.setTipoArtefato(TipoArtefato.TABELA);
 						artefato.adicionarArtefatosRelacionados(tabela);
 					}
@@ -540,13 +549,14 @@ public class ExtratorProgramaCobol {
 
 					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 							nomeTabela)) {
-						//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
+						// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+						// TipoArtefato.TABELA);
 
 						Artefato tabela = new Artefato();
 						tabela.setNome(nomeTabela);
 						tabela.setNomeInterno(nomeTabela);
-						//tabela.setAmbiente(Configuracao.AMBIENTE);
-						//tabela.setSistema(sistema);
+						// tabela.setAmbiente(Configuracao.AMBIENTE);
+						// tabela.setSistema(sistema);
 						tabela.setTipoArtefato(TipoArtefato.TABELA);
 						artefato.adicionarArtefatosRelacionados(tabela);
 					}
@@ -567,13 +577,14 @@ public class ExtratorProgramaCobol {
 
 					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 							nomeTabela)) {
-						//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
+						// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+						// TipoArtefato.TABELA);
 
 						Artefato tabela = new Artefato();
 						tabela.setNome(nomeTabela);
 						tabela.setNomeInterno(nomeTabela);
-						//tabela.setAmbiente(Configuracao.AMBIENTE);
-						//tabela.setSistema(sistema);
+						// tabela.setAmbiente(Configuracao.AMBIENTE);
+						// tabela.setSistema(sistema);
 						tabela.setTipoArtefato(TipoArtefato.TABELA);
 						artefato.adicionarArtefatosRelacionados(tabela);
 					}
@@ -594,13 +605,14 @@ public class ExtratorProgramaCobol {
 
 					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 							nomeTabela)) {
-						//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
+						// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+						// TipoArtefato.TABELA);
 
 						Artefato tabela = new Artefato();
 						tabela.setNome(nomeTabela);
 						tabela.setNomeInterno(nomeTabela);
-						//tabela.setAmbiente(Configuracao.AMBIENTE);
-						//tabela.setSistema(sistema);
+						// tabela.setAmbiente(Configuracao.AMBIENTE);
+						// tabela.setSistema(sistema);
 						tabela.setTipoArtefato(TipoArtefato.TABELA);
 						artefato.adicionarArtefatosRelacionados(tabela);
 					}
@@ -618,13 +630,14 @@ public class ExtratorProgramaCobol {
 
 				if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 						nomeTabela)) {
-					//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
+					// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+					// TipoArtefato.TABELA);
 
 					Artefato tabela = new Artefato();
 					tabela.setNome(nomeTabela);
 					tabela.setNomeInterno(nomeTabela);
-					//tabela.setAmbiente(Configuracao.AMBIENTE);
-					//tabela.setSistema(sistema);
+					// tabela.setAmbiente(Configuracao.AMBIENTE);
+					// tabela.setSistema(sistema);
 					tabela.setTipoArtefato(TipoArtefato.TABELA);
 					artefato.adicionarArtefatosRelacionados(tabela);
 				}
@@ -636,13 +649,14 @@ public class ExtratorProgramaCobol {
 
 				if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), TipoArtefato.TABELA,
 						nomeTabela)) {
-					//String sistema = ArtefatoHandler.identificarSistema(nomeTabela, TipoArtefato.TABELA);
+					// String sistema = ArtefatoHandler.identificarSistema(nomeTabela,
+					// TipoArtefato.TABELA);
 
 					Artefato tabela = new Artefato();
 					tabela.setNome(nomeTabela);
 					tabela.setNomeInterno(nomeTabela);
-					//tabela.setAmbiente(Configuracao.AMBIENTE);
-					//tabela.setSistema(sistema);
+					// tabela.setAmbiente(Configuracao.AMBIENTE);
+					// tabela.setSistema(sistema);
 					tabela.setTipoArtefato(TipoArtefato.TABELA);
 					artefato.adicionarArtefatosRelacionados(tabela);
 				}
@@ -670,7 +684,7 @@ public class ExtratorProgramaCobol {
 		Artefato dataDivision = ArtefatoHandler.recuperarArtefato(artefato.getArtefatosRelacionados(),
 				TipoArtefato.PROGRAMA_COBOL_PARAGRAFO, "DATA DIVISION");
 
-		dataDivision.setCodigoFonte(artefato.getRoteiroCodigo());
+		dataDivision.setCodigoFonte(artefato.getRoteiroVariavel());
 
 		ExtratorCopybook converter = new ExtratorCopybook(dataDivision, deslocamento);
 		dataDivision = converter.relacionarVariavel(dataDivision, deslocamento, artefato.getSistema(),
@@ -1206,7 +1220,7 @@ public class ExtratorProgramaCobol {
 				continue;
 			}
 
-			Artefato variavel = ArtefatoHandler.recuperarArtefato(artefato.getArtefatosRelacionados(),
+			Artefato variavel = ArtefatoHandler.recuperarArtefato(listaVariaveisPesquisa,
 					TipoArtefato.COPYBOOK_VARIAVEL, artefatoEntry.getNome());
 
 			if (variavel != null) {
@@ -1272,7 +1286,7 @@ public class ExtratorProgramaCobol {
 
 		return artefato;
 	}
-	
+
 	private Artefato atribuirSistemaTipo(Artefato artefato) throws Exception {
 		if (artefato.getArtefatosRelacionados() == null) {
 			return artefato;
@@ -1291,8 +1305,8 @@ public class ExtratorProgramaCobol {
 			}
 
 			ArtefatoPersistence artefatoPersquisa = ArtefatoHandler.buscarArtefatoPersistence(entry.getNome(),
-					entry.getTipoArtefato(), entry.getSistema(), this.artefato.getNome(), this.artefato.getTipoArtefato(),
-					this.artefato.getSistema());
+					entry.getTipoArtefato(), entry.getSistema(), this.artefato.getNome(),
+					this.artefato.getTipoArtefato(), this.artefato.getSistema());
 
 			if (artefatoPersquisa != null) {
 				entry.setSistema(artefatoPersquisa.getCoSistema());
@@ -1603,6 +1617,7 @@ public class ExtratorProgramaCobol {
 
 			if (marcador) {
 				Artefato copybookChamado = null;
+				Artefato copybookInclusao = null;
 
 				nomeCopybook = UtilsHandler.removerPontoFinal(nomeCopybook);
 				nomeCopybook = nomeCopybook.replaceAll("[\"\']{1,}", "");
@@ -1617,6 +1632,13 @@ public class ExtratorProgramaCobol {
 					copybookChamado.setTipoArtefato(TipoArtefato.COPYBOOK);
 					copybookChamado.setAmbiente(ambiente);
 					copybookChamado.setSistema(sistema);
+
+					copybookInclusao = new Artefato();
+					
+					copybookInclusao.setNome(nomeCopybook);
+					copybookInclusao.setTipoArtefato(TipoArtefato.COPYBOOK);
+					copybookInclusao.setAmbiente(ambiente);
+					copybookInclusao.setSistema(sistema);
 
 					for (String entry : copybookChamado.getCodigoFonte()) {
 						String entryTexto = null;
@@ -1633,13 +1655,13 @@ public class ExtratorProgramaCobol {
 					TipoAmbiente ambiente = ArtefatoHandler.identificarAmbiente(nomeCopybook, TipoArtefato.COPYBOOK);
 					String sistema = ArtefatoHandler.identificarSistema(nomeCopybook, TipoArtefato.COPYBOOK);
 
-					copybookChamado = new Artefato();
-					copybookChamado.setNome(nomeCopybook);
-					copybookChamado.setTipoArtefato(TipoArtefato.COPYBOOK);
-					copybookChamado.setAmbiente(ambiente);
-					copybookChamado.setSistema(sistema);
+					copybookInclusao = new Artefato();
+					copybookInclusao.setNome(nomeCopybook);
+					copybookInclusao.setTipoArtefato(TipoArtefato.COPYBOOK);
+					copybookInclusao.setAmbiente(ambiente);
+					copybookInclusao.setSistema(sistema);
 				}
-				artefato.adicionarArtefatosRelacionados(copybookChamado);
+				artefato.adicionarArtefatosRelacionados(copybookInclusao);
 			} else {
 				returnValue.add(texto);
 			}
@@ -2104,21 +2126,20 @@ public class ExtratorProgramaCobol {
 
 		return artefato;
 	}
-	
-	
+
 	private Artefato classificarRelacionamento(Artefato artefato) throws Exception {
 		if (artefato.getArtefatosRelacionados() != null && artefato.getArtefatosRelacionados().size() > 0) {
 			for (Artefato entry : artefato.getArtefatosRelacionados()) {
 				if (entry.getArtefatosRelacionados() != null && entry.getArtefatosRelacionados().size() > 0) {
 					entry = classificarRelacionamento(entry);
 				}
-				
+
 				if (!TipoArtefato.COPYBOOK_VARIAVEL.equals(entry.getTipoArtefato())
 						|| !TipoArtefato.JCL_VARIAVEL.equals(entry.getTipoArtefato())
 						|| !TipoArtefato.PROGRAMA_COBOL_PARAGRAFO.equals(entry.getTipoArtefato())) {
 					continue;
 				}
-				
+
 				if (!TipoArtefato.DESCONHECIDO.equals(artefato.getTipoArtefato())
 						&& !TipoArtefato.DESCONHECIDO.equals(entry.getTipoArtefato())
 						&& !artefato.getTipoArtefato().equals(entry.getTipoArtefato())) {

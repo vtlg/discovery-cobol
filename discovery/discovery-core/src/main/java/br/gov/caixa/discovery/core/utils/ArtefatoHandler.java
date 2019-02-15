@@ -1,5 +1,8 @@
 package br.gov.caixa.discovery.core.utils;
 
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -259,30 +262,41 @@ public class ArtefatoHandler {
 		return false;
 	}
 
-	public static Artefato extrairArtefato(String nome, TipoArtefato tipoArtefato, int deslocamento) {
+	@SuppressWarnings("unused")
+	public static Artefato extrairArtefato(String nome, TipoArtefato tipoArtefato, int deslocamento) throws Exception {
 
 		if (!TipoArtefato.COPYBOOK.equals(tipoArtefato) || nome == null || nome.trim().equals("")) {
 			return null;
 		}
 
+		
+		List<Path> listaPath = Configuracao.MAPA_PATH_COPYBOOK.get(nome);
+
+		if (listaPath == null && listaPath.size() > 0) {
+			return null;
+		}
+
+		Path path = listaPath.get(0);
+		
 		Artefato artefatoOutput = null;
 		Artefato artefatoPesquisa = null;
 
-		for (Artefato copybook : Configuracao.COLLECTION_ARTEFATO) {
-			if (copybook.getNome().equals(nome)) {
-				artefatoPesquisa = copybook;
-			}
-		}
-
-		if (artefatoPesquisa != null) {
+		if (path != null) {
 			Extrator extrator = new Extrator();
-			extrator.inicializar(artefatoPesquisa.getCaminhoArquivo(), TipoArtefato.COPYBOOK);
-			List<Artefato> lista = extrator.converter();
+			extrator.inicializar(path.toAbsolutePath().toString(), TipoArtefato.COPYBOOK);
+			List<Artefato> lista = extrator.converter(false);
 			if (lista != null && lista.size() > 0) {
 				artefatoOutput = lista.get(0);
 			}
 		}
 		return artefatoOutput;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		String[] argumentos = { " --ambiente PRD --sistema SIFDL " };
+		Configuracao.carregar(argumentos);
+		
+		ArtefatoHandler.extrairArtefato("PCSDSO50", TipoArtefato.COPYBOOK, 0);
 	}
 
 }

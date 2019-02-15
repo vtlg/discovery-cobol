@@ -1,9 +1,6 @@
 package br.gov.caixa.discovery.injetores;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -18,8 +15,10 @@ import br.gov.caixa.discovery.core.modelos.Artefato;
 import br.gov.caixa.discovery.core.tipos.TipoArtefato;
 import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.core.utils.UtilsHandler;
+import br.gov.caixa.discovery.ejb.dao.ControleArquivoDao;
 import br.gov.caixa.discovery.ejb.dao.Dao;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
+import br.gov.caixa.discovery.ejb.modelos.ControleArquivoPersistence;
 
 public class Discovery {
 
@@ -30,121 +29,107 @@ public class Discovery {
 	public static void main(String[] args) throws Exception {
 		LOGGER.log(Level.INFO, "Carregando parâmetros");
 		Configuracao.carregar(args);
-
+		Dao dao = null;
 		try {
-			Dao dao = new Dao();
+			dao = new Dao();
 			dao.abrirConexao();
 			em = dao.getEmFactory().createEntityManager();
 
-			if (Configuracao.CARGA_INICIAL == true) {
-				LOGGER.log(Level.INFO, "Iniciando carga inicial");
-				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL),
-						TipoArtefato.PROGRAMA_COBOL, 0, false);
-				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
-				_executarCargaInicial(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0,
-						false);
-				// Configuracao.CARGA_INICIAL = false;
-			}
+			executar(Configuracao.getConfiguracao(TipoArtefato.CATALOGO_DB), TipoArtefato.CATALOGO_DB, 0, false);
+			executar(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
+			executar(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL), TipoArtefato.PROGRAMA_COBOL, 0, false);
+			executar(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0, false);
+			executar(Configuracao.getConfiguracao(TipoArtefato.CONTROL_M), TipoArtefato.CONTROL_M, 0, true);
 
-			if (Configuracao.CARGA_INICIAL == false) {
-				LOGGER.log(Level.INFO, "Iniciando carga completa");
-				_executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
-				 _executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL),TipoArtefato.PROGRAMA_COBOL, 0, false);
-				// _executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK),
-				// TipoArtefato.COPYBOOK, 0, false);
-				// _executarCargaNormal(Configuracao.getConfiguracao(TipoArtefato.CONTROL_M),
-				// TipoArtefato.CONTROL_M, 0, true);
-			}
-			dao.fecharConexao();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			em.close();
+			dao.fecharConexao();
 		}
 	}
 
-	private static void _executarCargaInicial(ArquivoConfiguracao arquivoConfiguracao, TipoArtefato tipoArtefato,
-			int deslocamento, boolean controlM) throws Exception {
+	private static int executar(ArquivoConfiguracao arquivoConfiguracao, TipoArtefato tipoArtefato, int deslocamento,
+			boolean controlM) throws Exception {
 		long startTime = Calendar.getInstance().getTimeInMillis();
-		LOGGER.log(Level.INFO, "(Carga Inicial) Iniciando carregamentos dos artefatos " + tipoArtefato.get());
+		if (Configuracao.CARGA_INICIAL && TipoArtefato.CONTROL_M.equals(tipoArtefato)) {
+			return 0;
+		} else if (Configuracao.CARGA_INICIAL) {
+			em.getTransaction().begin();
+		}
 
+		StringBuilder sbErro = new StringBuilder();
+
+		LOGGER.log(Level.INFO, "(Carga) Iniciando carga dos artefatos " + tipoArtefato.get());
 		List<Path> listaPaths = Configuracao.getListaPaths(arquivoConfiguracao, tipoArtefato);
+		ControleArquivoDao controleArquivoDao = new ControleArquivoDao(em);
 
-		em.getTransaction().begin();
-		int countCommit = 0;
+		int count = 1;
+		int sizeListaPaths = listaPaths.size();
 		for (Path path : listaPaths) {
+			System.out.println("(" + tipoArtefato.get() + ") " + count + "/" + sizeListaPaths);
+			count++;
+			// CALCULA O HASH DO ARQUIVO PARA VERIFICAR A NECESSIDADE DE PROCESSÁ-LO OU NÃO
+			String hashCalculado = UtilsHandler.calcularHash(path, UtilsHandler.SHA256);
+			ControleArquivoPersistence controleArquivoPersistence = controleArquivoDao
+					.getControleArquivo(path.getFileName().toString());
 
-			try {
-
-				if (countCommit % 1000 == 0) {
-					em.getTransaction().commit();
-					em.getTransaction().begin();
-				}
-
-				Extrator extrator = new Extrator();
-				extrator.inicializar(path.toAbsolutePath().toString(), tipoArtefato, deslocamento);
-				List<Artefato> listaArtefato = extrator.converter();
-				List<ArtefatoPersistence> listaArtefatoPersistence = new ArrayList<>();
-
-				for (Artefato entry : listaArtefato) {
-					long startTimeConversao = Calendar.getInstance().getTimeInMillis();
-					LOGGER.log(Level.FINE, "Convertendo artefato (" + entry.getNome() + ")");
-					listaArtefatoPersistence.addAll(Conversor.executar(entry, controlM));
-					LOGGER.log(Level.FINE, "Finalizando conversão do artefato (" + entry.getNome()
-							+ "). Tempo de execução " + UtilsHandler.getTempoExecucao(startTimeConversao));
-				}
-
-				for (ArtefatoPersistence entry : listaArtefatoPersistence) {
-					long startTimeInsert = Calendar.getInstance().getTimeInMillis();
-					if (Configuracao.CARGA_INICIAL) {
-						entry.setDeHash("");
-					}
-					LOGGER.log(Level.FINE, "Inserindo artefato (" + entry.getNoNomeArtefato() + ")");
-					Injetor.executar(em, entry, controlM);
-					LOGGER.log(Level.INFO, "Finalizando inserção do artefato (" + entry.getNoNomeArtefato()
-							+ "). Tempo de execução " + UtilsHandler.getTempoExecucao(startTimeInsert));
-				}
-
-				listaArtefato.clear();
-				listaArtefato = null;
-				listaArtefatoPersistence.clear();
-				listaArtefatoPersistence = null;
-				extrator = null;
-				Runtime.getRuntime().gc();
-			} catch (Exception e) {
-				// TODO: handle exception
+			// Se o arquivo exisitr na base de dados e o hash for igual, pula para o próximo
+			// registro
+			if (hashCalculado != null && controleArquivoPersistence != null
+					&& hashCalculado.equals(controleArquivoPersistence.getDeHash())) {
+				continue;
 			}
 
-		}
-		em.getTransaction().commit();
+			if (count % 1000 == 0 && Configuracao.CARGA_INICIAL) {
+				em.getTransaction().commit();
+				em.getTransaction().begin();
+			}
 
-		LOGGER.log(Level.INFO, "(Carga Inicial) Finalizando carregamentos dos artefatos " + tipoArtefato.get()
-				+ " - Tempo execução " + UtilsHandler.getTempoExecucao(startTime));
-
-	}
-
-	private static void _executarCargaNormal(ArquivoConfiguracao arquivoConfiguracao, TipoArtefato tipoArtefato,
-			int deslocamento, boolean controlM) throws Exception {
-		long startTime = Calendar.getInstance().getTimeInMillis();
-		LOGGER.log(Level.INFO, "(Carga Normal) Iniciando carregamentos dos artefatos " + tipoArtefato.get());
-
-		List<Path> listaPaths = Configuracao.getListaPaths(arquivoConfiguracao, tipoArtefato);
-
-		for (Path path : listaPaths) {
 			Extrator extrator = new Extrator();
 			extrator.inicializar(path.toAbsolutePath().toString(), tipoArtefato, deslocamento);
-			List<Artefato> listaArtefato = extrator.converter();
+
+			List<Artefato> listaArtefato = null;
+			try {
+				listaArtefato = extrator.converter();
+			} catch (Exception e) {
+				LOGGER.log(Level.SEVERE, "Erro ao extrair arquivo (" + path.toAbsolutePath().toString() + ")", e);
+				sbErro.append("Erro ao extrair arquivo (" + path.toAbsolutePath().toString() + ") Mensagem ("
+						+ e.getMessage() + ")");
+			}
+
 			List<ArtefatoPersistence> listaArtefatoPersistence = new ArrayList<>();
 
-			for (Artefato entry : listaArtefato) {
-				listaArtefatoPersistence.addAll(Conversor.executar(entry, controlM));
+			try {
+				for (Artefato entry : listaArtefato) {
+					listaArtefatoPersistence.addAll(Conversor.executar(entry, controlM));
+				}
+			} catch (Exception e) {
+				LOGGER.log(Level.SEVERE, "Erro ao converter arquivo (" + path.toAbsolutePath().toString() + ")", e);
+				sbErro.append("Erro ao converter arquivo (" + path.toAbsolutePath().toString() + ") Mensagem ("
+						+ e.getMessage() + ")");
 			}
 
 			for (ArtefatoPersistence entry : listaArtefatoPersistence) {
 				if (Configuracao.CARGA_INICIAL) {
 					entry.setDeHash("");
 				}
-				em.getTransaction().begin();
-				Injetor.executar(em, entry, controlM);
-				em.getTransaction().commit();
+
+				if (!Configuracao.CARGA_INICIAL) {
+					em.getTransaction().begin();
+				}
+
+				try {
+					Injetor.executar(em, entry, controlM);
+				} catch (Exception e) {
+					LOGGER.log(Level.SEVERE, "Erro ao persistir arquivo (" + path.toAbsolutePath().toString() + ")", e);
+					sbErro.append("Erro ao persistir arquivo (" + path.toAbsolutePath().toString() + ") Mensagem ("
+							+ e.getMessage() + ")");
+				}
+
+				if (!Configuracao.CARGA_INICIAL) {
+					em.getTransaction().commit();
+				}
 			}
 
 			listaArtefato.clear();
@@ -152,16 +137,37 @@ public class Discovery {
 			listaArtefatoPersistence.clear();
 			listaArtefatoPersistence = null;
 			extrator = null;
-			Runtime.getRuntime().gc();
 
-			Path pathDestino = Paths.get(path.getParent().toString() + "/processados/" + path.getFileName().toString());
+			// INCLUIR OU ATUALIZAR O CONTROLE DE ARQUIVO
+			if (!Configuracao.CARGA_INICIAL) {
+				boolean atualizarControle = true;
+				if (controleArquivoPersistence == null) {
+					controleArquivoPersistence = new ControleArquivoPersistence();
+					controleArquivoPersistence.setNoNomeArquivo(path.getFileName().toString());
+					atualizarControle = false;
+				}
 
-			Files.move(path, pathDestino, StandardCopyOption.REPLACE_EXISTING);
+				controleArquivoPersistence.setDeHash(hashCalculado);
+				controleArquivoPersistence.setIcForcarAtualizacao(false);
+				controleArquivoPersistence.setTsUltimaLeitura(Configuracao.TS_ATUAL);
 
+				em.getTransaction().begin();
+				if (atualizarControle) {
+					controleArquivoDao.atualizar(controleArquivoPersistence);
+				} else {
+					controleArquivoDao.incluir(controleArquivoPersistence);
+				}
+				em.getTransaction().commit();
+			}
 		}
 
-		LOGGER.log(Level.INFO, "(Carga Final) Finalizando carregamentos dos artefatos " + tipoArtefato.get()
+		if (Configuracao.CARGA_INICIAL) {
+			em.getTransaction().commit();
+		}
+
+		LOGGER.log(Level.INFO, "(Carga) Finalizando carregamentos dos artefatos " + tipoArtefato.get()
 				+ " - Tempo execução " + UtilsHandler.getTempoExecucao(startTime));
+		return 0;
 	}
 
 }

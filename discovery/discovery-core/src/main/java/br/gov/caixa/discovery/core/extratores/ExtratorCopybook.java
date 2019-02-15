@@ -81,6 +81,7 @@ public class ExtratorCopybook {
 			}
 
 			artefato.setNome(ArtefatoHandler.tratarNomeArtefato(nomeArtefato));
+			artefato.setNomeInterno(ArtefatoHandler.tratarNomeArtefato(nomeArtefato));
 
 			this.artefato = processarCodigoCompleto(this.artefato);
 			this.artefato = relacionarVariavel(this.artefato, this.deslocamento, this.sistema, this.ambiente);

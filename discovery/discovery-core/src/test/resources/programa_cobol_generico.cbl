@@ -106,7 +106,7 @@ LADLA  COPY PCSDSD49 REPLACING  ==:PCSDSD49:== BY ==LOG==.
                              (INDICA   = :DCLMPDT083.INDICA)   AND      
                              (PROGRAMA = :DCLMPDT083.PROGRAMA) AND      
                              (CADENA   = :DCLMPDT083.CADENA)            
-           END-EXEC.                        
+           END-EXEC.     
 							  
       ***  LER O PARCEIRO/PRODUTO.                                      
        0004-SELECT-TABELA                     SECTION.                        
@@ -331,4 +331,20 @@ VIC        END-EXEC
                         :TB-083CADENA,                                  
                         :TB-083DATOS)                                   
                     FOR :IND-TB083 ROWS                                 
-           END-EXEC.          
+           END-EXEC.        
+
+           EXEC SQL
+            DECLARE CUR_FDLTB005  CURSOR FOR
+              SELECT CO_ENTIDADE
+                    ,CO_PERFIL_ACESSO
+                    ,NU_TIPO_OPERACAO_FIDELIZACAO
+                    ,IC_ACAO
+                    ,DE_ACAO
+                    ,CO_TERMINAL_ATUALIZACAO
+                    ,CO_USUARIO_ATUALIZACAO
+                    ,TS_ULTIMA_ALTERACAO
+               FROM  FDL.FDLTB005_ACAO_ASCDA_PRFL_ACSSO
+              WHERE  CO_ENTIDADE  =:FDLTB005.CO-ENTIDADE
+                AND  CO_PERFIL_ACESSO =:FDLTB005.CO-PERFIL-ACESSO
+               FOR UPDATE
+           END-EXEC.		   

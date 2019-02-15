@@ -1036,7 +1036,13 @@ public class ExtratorJcl {
 
 			if ("DESCONHECIDO".equals(entry.getSistema()) && !TipoArtefato.UTILITARIO.equals(entry.getTipoArtefato())
 					&& !entry.getNome().startsWith("%") && !entry.getNome().startsWith("&")
-					&& !entry.getNome().startsWith("DB2") && !entry.getNome().startsWith("NDS")) {
+					&& !entry.getNome().startsWith("DB2")
+					&& !entry.getNome().startsWith("CND")
+					&& !entry.getNome().startsWith("DB2")
+					&& !entry.getNome().startsWith("DSN")
+					&& !entry.getNome().startsWith("PRD")
+					&& !entry.getNome().startsWith("IOA")
+					&& !entry.getNome().startsWith("NDS")) {
 				String coSistema = "SI" + entry.getNome().substring(0, 3);
 				SistemaPersistence sistemaPersistence = ArtefatoHandler.buscarSistemaPersistence(coSistema);
 

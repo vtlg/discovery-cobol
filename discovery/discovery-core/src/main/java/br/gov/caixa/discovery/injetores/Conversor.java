@@ -136,7 +136,7 @@ public class Conversor {
 		}
 
 		ArtefatoPersistence artefatoPersistence = new ArtefatoPersistence();
-
+	
 		artefatoPersistence.setNoNomeArtefato(nomeArtefato);
 		artefatoPersistence.setNoNomeExibicao(artefato.getNome());
 		artefatoPersistence.setNoNomeInterno(nomeInterno);
