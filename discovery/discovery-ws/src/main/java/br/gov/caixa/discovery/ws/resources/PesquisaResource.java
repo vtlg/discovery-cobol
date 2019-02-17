@@ -3,6 +3,7 @@ package br.gov.caixa.discovery.ws.resources;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -11,6 +12,7 @@ import javax.ws.rs.core.Response.Status;
 import br.gov.caixa.discovery.ejb.dao.ArtefatoDao;
 import br.gov.caixa.discovery.ejb.dao.ViewDao;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
+import br.gov.caixa.discovery.ejb.tipos.MensagemSistema;
 import br.gov.caixa.discovery.ws.modelos.ArtefatoDomain;
 import br.gov.caixa.discovery.ws.modelos.PesquisaDomain;
 import br.gov.caixa.discovery.ws.utils.Conversores;
@@ -31,7 +33,7 @@ public class PesquisaResource implements PesquisaResourceI {
 		List<ArtefatoPersistence> listaPersistence = artefatoDao.pesquisar(termo, limit);
 
 		if (listaPersistence == null || listaPersistence.size() == 0) {
-			response.status(Status.NOT_FOUND);
+			throw new EJBException(MensagemSistema.MA009_NENHUM_RESULTADO.get());
 		} else {
 			response.entity(Conversores.converterListaArtefato(listaPersistence));
 		}
@@ -49,11 +51,11 @@ public class PesquisaResource implements PesquisaResourceI {
 
 		listaPersistence = viewDao.getArtefatoCounts(listaPersistence);
 
-		if (listaPersistence != null) {
+		if (listaPersistence != null && listaPersistence.size() > 0) {
 			List<ArtefatoDomain> listaDomain = Conversores.converterListaArtefato(listaPersistence);
 			response.entity(listaDomain);
 		} else {
-			response.status(Status.NOT_FOUND);
+			throw new EJBException(MensagemSistema.MA009_NENHUM_RESULTADO.get());
 		}
 
 		return response.build();

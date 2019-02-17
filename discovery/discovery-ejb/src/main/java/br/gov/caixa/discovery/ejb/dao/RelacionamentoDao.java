@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -22,8 +23,7 @@ import javax.persistence.criteria.Root;
 
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
-import br.gov.caixa.discovery.ejb.utils.UtilsHandler;
-import br.gov.caixa.discovery.ejb.view.InterfaceSistemaView;
+import br.gov.caixa.discovery.ejb.tipos.MensagemSistema;
 
 @Stateless
 public class RelacionamentoDao {
@@ -58,10 +58,45 @@ public class RelacionamentoDao {
 			em.persist(novoRelacionamento);
 			relacionamento.setCoRelacionamento(novoRelacionamento.getCoRelacionamento());
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Erro ao tentar incluir relacionamento.", e);
+			LOGGER.log(Level.SEVERE,
+					MensagemSistema.ME002_ERRO_INCLUIR_RELACIONAMENTO.get() + " - Erro ao incluir relacionamento.", e);
+			throw new EJBException(MensagemSistema.ME002_ERRO_INCLUIR_RELACIONAMENTO.get());
 		}
 
 		return relacionamento;
+	}
+
+	public RelacionamentoPersistence getRelacionamento(Long coArtefato, Long coArtefatoPai) throws EJBException {
+		RelacionamentoPersistence output = null;
+
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaQuery<RelacionamentoPersistence> cq = cb.createQuery(RelacionamentoPersistence.class);
+		Root<RelacionamentoPersistence> relacionamentoRoot = cq.from(RelacionamentoPersistence.class);
+
+		Predicate pCoArtefato = cb.equal(relacionamentoRoot.get("coArtefato"), coArtefato);
+		Predicate pCoArtefatoPai = cb.equal(relacionamentoRoot.get("coArtefatoPai"), coArtefatoPai);
+
+		Expression<Calendar> exTsFimVigencia = relacionamentoRoot.get("tsFimVigencia");
+		Predicate pTsFimVigencia = cb.isNull(exTsFimVigencia);
+
+		cq.multiselect(relacionamentoRoot.get("coRelacionamento"), relacionamentoRoot.get("coArtefato"),
+				relacionamentoRoot.get("coArtefatoPai"), relacionamentoRoot.get("coArtefatoAnterior"),
+				relacionamentoRoot.get("coArtefatoPosterior"), relacionamentoRoot.get("coArtefatoPrimeiro"),
+				relacionamentoRoot.get("coArtefatoUltimo"), relacionamentoRoot.get("coTipoRelacionamento"),
+				relacionamentoRoot.get("icInclusaoManual"), relacionamentoRoot.get("icInclusaoMalha"),
+				relacionamentoRoot.get("tsInicioVigencia"), relacionamentoRoot.get("tsFimVigencia"))
+				.where(cb.and(pCoArtefato, pCoArtefatoPai, pTsFimVigencia));
+
+		try {
+			output = em.createQuery(cq).getSingleResult();
+		} catch (NoResultException e) {
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, MensagemSistema.ME009_ERRO_PESQUISAR.get() + " - Erro ao retornar relacionamento. "
+					+ "CoArtefato (" + coArtefato + ")" + " CoArtefatoPai (" + coArtefatoPai + ")", e);
+			throw new EJBException(MensagemSistema.ME009_ERRO_PESQUISAR.get());
+		}
+
+		return output;
 	}
 
 	public RelacionamentoPersistence getRelacionamento(Long coRelacionamento) throws EJBException {
@@ -251,21 +286,27 @@ public class RelacionamentoDao {
 		return countAtualizacoes;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Dao dao = new Dao();
 		dao.abrirConexao();
 		EntityManager em = dao.getEmFactory().createEntityManager();
 
 		RelacionamentoDao relacionamentoDao = new RelacionamentoDao(em);
 
-		ArtefatoPersistence artefatoPersistence = new ArtefatoPersistence();
-		artefatoPersistence.setCoArtefato(196601L);
-		artefatoPersistence.setCoSistema("SIPCS");
+		RelacionamentoPersistence rel = new RelacionamentoPersistence();
+		rel.setCoArtefato(746845L);
+		rel.setCoArtefatoPai(746844L);
+		rel.setIcInclusaoMalha(false);
+		rel.setIcInclusaoManual(false);
+		rel.setTsInicioVigencia(Calendar.getInstance());
 
-		// em.getTransaction().begin();
-		// relacionamentoDao.atualizarRelacionamentoOnAlterarCoSistema(artefatoPersistence);
-		// relacionamentoDao.getInterfaces("SIPCS");
-		// em.getTransaction().commit();
+		// ArtefatoPersistence artefatoPersistence = new ArtefatoPersistence();
+//		artefatoPersistence.setCoArtefato(196601L);
+//		artefatoPersistence.setCoSistema("SIPCS");
+
+		em.getTransaction().begin();
+		relacionamentoDao.incluir(rel);
+		em.getTransaction().commit();
 		em.close();
 		dao.fecharConexao();
 	}

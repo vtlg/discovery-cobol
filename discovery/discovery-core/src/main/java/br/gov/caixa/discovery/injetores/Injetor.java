@@ -17,6 +17,7 @@ import br.gov.caixa.discovery.ejb.dao.RelacionamentoDao;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.AtributoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
+import br.gov.caixa.discovery.ejb.tipos.MensagemSistema;
 
 public class Injetor {
 
@@ -215,7 +216,6 @@ public class Injetor {
 			// relacionamento.setArtefatoPosterior(null);
 
 			if (artefato.isTransientAtualizarRelacionamentos()) {
-
 				relacionamentoDao.incluir(relacionamento);
 
 				for (AtributoPersistence atributo : relacionamento.getTransientListaAtributos()) {
@@ -256,8 +256,7 @@ public class Injetor {
 		ArtefatoPersistence artefatoPesquisa = null;
 		if (!TipoArtefato.DESCONHECIDO.get().equals(coTipoArtefato)) {
 			try {
-				resultListaArtefatoPesquisa = artefatoDao.getListaArtefato(coNome, coTipoArtefato, null,
-						null, true);
+				resultListaArtefatoPesquisa = artefatoDao.getListaArtefato(coNome, coTipoArtefato, null, null, true);
 			} catch (EJBException e) {
 				LOGGER.log(Level.SEVERE, "Erro ao pesquisar artefatos", e);
 			}

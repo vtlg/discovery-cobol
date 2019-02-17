@@ -158,11 +158,11 @@ public class ViewDao {
 		CriteriaQuery<InterfaceSistemaView> cq = cb.createQuery(InterfaceSistemaView.class);
 		Root<InterfaceSistemaView> interfaceRoot = cq.from(InterfaceSistemaView.class);
 
-		Predicate pCoSistema = cb.equal(interfaceRoot.get("coSistema"), coSistema);
-		Predicate pCoSistemaPai = cb.equal(interfaceRoot.get("coSistemaPai"), coSistema);
-
-		cq.where(cb.or(pCoSistema, pCoSistemaPai));
-
+		if (coSistema != null) {
+			Predicate pCoSistema = cb.equal(interfaceRoot.get("coSistema"), coSistema);
+			Predicate pCoSistemaPai = cb.equal(interfaceRoot.get("coSistemaPai"), coSistema);
+			cq.where(cb.or(pCoSistema, pCoSistemaPai));
+		}
 		try {
 			TypedQuery<InterfaceSistemaView> query = this.em.createQuery(cq);
 			output = query.getResultList();

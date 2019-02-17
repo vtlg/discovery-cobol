@@ -298,16 +298,15 @@ public class RelacionamentoPersistence {
 		this.tsFimVigencia = tsFimVigencia;
 	}
 	
-	
-	
-	
-	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("coRelacionamento : (" + this.coRelacionamento + ") ");
 
 		sb.append("Nome Artefato : (" + this.artefato.getNoNomeArtefato() + ") ");
+		
+		sb.append("Código Artefato : (" + this.getCoArtefato() + ") ");
+		sb.append("Código Artefato Pai : (" + this.getCoArtefatoPai() + ") ");
 		
 		if (this.artefatoPai != null)
 			sb.append("Nome Artefato Pai : (" + this.artefatoPai.getNoNomeArtefato() + ") ");

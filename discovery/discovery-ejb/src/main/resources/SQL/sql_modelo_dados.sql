@@ -15,8 +15,7 @@ CREATE SEQUENCE public.seq_atributo_nu_sequencial;
 
 ALTER SEQUENCE public.seq_atributo_nu_sequencial
     OWNER TO postgres;
-
-
+    
 -- SEQUENCE: public.seq_relacionamento_co_relacionamento
 
 -- DROP SEQUENCE public.seq_relacionamento_co_relacionamento;
@@ -25,7 +24,7 @@ CREATE SEQUENCE public.seq_relacionamento_co_relacionamento;
 
 ALTER SEQUENCE public.seq_relacionamento_co_relacionamento
     OWNER TO postgres;
-	
+    
 -- Table: public.tbl_artefato
 
 -- DROP TABLE public.tbl_artefato;
@@ -111,7 +110,7 @@ CREATE INDEX index_tbl_artefato_05
 
 CREATE INDEX index_tbl_artefato_06
     ON public.tbl_artefato USING btree
-    (no_nome_artefato COLLATE pg_catalog."default" varchar_ops)
+    ((ts_fim_vigencia IS NULL), co_tipo_artefato COLLATE pg_catalog."default" varchar_ops, no_nome_artefato COLLATE pg_catalog."default" varchar_ops)
     TABLESPACE pg_default;
 
 -- Index: index_tbl_artefato_07
@@ -122,7 +121,16 @@ CREATE INDEX index_tbl_artefato_07
     ON public.tbl_artefato USING btree
     (co_tipo_artefato COLLATE pg_catalog."default" varchar_ops, no_nome_artefato COLLATE pg_catalog."default" varchar_ops)
     TABLESPACE pg_default;
-	
+
+-- Index: index_tbl_artefato_08
+
+-- DROP INDEX public.index_tbl_artefato_08;
+
+CREATE INDEX index_tbl_artefato_08
+    ON public.tbl_artefato USING btree
+    ((ts_fim_vigencia IS NULL), no_nome_artefato COLLATE pg_catalog."default" varchar_ops)
+    TABLESPACE pg_default;
+    
 -- Table: public.tbl_atributo
 
 -- DROP TABLE public.tbl_atributo;
@@ -145,7 +153,28 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.tbl_atributo
     OWNER to postgres;
-	
+    
+-- Table: public.tbl_controle_arquivo
+
+-- DROP TABLE public.tbl_controle_arquivo;
+
+CREATE TABLE public.tbl_controle_arquivo
+(
+    no_nome_arquivo character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    de_hash character varying(256) COLLATE pg_catalog."default" NOT NULL DEFAULT ' '::character varying,
+    ts_ultima_leitura timestamp without time zone NOT NULL DEFAULT now(),
+    ic_forcar_atualizacao boolean NOT NULL DEFAULT false,
+    de_retorno_importacao text COLLATE pg_catalog."default" NOT NULL DEFAULT ' '::text,
+    CONSTRAINT tbl_controle_arquivo_pkey PRIMARY KEY (no_nome_arquivo)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.tbl_controle_arquivo
+    OWNER to postgres;
+    
 -- Table: public.tbl_relacionamento_artefato
 
 -- DROP TABLE public.tbl_relacionamento_artefato;
@@ -184,7 +213,17 @@ CREATE INDEX index_tbl_relacionamento_01
     ON public.tbl_relacionamento_artefato USING btree
     (co_tipo_relacionamento COLLATE pg_catalog."default" varchar_ops)
     TABLESPACE pg_default;
-	
+    
+-- Index: index_tbl_relacionamento_02
+
+-- DROP INDEX public.index_tbl_relacionamento_02;
+
+CREATE INDEX index_tbl_relacionamento_02
+    ON public.tbl_relacionamento_artefato USING btree
+    ((ts_fim_vigencia IS NULL), co_artefato_pai, co_artefato)
+    TABLESPACE pg_default;
+
+    
 -- Table: public.tbl_sistema
 
 -- DROP TABLE public.tbl_sistema;
@@ -202,7 +241,7 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.tbl_sistema
     OWNER to postgres;
-	
+    
 -- Table: public.tbl_tipo
 
 -- DROP TABLE public.tbl_tipo;
@@ -227,7 +266,11 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.tbl_tipo
     OWNER to postgres;
-	
+    
+    
+    
+    
+    
 -- View: public.vw_artefato_atributo
 
 -- DROP VIEW public.vw_artefato_atributo;
@@ -288,7 +331,6 @@ CREATE OR REPLACE VIEW public.vw_artefato_atributo AS
 ALTER TABLE public.vw_artefato_atributo
     OWNER TO postgres;
 
-
 -- View: public.vw_artefato_counts
 
 -- DROP VIEW public.vw_artefato_counts;
@@ -306,6 +348,7 @@ CREATE OR REPLACE VIEW public.vw_artefato_counts AS
 
 ALTER TABLE public.vw_artefato_counts
     OWNER TO postgres;
+
 
 -- View: public.vw_interface_sistema
 

@@ -15,10 +15,15 @@ import br.gov.caixa.discovery.ws.modelos.RelacionamentoDomain;
 public interface RelacionamentoResourceI {
 
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response incluir(RelacionamentoDomain relacionamentoDomain);
+
+	@POST
 	@Path("{coRelacionamento}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response atualizar(@PathParam("coRelacionamento") String coRelacionamento,
+	public Response atualizar(@PathParam("coRelacionamento") Long coRelacionamento,
 			RelacionamentoDomain relacionamentoDomain);
 
 	@GET
@@ -26,7 +31,7 @@ public interface RelacionamentoResourceI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getInterfaceDiagramaSankey(@PathParam("sistema") String coSistema);
-	
+
 	@GET
 	@Path("interface/{sistema}/tabela")
 	@Consumes(MediaType.APPLICATION_JSON)

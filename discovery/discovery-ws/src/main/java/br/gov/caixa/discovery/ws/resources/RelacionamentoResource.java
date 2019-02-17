@@ -1,11 +1,13 @@
 package br.gov.caixa.discovery.ws.resources;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -14,11 +16,13 @@ import javax.ws.rs.core.Response.Status;
 import br.gov.caixa.discovery.ejb.dao.RelacionamentoDao;
 import br.gov.caixa.discovery.ejb.dao.ViewDao;
 import br.gov.caixa.discovery.ejb.modelos.RelacionamentoPersistence;
+import br.gov.caixa.discovery.ejb.tipos.MensagemSistema;
 import br.gov.caixa.discovery.ejb.view.InterfaceSistemaView;
-import br.gov.caixa.discovery.ws.modelos.InterfaceSistemaDomain;
 import br.gov.caixa.discovery.ws.modelos.InterfaceSistemaDiagramaSankeyLink;
 import br.gov.caixa.discovery.ws.modelos.InterfaceSistemaDiagramaSankeyNode;
+import br.gov.caixa.discovery.ws.modelos.InterfaceSistemaDomain;
 import br.gov.caixa.discovery.ws.modelos.RelacionamentoDomain;
+import br.gov.caixa.discovery.ws.utils.Conversores;
 import br.gov.caixa.discovery.ws.utils.InterfaceSistemaNodeSorted;
 
 @Stateless
@@ -31,7 +35,37 @@ public class RelacionamentoResource implements RelacionamentoResourceI {
 	ViewDao viewDao;
 
 	@Override
-	public Response atualizar(String coRelacionamento, RelacionamentoDomain domain) {
+	public Response incluir(RelacionamentoDomain domain) {
+		ResponseBuilder response = Response.status(Status.OK);
+
+		Long coArtefato = domain.getDescendente().getCoArtefato();
+		Long coArtefatoPai = domain.getAscendente().getCoArtefato();
+
+		RelacionamentoPersistence pesquisa = relacionamentoDao.getRelacionamento(coArtefato, coArtefatoPai);
+		RelacionamentoPersistence pesquisa2 = relacionamentoDao.getRelacionamento(coArtefatoPai, coArtefato);
+
+		if (pesquisa != null || pesquisa2 != null) {
+			throw new EJBException(MensagemSistema.ME013_ERRO_RELACIONAMENTO_JA_EXISTE.get());
+		} else {
+			RelacionamentoPersistence persistence = new RelacionamentoPersistence();
+
+			persistence.setIcInclusaoMalha(false);
+			persistence.setIcInclusaoManual(true);
+			persistence.setTsInicioVigencia(Calendar.getInstance());
+			persistence.setCoArtefato(domain.getDescendente().getCoArtefato());
+			persistence.setCoArtefatoPai(domain.getAscendente().getCoArtefato());
+			persistence.setCoTipoRelacionamento(domain.getTipoRelacionamento().getCoTipo());
+
+			relacionamentoDao.incluir(persistence);
+
+			response.entity(Conversores.converter(persistence));
+		}
+
+		return response.build();
+	}
+
+	@Override
+	public Response atualizar(Long coRelacionamento, RelacionamentoDomain domain) {
 		ResponseBuilder response = Response.status(Status.OK);
 
 		RelacionamentoPersistence persistence = new RelacionamentoPersistence();
