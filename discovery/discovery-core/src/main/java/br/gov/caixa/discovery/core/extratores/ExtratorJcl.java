@@ -1193,6 +1193,7 @@ public class ExtratorJcl {
 		valorSaida = valorSaida.replaceAll("'$", "");
 
 		valorSaida = valorSaida.replace("%%ALIAS%%.", "");
+		valorSaida = valorSaida.replace("%%ALIASP%%.", "");
 
 		Matcher m_nome_tira_data_fixa = Patterns.JCL_P_NOME_TIRA_DATA_FIXA.matcher(valorSaida);
 

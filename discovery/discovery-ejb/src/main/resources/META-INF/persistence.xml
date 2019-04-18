@@ -9,17 +9,13 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>java:jboss/datasources/discoveryDS</jta-data-source>
 
-		<class>discovery.ejb.persistence.pojo.ArtefatoPersistence</class>
-		<class>discovery.ejb.persistence.pojo.ArtefatoHistoricoPersistence</class>
-		<class>discovery.ejb.persistence.pojo.RelacionamentoPersistence</class>
-
 		<properties>
 			<property name="javax.persistence.jdbc.driver"
 				value="org.postgresql.Driver" />
 			<property name="hibernate.dialect"
 				value="org.hibernate.dialect.PostgreSQLDialect" />
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.hbm2ddl.auto" value="validate" />
 			<property name="hibernate.connection.useUnicode"
 				value="true" />

@@ -35,11 +35,11 @@ public class Discovery {
 			dao.abrirConexao();
 			em = dao.getEmFactory().createEntityManager();
 
-			executar(Configuracao.getConfiguracao(TipoArtefato.CATALOGO_DB), TipoArtefato.CATALOGO_DB, 0, false);
-			executar(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
-			executar(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL), TipoArtefato.PROGRAMA_COBOL, 0, false);
-			executar(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0, false);
-			executar(Configuracao.getConfiguracao(TipoArtefato.CONTROL_M), TipoArtefato.CONTROL_M, 0, true);
+			 executar(Configuracao.getConfiguracao(TipoArtefato.CATALOGO_DB), TipoArtefato.CATALOGO_DB, 0, false);
+		     executar(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
+			 executar(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL), TipoArtefato.PROGRAMA_COBOL, 0, false);
+			 executar(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0, false);
+			 executar(Configuracao.getConfiguracao(TipoArtefato.CONTROL_M), TipoArtefato.CONTROL_M, 0, true);
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -25,7 +25,7 @@ public class Dao {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("connection.provider_class", "org.hibernate.jpa.HibernatePersistenceProvider");
 
-		properties.put("javax.persistence.jdbc.url", "jdbc:postgresql://127.0.0.1:5432/pgdbdiscovery?charSet=UTF8");
+		properties.put("javax.persistence.jdbc.url", "jdbc:postgresql://10.208.200.82:5432/pgdiscovery?charSet=UTF8");
 		properties.put("javax.persistence.jdbc.user", "postgres");
 		properties.put("javax.persistence.jdbc.password", "postgres");
 
