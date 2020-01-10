@@ -336,7 +336,7 @@ ALTER TABLE public.vw_artefato_atributo
 -- DROP VIEW public.vw_artefato_counts;
 
 CREATE OR REPLACE VIEW public.vw_artefato_counts AS
- SELECT DISTINCT t1.co_artefato,
+ SELECT DISTINCT t1.co_artefato, t1.no_nome_artefato,
     count(t2.*) AS count_relacionamento,
     count(t2.*) FILTER (WHERE t2.co_tipo_relacionamento::text = 'INTERFACE'::text) AS count_relacionamento_interface,
     count(t2.*) FILTER (WHERE t2.co_tipo_relacionamento::text = 'NORMAL'::text) AS count_relacionamento_normal,

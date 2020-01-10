@@ -21,8 +21,14 @@ import br.gov.caixa.discovery.core.utils.Configuracao;
 public class TEST_ProgramaCobol {
 
 	private static Extrator converter = null;
-	private static String pasta = "D:\\ti\\git\\discovery\\discovery\\discovery-core\\src\\test\\resources\\";
-	private static String arquivo = pasta + "programa_cobol_generico.cbl";
+	
+	
+	private static String arquivo = new TEST_ProgramaCobol()
+										.getClass()
+										.getClassLoader()
+										.getResource("programa_cobol_generico.cbl").getPath();
+			//"D:\\ti\\git\\discovery\\discovery\\discovery-core\\src\\test\\resources\\";
+	//private static String arquivo = pasta + "programa_cobol_generico.cbl";
 	private static Artefato artefato = null;
 	private static String[] argumentos = { " --ambiente PRD --sistema SIPCS " };
 

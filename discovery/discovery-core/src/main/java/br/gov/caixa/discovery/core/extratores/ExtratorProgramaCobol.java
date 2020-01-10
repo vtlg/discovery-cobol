@@ -16,6 +16,7 @@ import br.gov.caixa.discovery.core.tipos.TipoRelacionamento;
 import br.gov.caixa.discovery.core.utils.ArtefatoHandler;
 import br.gov.caixa.discovery.core.utils.Configuracao;
 import br.gov.caixa.discovery.core.utils.Patterns;
+import br.gov.caixa.discovery.core.utils.PatternsSIAOI;
 import br.gov.caixa.discovery.core.utils.UtilsHandler;
 import br.gov.caixa.discovery.ejb.modelos.ArtefatoPersistence;
 import br.gov.caixa.discovery.ejb.modelos.SistemaPersistence;
@@ -23,7 +24,7 @@ import br.gov.caixa.discovery.ejb.tipos.Tabelas;
 
 public class ExtratorProgramaCobol {
 
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private final static Logger LOGGER = Logger.getLogger(ExtratorProgramaCobol.class.getName());
 
 	private Artefato artefato = null;
 	int deslocamento = 0;
@@ -51,7 +52,7 @@ public class ExtratorProgramaCobol {
 			this.artefato = operacoesArquivo(this.artefato);
 			this.artefato = declaracaoSql(this.artefato);
 			this.artefato = tabelas(this.artefato);
-			this.artefato = variaveis(this.artefato);
+ 			//this.artefato = variaveis(this.artefato);
 			this.artefato = variaveisPesquisa(this.artefato);
 			this.artefato = programas(this.artefato);
 			this.artefato = executeCics(this.artefato);
@@ -698,6 +699,9 @@ public class ExtratorProgramaCobol {
 
 		Matcher m_call = null;
 		Matcher m_call_ponto = null;
+		Matcher m_move = null;
+		Matcher m_move_aspas = null;
+		
 
 		Artefato programaChamado = null;
 
@@ -711,11 +715,13 @@ public class ExtratorProgramaCobol {
 
 				String textoCodigo = texto.substring(6);
 
-				m_call = Patterns.COBOL_P_CALL.matcher(textoCodigo);
-				m_call_ponto = Patterns.COBOL_P_CALL_PONTO.matcher(textoCodigo);
+				m_call = PatternsSIAOI.COBOL_P_CALL_AOI.matcher(textoCodigo);				
+				m_call_ponto = PatternsSIAOI.COBOL_P_CALL_AOI.matcher(textoCodigo);
+				m_move = PatternsSIAOI.COBOL_P_MOVE.matcher(textoCodigo);
+				m_move_aspas = PatternsSIAOI.COBOL_P_MOVE_ASPAS.matcher(textoCodigo);
 
 				if (m_call_ponto.matches()) {
-					String nomePrograma = m_call_ponto.group("nomeChamado");
+					String nomePrograma = m_call_ponto.group("nomePrograma");
 					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), null, nomePrograma)) {
 						programaChamado = new Artefato();
 						programaChamado.setNome(nomePrograma);
@@ -725,7 +731,32 @@ public class ExtratorProgramaCobol {
 						// artefato.adicionarArtefatosRelacionados();
 					}
 				} else if (m_call.matches()) {
-					String nomePrograma = m_call.group("nomeChamado");
+					String nomePrograma = m_call.group("nomePrograma");
+					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), null, nomePrograma)) {
+						programaChamado = new Artefato();
+						programaChamado.setNome(nomePrograma);
+						programaChamado.setNomeInterno(nomePrograma);
+						programaChamado.setTipoArtefato(TipoArtefato.PROGRAMA_COBOL);
+						listaArtefato.add(programaChamado);
+						// artefato.adicionarArtefatosRelacionados(programaChamado);
+					}
+				} 
+				
+				if (m_move.matches()) {
+					String nomePrograma = m_move.group("nomePrograma");
+					nomePrograma = nomePrograma.replace("WAOI", "AOI");
+					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), null, nomePrograma)) {
+						programaChamado = new Artefato();
+						programaChamado.setNome(nomePrograma);
+						programaChamado.setNomeInterno(nomePrograma);
+						programaChamado.setTipoArtefato(TipoArtefato.PROGRAMA_COBOL);
+						listaArtefato.add(programaChamado);
+						// artefato.adicionarArtefatosRelacionados(programaChamado);
+					}
+				}
+				if (m_move_aspas.matches()) {
+					String nomePrograma = m_move_aspas.group("nomePrograma");
+					nomePrograma = nomePrograma.replace("WAOI", "AOI");
 					if (!ArtefatoHandler.existeArtefato(artefato.getArtefatosRelacionados(), null, nomePrograma)) {
 						programaChamado = new Artefato();
 						programaChamado.setNome(nomePrograma);

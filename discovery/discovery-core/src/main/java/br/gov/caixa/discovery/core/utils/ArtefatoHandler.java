@@ -272,7 +272,7 @@ public class ArtefatoHandler {
 		
 		List<Path> listaPath = Configuracao.MAPA_PATH_COPYBOOK.get(nome);
 
-		if (listaPath == null && listaPath.size() > 0) {
+		if (listaPath == null || listaPath.size() > 0) {
 			return null;
 		}
 

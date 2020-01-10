@@ -149,7 +149,8 @@ INSERT INTO public.tbl_artefato(
 INSERT INTO public.tbl_sistema(
 	co_sistema, de_sistema)
 	VALUES 
-	('SIPCS', 'SIPCS'),
+	('SIAOI', 'SIAOI');
+	/*,
 	('SIFDL', 'SIFDL'),
 	('SIEPA', 'SIEPA'),
 	('SIACH', 'SIACH'),
@@ -166,3 +167,4 @@ INSERT INTO public.tbl_sistema(
 	('SIACC','SIACC'),
 	('SISFIN','SISFIN'),
 	('DESCONHECIDO', 'Desconhecido');
+	*/

@@ -87,6 +87,7 @@ public class ExtratorCopybook {
 			this.artefato = relacionarVariavel(this.artefato, this.deslocamento, this.sistema, this.ambiente);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Erro ao tentar converter " + this.artefato.getCaminhoArquivo(), e);
+			e.printStackTrace();
 		}
 
 		return artefato;
@@ -130,13 +131,13 @@ public class ExtratorCopybook {
 			this.sistema = sistema;
 		}
 
-		for (String textoCompleto : artefato.getCodigoFonte()) {
-			if (textoCompleto.length() < 6) {
+		for (String linhaCodigoFonte : artefato.getCodigoFonte()) {
+			if (linhaCodigoFonte.length() < 6) {
 				continue;
 			}
 			foiProcessado = false;
 
-			String texto = textoCompleto.substring(6);
+			String texto = linhaCodigoFonte.substring(6);
 			m_Var_Linha_Inicio_1 = Patterns.COPYBOOK_P_VAR_LINHA_INICIO_1.matcher(texto);
 			m_Var_Linha_Inicio_2 = Patterns.COPYBOOK_P_VAR_LINHA_INICIO_2.matcher(texto);
 			m_Var_Linha_Meio = Patterns.COPYBOOK_P_VAR_LINHA_MEIO.matcher(texto);

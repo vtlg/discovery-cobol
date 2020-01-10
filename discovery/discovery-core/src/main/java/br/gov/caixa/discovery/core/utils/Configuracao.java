@@ -46,7 +46,7 @@ public class Configuracao {
 	public static HashMap<String, List<Path>> MAPA_PATH_COPYBOOK = new HashMap<>();
 
 	public static void main(String[] args) throws Exception {
-		String[] argumentos = { " --ambiente PRD --sistema SIPCS " };
+		String[] argumentos = { " --ambiente DES --sistema SIAOI --carga-inicial" };
 		Configuracao.carregar(argumentos);
 		System.out.println("");
 	}
@@ -64,8 +64,8 @@ public class Configuracao {
 		_carregarParametro(args);
 		_carregarConfiguracaoJson();
 		_carregarCollectionArtefatos();
-		_carregarMapaPathCopybook();
-		_carregarMapaArtefatosControlM();
+		//_carregarMapaPathCopybook();
+		//_carregarMapaArtefatosControlM();
 	}
 
 	public static ArquivoConfiguracao getConfiguracao(TipoArtefato tipopArtefato) {

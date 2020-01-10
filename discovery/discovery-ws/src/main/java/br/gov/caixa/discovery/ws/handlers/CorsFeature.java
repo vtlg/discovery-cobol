@@ -8,7 +8,7 @@ import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 
 @Provider
 public class CorsFeature implements Feature {
-
+ 
 	@Override
 	public boolean configure(FeatureContext context) {
 		CorsFilter corsFilter = new CorsFilter();

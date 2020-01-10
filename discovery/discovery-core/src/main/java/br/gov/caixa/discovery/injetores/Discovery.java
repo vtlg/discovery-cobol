@@ -22,7 +22,7 @@ import br.gov.caixa.discovery.ejb.modelos.ControleArquivoPersistence;
 
 public class Discovery {
 
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private final static Logger LOGGER = Logger.getLogger(Discovery.class.getName());
 
 	public static EntityManager em = null;
 
@@ -35,11 +35,11 @@ public class Discovery {
 			dao.abrirConexao();
 			em = dao.getEmFactory().createEntityManager();
 
-			 executar(Configuracao.getConfiguracao(TipoArtefato.CATALOGO_DB), TipoArtefato.CATALOGO_DB, 0, false);
-		     executar(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
+			 //executar(Configuracao.getConfiguracao(TipoArtefato.CATALOGO_DB), TipoArtefato.CATALOGO_DB, 0, false);
+		     //executar(Configuracao.getConfiguracao(TipoArtefato.JCL), TipoArtefato.JCL, 0, false);
 			 executar(Configuracao.getConfiguracao(TipoArtefato.PROGRAMA_COBOL), TipoArtefato.PROGRAMA_COBOL, 0, false);
-			 executar(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0, false);
-			 executar(Configuracao.getConfiguracao(TipoArtefato.CONTROL_M), TipoArtefato.CONTROL_M, 0, true);
+			 //executar(Configuracao.getConfiguracao(TipoArtefato.COPYBOOK), TipoArtefato.COPYBOOK, 0, false);
+			 //executar(Configuracao.getConfiguracao(TipoArtefato.CONTROL_M), TipoArtefato.CONTROL_M, 0, false);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,14 +60,17 @@ public class Discovery {
 
 		StringBuilder sbErro = new StringBuilder();
 
-		LOGGER.log(Level.INFO, "(Carga) Iniciando carga dos artefatos " + tipoArtefato.get());
+		LOGGER.log(Level.INFO, "\n(Carga) Iniciando carga dos artefatos " + tipoArtefato.get());
+		
 		List<Path> listaPaths = Configuracao.getListaPaths(arquivoConfiguracao, tipoArtefato);
+		LOGGER.log(Level.INFO, "Lendo diretorio:" + arquivoConfiguracao.getCaminhoPasta());
+		
 		ControleArquivoDao controleArquivoDao = new ControleArquivoDao(em);
 
 		int count = 1;
 		int sizeListaPaths = listaPaths.size();
 		for (Path path : listaPaths) {
-			System.out.println("(" + tipoArtefato.get() + ") " + count + "/" + sizeListaPaths);
+			System.out.println("(" + path.getFileName().toString() + ") " + count + "/" + sizeListaPaths);
 			count++;
 			// CALCULA O HASH DO ARQUIVO PARA VERIFICAR A NECESSIDADE DE PROCESSÁ-LO OU NÃO
 			String hashCalculado = UtilsHandler.calcularHash(path, UtilsHandler.SHA256);

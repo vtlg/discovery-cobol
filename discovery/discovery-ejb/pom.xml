@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>br.gov.caixa.discovery</groupId>
 		<artifactId>discovery</artifactId>
-		<version>0.0.1</version>
+		<version>0.0.2</version>
 	</parent>
 	<artifactId>discovery-ejb</artifactId>
 	<packaging>ejb</packaging>
@@ -81,4 +81,5 @@
 		</plugins>
 	</build>
 
+	<version>0.0.1</version>
 </project>

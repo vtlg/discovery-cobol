@@ -217,7 +217,7 @@ public class Patterns {
 	public static Pattern COBOL_P_CALL = Pattern
 			.compile("^[\\s]{1,}CALL[\\s]{1,}(?<nomeChamado>[\\S]{1,})[\\s]{1,}.*$");
 	public static Pattern COBOL_P_CALL_PONTO = Pattern
-			.compile("^[\\s]{1,}CALL[\\s]{1,}(?<nomeChamado>[\\S]{1,})[\\.]{1,}.*$");
+			.compile("^[\\s]{1,}CALL[\\s]{1,}(?<nomeChamado>[\\S]{1,})[\\.]{1,}.*$"); 
 
 	public static Pattern COBOL_P_EXEC_CICS_2 = Pattern.compile("^.*EXEC[\\s]{1,}CICS.*$");
 	public static Pattern COBOL_P_EXEC_CICS_1 = Pattern

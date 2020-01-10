@@ -4,6 +4,8 @@
 		"sistema": "QUALQUER",
 		"tipo": "DE-PARA",
         "dePara": [
+			{"FLA":"SIFLA"},
+			{"AOI":"SIAOI"},
 			{"PCS":"SIPCS"},
 			{"FDL":"SIFDL"},
 			{"EPA":"SIEPA"},
@@ -182,6 +184,54 @@
 		"porta": "5029",
 		"bancoDados": "CDSB",
 		"urlConexao": "jdbc:db2://10.192.224.76:5029/CSDB"
+	},
+	{
+		"ambiente": "DES",
+		"sistema": "SIAOI",
+		"tipo": "PROGRAMA-COBOL",
+		"caminhoPasta": "C:\\desenvolvimento\\Projetos\\COBOL_DISCOVERY_DADOS\\COBLE"
+	},
+	{
+		"ambiente": "DES",
+		"sistema": "SIAOI",
+		"tipo": "PROGRAMA-COBOL",
+		"caminhoPasta": "C:\\desenvolvimento\\Projetos\\COBOL_DISCOVERY_DADOS\\COBSBRT"
+	},
+	{
+		"ambiente": "DES",
+		"sistema": "SIAOI",
+		"tipo": "JCL",
+		"caminhoPasta": "C:\\desenvolvimento\\Projetos\\COBOL_DISCOVERY_DADOS\\JCL"
+	},
+	{
+		"ambiente": "DES",
+		"sistema": "SIAOI",
+		"tipo": "COPYBOOK",
+		"caminhoPasta": "C:\\desenvolvimento\\Projetos\\COBOL_DISCOVERY_DADOS\\COPYBOOK"
+	},
+	{
+		"ambiente": "DES",
+		"sistema": "SIAOI",
+		"tipo": "CONTROL-M",
+		"caminhoPasta": "C:\\desenvolvimento\\Projetos\\COBOL_DISCOVERY_DADOS\\SCHEDULE"
+	},
+	{
+		"ambiente": "DES",
+		"sistema": "SIFIX",
+		"tipo": "PROGRAMA-COBOL",
+		"caminhoPasta": "C:\\desenvolvimento\\Projetos\\sifix-cobol\\COBOL"
+	},
+	{
+		"ambiente": "DES",
+		"sistema": "SIFIX",
+		"tipo": "COPYBOOK",
+		"caminhoPasta": "C:\\desenvolvimento\\Projetos\\sifix-cobol\\BOOK"
+	},
+	{
+		"ambiente": "DES",
+		"sistema": "SIFIX",
+		"tipo": "CT",
+		"caminhoPasta": "C:\\desenvolvimento\\Projetos\\sifix-cobol\\CT"
 	}
 ]
 

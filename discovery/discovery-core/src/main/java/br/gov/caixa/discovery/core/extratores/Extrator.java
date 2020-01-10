@@ -115,7 +115,7 @@ public class Extrator {
 
 				artefato.setNome(ArtefatoHandler.tratarNomeArtefato(nomeArtefato));
 
-				if (TipoArtefato.PROGRAMA_COBOL.equals(tipoArtefato) && Configuracao.CARGA_INICIAL == false) { // ExtratorCobol
+				if ((TipoArtefato.PROGRAMA_COBOL.equals(tipoArtefato) || TipoArtefato.SUBROTINA_COBOL.equals(tipoArtefato)) && Configuracao.CARGA_INICIAL == false) { // ExtratorCobol
 					ExtratorProgramaCobol extrator = new ExtratorProgramaCobol(artefato, deslocamento);
 					artefato = extrator.executa();
 					listaArtefato.add(artefato);

@@ -25,7 +25,7 @@ public class Dao {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("connection.provider_class", "org.hibernate.jpa.HibernatePersistenceProvider");
 
-		properties.put("javax.persistence.jdbc.url", "jdbc:postgresql://10.208.200.82:5432/pgdiscovery?charSet=UTF8");
+		properties.put("javax.persistence.jdbc.url", "jdbc:postgresql://127.0.0.1:5432/discovery?charSet=UTF8");
 		properties.put("javax.persistence.jdbc.user", "postgres");
 		properties.put("javax.persistence.jdbc.password", "postgres");
 
@@ -38,14 +38,15 @@ public class Dao {
 		properties.put("hibernate.c3p0.max_statements", 20);
 		properties.put("hibernate.c3p0.idle_test_period", 2000);
 
-		properties.put("hibernate.use_sql_comments", true);
 		properties.put("hibernate.query.conventional_java_constants", false);
 		// properties.put("", true);
 		properties.put("hibernate.jdbc.batch_size", 25);
 		properties.put("hibernate.order_inserts", true);
 		properties.put("hibernate.order_updates", true);
+		
 		properties.put("hibernate.show_sql", false);
-		properties.put("hibernate.format_sql", false);
+		properties.put("hibernate.format_sql", true);
+		properties.put("hibernate.use_sql_comments", true);
 		// properties.put("", true);
 		properties.put("hibernate.hbm2ddl.auto", "validate");
 		properties.put("hibernate.connection.useUnicode", true);
